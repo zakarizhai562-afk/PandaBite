@@ -1,0 +1,26 @@
+{
+  "name": "nutripal",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.18.2",
+    "tau-prolog": "^0.3.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}

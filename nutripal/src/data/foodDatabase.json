@@ -1,0 +1,25 @@
+{
+  "foods": [
+    {
+      "id": "rice",
+      "name": { "my": "ထမင်း", "en": "Rice" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/rice.png"
+    },
+    {
+      "id": "egg",
+      "name": { "my": "ကြက်ဥ", "en": "Egg" },
+      "groups": ["protein"],
+      "tier": "Go",
+      "image": "/images/food/egg.png"
+    },
+    {
+      "id": "candy",
+      "name": { "my": "အချိုမုန့်", "en": "Candy" },
+      "groups": [],
+      "tier": "Whoa",
+      "image": "/images/food/candy.png"
+    }
+  ]
+}
