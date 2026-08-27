@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+nutripal/node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+build/
+nutripal/dist/
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Vite
+.vite/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Spec docs (local only, not for repo)
+NutriPal_Spec_*.md
