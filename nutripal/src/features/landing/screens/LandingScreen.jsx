@@ -1,9 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function LandingScreen() {
+  const navigate = useNavigate();
+
   const handleStart = useCallback(() => {
-    // TODO: navigate to /home
-  }, []);
+    navigate('/home');
+  }, [navigate]);
 
   return (
     <div className="landing-screen">

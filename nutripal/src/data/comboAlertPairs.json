@@ -1,3 +1,34 @@
 {
-  "pairs": []
+  "pairs": [
+    {
+      "foodA": "candy",
+      "foodB": "rice",
+      "type": "bad",
+      "reactions": {
+        "badCorrect": {
+          "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
+          "en": "That's right! These two don't go well together!"
+        },
+        "badIncorrect": {
+          "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
+          "en": "Hmm, eating these two together might give you a mild tummy ache and make you feel super thirsty! Let's pair them with something else instead!"
+        }
+      }
+    },
+    {
+      "foodA": "egg",
+      "foodB": "rice",
+      "type": "good",
+      "reactions": {
+        "goodCorrect": {
+          "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
+          "en": "Yes, it's delicious! These two are great together!"
+        },
+        "goodIncorrect": {
+          "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
+          "en": "Actually they're great together! They make a nutritious and healthy combination!"
+        }
+      }
+    }
+  ]
 }
