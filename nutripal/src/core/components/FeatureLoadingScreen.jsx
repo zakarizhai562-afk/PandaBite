@@ -19,29 +19,29 @@ export default function FeatureLoadingScreen({
   }, [durationMs, onDone]);
 
   return (
-    <div
-      className="feature-loading"
-      style={{
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: imgError ? '#EAF4EE' : undefined,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className="feature-loading">
       {!imgError && (
         <img
           src={image}
           alt={label || 'Loading...'}
           onError={() => setImgError(true)}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       )}
-      {imgError && <p>Loading...</p>}
-      {/* Spinner / progress dots layered on top */}
-      <div className="loading-spinner">...</div>
+      {imgError && (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#EAF4EE',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div className="loading-spinner" />
+        </div>
+      )}
+      <div className="loading-spinner" />
     </div>
   );
 }

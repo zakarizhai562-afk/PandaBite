@@ -4,6 +4,7 @@
 
 import { runPrologQuery } from '../../../core/prolog/prologEngine';
 import foodDatabase from '../../../data/foodDatabase.json';
+import prologRules from './dailyBalanceRules.pl?raw';
 
 /**
  * Build Prolog food facts from the database.
@@ -20,20 +21,30 @@ function buildFoodFacts() {
  * @returns {{ coveredGroups: string[], missingGroups: string[], whoaCount: number, isBalanced: boolean }}
  */
 export function calculateDailyBalance(foodIds) {
+  if (!foodIds || foodIds.length === 0) {
+    return {
+      coveredGroups: [],
+      missingGroups: ['carbs', 'protein', 'vitamins'],
+      whoaCount: 0,
+      isBalanced: false,
+    };
+  }
+
   const facts = buildFoodFacts();
-  const rules = ''; // TODO: load dailyBalanceRules.pl source
+  const rulesSource = facts + '\n' + prologRules;
   const query = `covered_groups(${JSON.stringify(foodIds)}, Groups), whoa_count(${JSON.stringify(foodIds)}, WhoaCount), (is_balanced(${JSON.stringify(foodIds)}) -> IsBalanced = true ; IsBalanced = false).`;
 
   try {
-    const result = runPrologQuery(facts + '\n' + rules, query);
+    const result = runPrologQuery(rulesSource, query);
     if (result) {
+      const groups = Array.isArray(result.Groups) ? result.Groups : [];
       return {
-        coveredGroups: result.Groups || [],
+        coveredGroups: groups,
         missingGroups: ['carbs', 'protein', 'vitamins'].filter(
-          (g) => !(result.Groups || []).includes(g)
+          (g) => !groups.includes(g)
         ),
-        whoaCount: result.WhoaCount || 0,
-        isBalanced: result.IsBalanced || false,
+        whoaCount: parseInt(result.WhoaCount, 10) || 0,
+        isBalanced: result.IsBalanced === 'true',
       };
     }
   } catch (e) {

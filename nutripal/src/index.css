@@ -1,0 +1,416 @@
+/* NutriPal Global Styles — Design System from Section 3 */
+
+:root {
+  --color-primary: #2D6A4F;
+  --color-dark: #1B4332;
+  --color-bg: #EAF4EE;
+  --color-accent: #FF8C42;
+  --color-text: #1B2B22;
+  --color-muted: #5B6B61;
+  --color-panda-fur: #C9673A;
+  --color-panda-light: #FFF3E0;
+  --color-panda-dark: #4A2E23;
+  --font-heading: Cambria, Georgia, serif;
+  --font-body: system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography ── */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  color: var(--color-dark);
+}
+
+/* ── Buttons ── */
+button {
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-body);
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 14px 32px;
+  border-radius: 12px;
+  min-height: 44px;
+  min-width: 44px;
+  transition: opacity 0.15s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-primary:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  min-height: 44px;
+}
+
+/* ── Cards ── */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Mascot Bubble ── */
+.mascot-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: 90%;
+  width: 420px;
+}
+
+.mascot-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-panda-fur);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid var(--color-panda-dark);
+}
+
+.mascot-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mascot-speech {
+  background: var(--color-dark);
+  color: #fff;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 1.4;
+  max-width: 320px;
+  position: relative;
+}
+
+.mascot-speech::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 16px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid var(--color-dark);
+}
+
+/* ── Landing Screen ── */
+.landing-screen {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: var(--color-bg);
+}
+
+.landing-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.landing-screen h1 {
+  position: relative;
+  z-index: 1;
+  font-size: 36px;
+  color: var(--color-dark);
+  margin-bottom: 8px;
+}
+
+.landing-screen .btn-primary {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 60px;
+}
+
+/* ── Feature Loading Screen ── */
+.feature-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-loading img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading-spinner {
+  position: absolute;
+  bottom: 20%;
+}
+
+.loading-spinner::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+/* ── Daily Log Screen ── */
+.daily-log-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 16px 16px;
+}
+
+.plate-area {
+  background: #fff;
+  border: 3px dashed var(--color-primary);
+  border-radius: 20px;
+  min-height: 180px;
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 16px;
+}
+
+.plate-area.drag-over {
+  border-color: var(--color-accent);
+  background: #fff8f0;
+}
+
+.plate-area.empty::after {
+  content: 'Drag food here!';
+  color: var(--color-muted);
+  font-size: 16px;
+}
+
+.food-box {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  align-content: start;
+  padding-bottom: 80px;
+}
+
+.food-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-height: 44px;
+}
+
+.food-card:hover {
+  border-color: var(--color-accent);
+}
+
+.food-card.dragging {
+  opacity: 0.5;
+  border-color: var(--color-accent);
+}
+
+.food-card img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.food-card .food-name {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.food-card .food-tier {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.tier-go { background: #d4edda; color: #155724; }
+.tier-slow { background: #fff3cd; color: #856404; }
+.tier-whoa { background: #f8d7da; color: #721c24; }
+
+.plate-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #f0f7f2;
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.plate-item:hover {
+  background: #ffe0e0;
+}
+
+.plate-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.plate-item .food-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.daily-log-done-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Daily Result Screen ── */
+.daily-result-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 16px 32px;
+  gap: 20px;
+}
+
+.balance-summary {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.balance-row.covered {
+  color: var(--color-primary);
+}
+
+.balance-row.missing {
+  color: var(--color-accent);
+}
+
+.stars-earned {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.daily-result-feedback {
+  background: var(--color-dark);
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (min-width: 600px) {
+  .daily-log-screen {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .food-box {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

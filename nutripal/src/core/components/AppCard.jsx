@@ -1,5 +1,4 @@
 // Shared card container component
-// TODO: Implement per spec — flat, rounded, generous whitespace
-export default function AppCard({ children }) {
-  return <div>{children}</div>;
+export default function AppCard({ children, className = '' }) {
+  return <div className={`card ${className}`}>{children}</div>;
 }

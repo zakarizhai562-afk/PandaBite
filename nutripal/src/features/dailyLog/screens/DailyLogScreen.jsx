@@ -1,29 +1,62 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
 import MascotBubble from '../../../core/components/MascotBubble';
 import FoodEntryCard from '../components/FoodEntryCard';
-import BalanceSummaryCard from '../components/BalanceSummaryCard';
+import PlateDropTarget from '../components/PlateDropTarget';
 import { useDailyLog } from '../hooks/useDailyLog';
+import { getPerItemReaction } from '../services/feedbackLibrary';
+import foodDatabase from '../../../data/foodDatabase.json';
 
 export default function DailyLogScreen() {
   const [loading, setLoading] = useState(true);
   const [plate, setPlate] = useState([]);
-  const { calculateResult } = useDailyLog();
+  const [mascotText, setMascotText] = useState(null);
+  const { calculateResult, saveEntry } = useDailyLog();
+  const navigate = useNavigate();
 
-  const handleDrop = useCallback((foodId) => {
-    setPlate((prev) => [...prev, foodId]);
-    // TODO: show per-item mascot reaction
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
+
+  const handleDragEnd = useCallback((event) => {
+    const { active, over } = event;
+    if (!active || !over) return;
+
+    const food = active.data.current?.food;
+    const isOnPlate = active.data.current?.isOnPlate;
+
+    if (over.id === 'plate-drop-target') {
+      if (isOnPlate) return; // already on plate
+      // Add to plate
+      setPlate((prev) => [...prev, food]);
+      // Show per-item reaction
+      const reaction = getPerItemReaction(food.id);
+      setMascotText(reaction);
+    } else if (isOnPlate) {
+      // Dragged off the plate — remove it
+      setPlate((prev) => prev.filter((f) => f.id !== food.id));
+    }
   }, []);
 
-  const handleRemove = useCallback((index) => {
-    setPlate((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveFromPlate = useCallback((foodId) => {
+    setPlate((prev) => prev.filter((f) => f.id !== foodId));
   }, []);
 
   const handleDone = useCallback(() => {
-    // TODO: calculate balance, navigate to /daily-log/result
-    const result = calculateResult(plate);
-    console.log('Daily balance result:', result);
-  }, [plate, calculateResult]);
+    if (plate.length === 0) return;
+    const foodIds = plate.map((f) => f.id);
+    const result = calculateResult(foodIds);
+    const today = new Date().toISOString().split('T')[0];
+    saveEntry({
+      date: today,
+      foodIds,
+      ...result,
+    });
+    navigate('/daily-log/result', { state: { result, foodIds } });
+  }, [plate, calculateResult, saveEntry, navigate]);
 
   if (loading) {
     return (
@@ -35,21 +68,47 @@ export default function DailyLogScreen() {
     );
   }
 
+  const allFoods = foodDatabase.foods;
+
   return (
-    <div className="daily-log-screen">
-      <MascotBubble />
-      {/* Plate drop target */}
-      <div className="plate-area">
-        {/* @dnd-kit useDroppable goes here */}
-        {plate.map((foodId, i) => (
-          <FoodEntryCard key={`${foodId}-${i}`} foodId={foodId} onRemove={() => handleRemove(i)} />
-        ))}
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <div className="daily-log-screen">
+        <MascotBubble text={mascotText} />
+
+        <PlateDropTarget hasItems={plate.length > 0}>
+          {plate.map((food) => (
+            <FoodEntryCard
+              key={food.id}
+              food={food}
+              isOnPlate={true}
+              onRemove={() => handleRemoveFromPlate(food.id)}
+            />
+          ))}
+        </PlateDropTarget>
+
+        <div className="food-box">
+          {allFoods.map((food) => (
+            <FoodEntryCard key={food.id} food={food} />
+          ))}
+        </div>
+
+        <div className="daily-log-done-bar">
+          <button
+            className="btn-secondary"
+            onClick={() => navigate('/home')}
+            style={{ marginRight: '12px' }}
+          >
+            Back
+          </button>
+          <button
+            className="btn-primary"
+            onClick={handleDone}
+            disabled={plate.length === 0}
+          >
+            Done
+          </button>
+        </div>
       </div>
-      {/* Food box picklist */}
-      <div className="food-box">
-        {/* TODO: render food cards from foodDatabase.json grouped by category */}
-      </div>
-      <button onClick={handleDone} disabled={plate.length === 0}>Done</button>
-    </div>
+    </DndContext>
   );
 }

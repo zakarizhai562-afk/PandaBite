@@ -8,6 +8,20 @@
       "image": "/images/food/rice.png"
     },
     {
+      "id": "noodles",
+      "name": { "my": "ခေါက်ဆွဲ", "en": "Noodles" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/noodles.png"
+    },
+    {
+      "id": "bread",
+      "name": { "my": "ပေါင်မုန့်", "en": "Bread" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/bread.png"
+    },
+    {
       "id": "egg",
       "name": { "my": "ကြက်ဥ", "en": "Egg" },
       "groups": ["protein"],
@@ -15,11 +29,109 @@
       "image": "/images/food/egg.png"
     },
     {
+      "id": "chicken",
+      "name": { "my": "ကြက်သား", "en": "Chicken" },
+      "groups": ["protein"],
+      "tier": "Go",
+      "image": "/images/food/chicken.png"
+    },
+    {
+      "id": "fish",
+      "name": { "my": "ငါး", "en": "Fish" },
+      "groups": ["protein"],
+      "tier": "Go",
+      "image": "/images/food/fish.png"
+    },
+    {
+      "id": "beans",
+      "name": { "my": "ပဲ", "en": "Beans" },
+      "groups": ["protein"],
+      "tier": "Go",
+      "image": "/images/food/beans.png"
+    },
+    {
+      "id": "mango",
+      "name": { "my": "သရက်သီး", "en": "Mango" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/mango.png"
+    },
+    {
+      "id": "banana",
+      "name": { "my": "ငှက်ပျောသီး", "en": "Banana" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/banana.png"
+    },
+    {
+      "id": "carrot",
+      "name": { "my": "မုန်လာဥ", "en": "Carrot" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/carrot.png"
+    },
+    {
+      "id": "spinach",
+      "name": { "my": "ဟင်းရွက်", "en": "Spinach" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/spinach.png"
+    },
+    {
+      "id": "fried_chicken",
+      "name": { "my": "ကြက်ကြော်", "en": "Fried Chicken" },
+      "groups": ["protein"],
+      "tier": "Slow",
+      "image": "/images/food/fried_chicken.png"
+    },
+    {
+      "id": "cheese",
+      "name": { "my": "ဒိန်ခဲ", "en": "Cheese" },
+      "groups": ["protein"],
+      "tier": "Slow",
+      "image": "/images/food/cheese.png"
+    },
+    {
+      "id": "fries",
+      "name": { "my": "အာလူးကြော်", "en": "French Fries" },
+      "groups": ["carbs"],
+      "tier": "Slow",
+      "image": "/images/food/fries.png"
+    },
+    {
+      "id": "juice",
+      "name": { "my": "ဖျော်ရည်", "en": "Juice" },
+      "groups": ["vitamins"],
+      "tier": "Slow",
+      "image": "/images/food/juice.png"
+    },
+    {
       "id": "candy",
       "name": { "my": "အချိုမုန့်", "en": "Candy" },
       "groups": [],
       "tier": "Whoa",
       "image": "/images/food/candy.png"
+    },
+    {
+      "id": "soda",
+      "name": { "my": "အအေး", "en": "Soda" },
+      "groups": [],
+      "tier": "Whoa",
+      "image": "/images/food/soda.png"
+    },
+    {
+      "id": "cake",
+      "name": { "my": "ကိတ်မုန့်", "en": "Cake" },
+      "groups": [],
+      "tier": "Whoa",
+      "image": "/images/food/cake.png"
+    },
+    {
+      "id": "ice_cream",
+      "name": { "my": "ရေခဲမုန့်", "en": "Ice Cream" },
+      "groups": [],
+      "tier": "Whoa",
+      "image": "/images/food/ice_cream.png"
     }
   ]
 }
