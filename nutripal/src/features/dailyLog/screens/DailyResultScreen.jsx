@@ -25,8 +25,7 @@ export default function DailyResultScreen() {
     setFeedback(fb);
 
     if (result.isBalanced) {
-      const newTotal = awardStars(3, 'daily-log');
-      setStars(newTotal);
+      const newTotal = awardStars(3, 'daily-log', setStars);
       setStarsEarned(3);
     }
   }, [result, setStars]);

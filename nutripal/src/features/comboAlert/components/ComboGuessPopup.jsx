@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import MascotBubble from '../../../core/components/MascotBubble';
 import { getComboReaction } from '../models/comboPair';
 import { awardStars } from '../../../core/services/starAwardService';
+import { useStars } from '../../../core/context/StarsContext';
 import { markAlertShown } from '../services/comboAlertService';
 
 const PLACEHOLDER_STYLES = {
@@ -54,6 +55,7 @@ function FoodImage({ foodId, image, name }) {
 export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss }) {
   const [phase, setPhase] = useState('guessing');
   const [reaction, setReaction] = useState(null);
+  const { setStars } = useStars();
 
   const handleAnswer = useCallback((childSaidYes) => {
     if (phase !== 'guessing') return;
@@ -63,7 +65,7 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
     setPhase('revealed');
 
     if (result.isCorrect) {
-      awardStars(1, 'comboAlert');
+      awardStars(1, 'comboAlert', setStars);
     }
 
     markAlertShown(triggerId);

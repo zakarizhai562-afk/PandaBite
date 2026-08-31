@@ -15,10 +15,9 @@ function DraggableFoodChoice({ foodId, disabled }) {
 
   const style = {
     transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging || disabled ? 0.5 : 1,
     zIndex: isDragging ? 100 : 1,
     cursor: disabled ? 'not-allowed' : 'grab',
-    opacity: disabled ? 0.5 : 1,
   };
 
   return (

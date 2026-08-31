@@ -6,8 +6,8 @@ import { getTodayKey } from '../../../core/utils/dateUtils';
 const HISTORY_KEY = 'nutripal_daily_history';
 
 export function useDailyLog() {
-  const calculateResult = useCallback((foodIds) => {
-    const result = calculateDailyBalance(foodIds);
+  const calculateResult = useCallback(async (foodIds) => {
+    const result = await calculateDailyBalance(foodIds);
     return result;
   }, []);
 

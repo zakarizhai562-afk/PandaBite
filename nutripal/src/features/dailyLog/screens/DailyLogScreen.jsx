@@ -34,7 +34,7 @@ export default function DailyLogScreen() {
       setPlate((prev) => [...prev, food]);
       // Show per-item reaction
       const reaction = getPerItemReaction(food.id);
-      setMascotText(reaction);
+      setMascotText(reaction.text);
     } else if (isOnPlate) {
       // Dragged off the plate — remove it
       setPlate((prev) => prev.filter((f) => f.id !== food.id));
@@ -45,10 +45,10 @@ export default function DailyLogScreen() {
     setPlate((prev) => prev.filter((f) => f.id !== foodId));
   }, []);
 
-  const handleDone = useCallback(() => {
+  const handleDone = useCallback(async () => {
     if (plate.length === 0) return;
     const foodIds = plate.map((f) => f.id);
-    const result = calculateResult(foodIds);
+    const result = await calculateResult(foodIds);
     const today = new Date().toISOString().split('T')[0];
     saveEntry({
       date: today,

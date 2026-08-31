@@ -2,17 +2,13 @@ import { useState, useCallback } from 'react';
 import { findMatchingCombo, buildTriggerId, hasAlertBeenShown } from '../services/comboAlertService';
 import foodDatabase from '../../../data/foodDatabase.json';
 
-/**
- * Hook to manage the combo alert trigger after Daily Log save.
- * @returns {{ checkForComboAlert, comboAlertData, clearComboAlert }}
- */
 export function useComboAlert() {
   const [comboAlertData, setComboAlertData] = useState(null);
 
-  const checkForComboAlert = useCallback((loggedFoodIds) => {
+  const checkForComboAlert = useCallback(async (loggedFoodIds) => {
     if (!loggedFoodIds || loggedFoodIds.length < 2) return;
 
-    const match = findMatchingCombo(loggedFoodIds);
+    const match = await findMatchingCombo(loggedFoodIds);
     if (!match) return;
 
     const triggerId = buildTriggerId(match.foodA, match.foodB);

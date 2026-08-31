@@ -4,10 +4,16 @@ import App from './App';
 import { StarsProvider } from './core/context/StarsContext';
 import './index.css';
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <StarsProvider>
-      <App />
-    </StarsProvider>
-  </StrictMode>
-);
+const root = createRoot(document.getElementById('root'));
+try {
+  root.render(
+    <StrictMode>
+      <StarsProvider>
+        <App />
+      </StarsProvider>
+    </StrictMode>
+  );
+} catch (err) {
+  console.error('RENDER ERROR:', err);
+  document.getElementById('root').innerHTML = '<pre>' + err.message + '</pre>';
+}

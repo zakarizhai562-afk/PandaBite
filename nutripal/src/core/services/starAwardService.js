@@ -11,9 +11,10 @@ const STORAGE_KEY = 'nutripal_stars';
  * Award Stars to the shared points total.
  * @param {number} amount - Points to add (must be positive)
  * @param {string} source - Feature name that triggered the award (for logging/debugging)
+ * @param {function} [onUpdate] - Optional callback to sync React context
  * @returns {number} The new total after awarding
  */
-export function awardStars(amount, source) {
+export function awardStars(amount, source, onUpdate) {
   if (typeof amount !== 'number' || amount <= 0) {
     console.warn(`starAwardService: invalid amount ${amount} from ${source}`);
     return getItem(STORAGE_KEY) || 0;
@@ -22,5 +23,6 @@ export function awardStars(amount, source) {
   const current = getItem(STORAGE_KEY) || 0;
   const newTotal = current + amount;
   setItem(STORAGE_KEY, newTotal);
+  if (onUpdate) onUpdate(newTotal);
   return newTotal;
 }

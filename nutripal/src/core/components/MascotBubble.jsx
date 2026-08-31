@@ -23,7 +23,8 @@ export default function MascotBubble({ text, style }) {
         </svg>
       </div>
       <div className="mascot-speech">
-        <p>{displayText.en}</p>
+        {displayText.my && <p className="mascot-text-my">{displayText.my}</p>}
+        <p className="mascot-text-en">{displayText.en}</p>
       </div>
     </div>
   );

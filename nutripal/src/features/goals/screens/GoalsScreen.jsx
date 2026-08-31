@@ -10,6 +10,7 @@ import HintButton from '../components/HintButton';
 import { goals, getGoalById, getGoalFoodChoices } from '../models/goal';
 import { createFeedingRound, feedFood, useHint, getFeedReaction, getHintClue } from '../services/goalFeedingService';
 import { awardStars } from '../../../core/services/starAwardService';
+import { useStars } from '../../../core/context/StarsContext';
 
 const GOAL_ROUND_COMPLETE = {
   my: 'ဂုဏ်ယူပါတယ်! အစားအစာအားလုံးကို ကျွေးပြီးပါပြီ!',
@@ -18,6 +19,7 @@ const GOAL_ROUND_COMPLETE = {
 
 export default function GoalsScreen() {
   const navigate = useNavigate();
+  const { setStars } = useStars();
   const [loading, setLoading] = useState(true);
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [round, setRound] = useState(null);
@@ -55,7 +57,7 @@ export default function GoalsScreen() {
       setAnimating(true);
       setTimeout(() => setAnimating(false), 500);
       if (result.isStarEligible) {
-        awardStars(1, 'goals-feeding');
+        awardStars(1, 'goals-feeding', setStars);
       }
     }
 
