@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440" width="420" height="440">
+  <!-- Red Panda mascot — Thinking (child requested a Hint). Flat vector, solid colors, hard edges. -->
+  <!-- Tail -->
+  <g>
+    <ellipse cx="318" cy="335" rx="30" ry="55" transform="rotate(-20 318 335)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="335" cy="288" rx="27" ry="24" transform="rotate(-20 335 288)" fill="#4A2E23"/>
+    <ellipse cx="348" cy="245" rx="26" ry="34" transform="rotate(-30 348 245)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="360" cy="205" rx="23" ry="22" transform="rotate(-30 360 205)" fill="#4A2E23"/>
+    <ellipse cx="368" cy="172" rx="20" ry="26" transform="rotate(-35 368 172)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="372" cy="150" r="15" fill="#4A2E23"/>
+  </g>
+  <!-- Body -->
+  <g>
+    <ellipse cx="200" cy="292" rx="98" ry="90" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="200" cy="314" rx="62" ry="56" fill="#FFF3E0" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Legs -->
+  <g>
+    <ellipse cx="156" cy="372" rx="25" ry="19" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+    <ellipse cx="244" cy="372" rx="25" ry="19" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Right arm resting (base layer — the left arm is drawn raised, on top of the head, below) -->
+  <g>
+    <ellipse cx="298" cy="300" rx="27" ry="43" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="304" cy="338" r="23" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Head (identical geometry to the other 3 expressions) -->
+  <g>
+    <circle cx="130" cy="97" r="35" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="270" cy="97" r="35" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="138" cy="103" r="18" fill="#4A2E23"/>
+    <circle cx="262" cy="103" r="18" fill="#4A2E23"/>
+    <circle cx="200" cy="164" r="93" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="200" cy="188" rx="61" ry="55" fill="#FFF3E0" stroke="#2E1B12" stroke-width="4"/>
+    <ellipse cx="200" cy="199" rx="11" ry="8" fill="#4A2E23"/>
+    <!-- Face: eyes looking upward, small pursed thoughtful mouth -->
+    <circle cx="170" cy="168" r="17" fill="#FFFFFF" stroke="#2E1B12" stroke-width="3"/>
+    <circle cx="230" cy="168" r="17" fill="#FFFFFF" stroke="#2E1B12" stroke-width="3"/>
+    <circle cx="173" cy="159" r="9" fill="#1B2B22"/>
+    <circle cx="233" cy="159" r="9" fill="#1B2B22"/>
+    <circle cx="170" cy="155" r="3" fill="#FFFFFF"/>
+    <circle cx="230" cy="155" r="3" fill="#FFFFFF"/>
+    <circle cx="200" cy="212" r="6" fill="#2E1B12"/>
+  </g>
+  <!-- Left arm, raised so the paw rests near the chin — drawn on top of the head so it stays visible -->
+  <g>
+    <ellipse cx="148" cy="272" rx="23" ry="46" transform="rotate(-28 148 272)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="172" cy="222" r="21" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+</svg>

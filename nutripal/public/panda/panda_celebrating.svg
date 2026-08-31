@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 440" width="420" height="440">
+  <!-- Red Panda mascot — Celebrating (after a correct choice). Flat vector, solid colors, hard edges. -->
+  <!-- Tail -->
+  <g>
+    <ellipse cx="318" cy="335" rx="30" ry="55" transform="rotate(-20 318 335)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="335" cy="288" rx="27" ry="24" transform="rotate(-20 335 288)" fill="#4A2E23"/>
+    <ellipse cx="348" cy="245" rx="26" ry="34" transform="rotate(-30 348 245)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="360" cy="205" rx="23" ry="22" transform="rotate(-30 360 205)" fill="#4A2E23"/>
+    <ellipse cx="368" cy="172" rx="20" ry="26" transform="rotate(-35 368 172)" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="372" cy="150" r="15" fill="#4A2E23"/>
+  </g>
+  <!-- Body -->
+  <g>
+    <ellipse cx="200" cy="292" rx="98" ry="90" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="200" cy="314" rx="62" ry="56" fill="#FFF3E0" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Legs -->
+  <g>
+    <ellipse cx="156" cy="372" rx="25" ry="19" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+    <ellipse cx="244" cy="372" rx="25" ry="19" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Arms (resting) -->
+  <g>
+    <ellipse cx="102" cy="300" rx="27" ry="43" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="96" cy="338" r="23" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+    <ellipse cx="298" cy="300" rx="27" ry="43" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="304" cy="338" r="23" fill="#4A2E23" stroke="#2E1B12" stroke-width="4"/>
+  </g>
+  <!-- Head (identical geometry across all 4 expressions; face swapped per state) -->
+  <g>
+    <circle cx="130" cy="97" r="35" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="270" cy="97" r="35" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <circle cx="138" cy="103" r="18" fill="#4A2E23"/>
+    <circle cx="262" cy="103" r="18" fill="#4A2E23"/>
+    <circle cx="200" cy="164" r="93" fill="#C9673A" stroke="#2E1B12" stroke-width="5"/>
+    <ellipse cx="200" cy="188" rx="61" ry="55" fill="#FFF3E0" stroke="#2E1B12" stroke-width="4"/>
+    <ellipse cx="200" cy="199" rx="11" ry="8" fill="#4A2E23"/>
+    <!-- Face: wide happy eyes, big open smile -->
+    <circle cx="170" cy="166" r="19" fill="#FFFFFF" stroke="#2E1B12" stroke-width="3"/>
+    <circle cx="230" cy="166" r="19" fill="#FFFFFF" stroke="#2E1B12" stroke-width="3"/>
+    <circle cx="174" cy="169" r="12" fill="#1B2B22"/>
+    <circle cx="234" cy="169" r="12" fill="#1B2B22"/>
+    <circle cx="169" cy="164" r="4" fill="#FFFFFF"/>
+    <circle cx="229" cy="164" r="4" fill="#FFFFFF"/>
+    <ellipse cx="200" cy="214" rx="24" ry="18" fill="#4A2E23"/>
+    <ellipse cx="200" cy="220" rx="15" ry="9" fill="#E8756B"/>
+  </g>
+  <!-- Sparkle accents (celebrating only) -->
+  <path d="M 60 67 Q 62.7 82.3 78 85 Q 62.7 87.7 60 103 Q 57.3 87.7 42 85 Q 57.3 82.3 60 67 Z" fill="#FF8C42" stroke="#2E1B12" stroke-width="2"/>
+  <path d="M 350 79 Q 352.4 92.6 366 95 Q 352.4 97.4 350 111 Q 347.6 97.4 334 95 Q 347.6 92.6 350 79 Z" fill="#FF8C42" stroke="#2E1B12" stroke-width="2"/>
+  <path d="M 55 291 Q 57.1 302.9 69 305 Q 57.1 307.1 55 319 Q 52.9 307.1 41 305 Q 52.9 302.9 55 291 Z" fill="#FF8C42" stroke="#2E1B12" stroke-width="2"/>
+</svg>
