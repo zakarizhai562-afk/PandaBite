@@ -5,34 +5,13 @@ import { awardStars } from '../../../core/services/starAwardService';
 import { useStars } from '../../../core/context/StarsContext';
 import { markAlertShown } from '../services/comboAlertService';
 
-const PLACEHOLDER_STYLES = {
-  width: '100px',
-  height: '100px',
-  borderRadius: '16px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '12px',
-  fontWeight: 'bold',
-  color: '#FFF3E0',
-  textAlign: 'center',
-  padding: '8px',
-};
+
 
 function FoodImage({ foodId, image, name }) {
   const [imgError, setImgError] = useState(false);
 
   if (imgError) {
-    return (
-      <div
-        style={{
-          ...PLACEHOLDER_STYLES,
-          backgroundColor: '#2D6A4F',
-        }}
-      >
-        {name?.en || foodId}
-      </div>
-    );
+    return <div className="combo-guess-placeholder">{name?.en || foodId}</div>;
   }
 
   return (
@@ -40,14 +19,7 @@ function FoodImage({ foodId, image, name }) {
       src={image}
       alt={name?.en || foodId}
       onError={() => setImgError(true)}
-      style={{
-        width: '100px',
-        height: '100px',
-        objectFit: 'contain',
-        borderRadius: '16px',
-        border: '3px solid #FFF3E0',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-      }}
+      className="combo-guess-food-img"
     />
   );
 }
@@ -76,162 +48,38 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
   }, [onDismiss]);
 
   return (
-    <div
-      className="combo-guess-popup"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 100,
-        padding: '20px',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: '#EAF4EE',
-          borderRadius: '24px',
-          padding: '24px',
-          maxWidth: '360px',
-          width: '100%',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-          position: 'relative',
-        }}
-      >
-        {/* Mascot reaction bubble */}
+    <div className="combo-guess-overlay">
+      <div className="combo-guess-card">
         {reaction && (
           <div style={{ marginBottom: '16px' }}>
             <MascotBubble text={reaction.text} />
           </div>
         )}
 
-        {/* Two food images side by side */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '16px',
-            marginBottom: '16px',
-          }}
-        >
-          <FoodImage
-            foodId={foodAData.id}
-            image={foodAData.image}
-            name={foodAData.name}
-          />
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: '24px',
-              color: '#FF8C42',
-              fontWeight: 'bold',
-            }}
-          >
-            &amp;
-          </div>
-          <FoodImage
-            foodId={foodBData.id}
-            image={foodBData.image}
-            name={foodBData.name}
-          />
+        <div className="combo-guess-images">
+          <FoodImage foodId={foodAData.id} image={foodAData.image} name={foodAData.name} />
+          <div className="combo-guess-amp">&amp;</div>
+          <FoodImage foodId={foodBData.id} image={foodBData.image} name={foodBData.name} />
         </div>
 
-        {/* Question or result */}
         {phase === 'guessing' ? (
-          <p
-            style={{
-              textAlign: 'center',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '16px',
-              color: '#1B2B22',
-              marginBottom: '16px',
-              lineHeight: '1.4',
-            }}
-          >
-            Would you eat these two together?
-          </p>
+          <p className="combo-guess-question">Would you eat these two together?</p>
         ) : (
-          <p
-            style={{
-              textAlign: 'center',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '14px',
-              color: '#5B6B61',
-              marginBottom: '16px',
-              lineHeight: '1.4',
-            }}
-          >
-            {reaction?.isCorrect ? 'Great instinct!' : 'Good try!'}
-          </p>
+          <p className="combo-guess-reveal">{reaction?.isCorrect ? 'Great instinct!' : 'Good try!'}</p>
         )}
 
-        {/* Buttons */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '12px',
-          }}
-        >
+        <div className="combo-guess-buttons">
           {phase === 'guessing' ? (
             <>
-              <button
-                onClick={() => handleAnswer(true)}
-                style={{
-                  flex: 1,
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  border: 'none',
-                  backgroundColor: '#2D6A4F',
-                  color: '#FFF3E0',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  minHeight: '44px',
-                }}
-              >
+              <button className="combo-guess-btn combo-guess-btn--yes" onClick={() => handleAnswer(true)}>
                 Yes, I would!
               </button>
-              <button
-                onClick={() => handleAnswer(false)}
-                style={{
-                  flex: 1,
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  border: 'none',
-                  backgroundColor: '#FF8C42',
-                  color: '#FFF3E0',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  minHeight: '44px',
-                }}
-              >
+              <button className="combo-guess-btn combo-guess-btn--no" onClick={() => handleAnswer(false)}>
                 No, I wouldn't
               </button>
             </>
           ) : (
-            <button
-              onClick={handleDismiss}
-              style={{
-                flex: 1,
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: 'none',
-                backgroundColor: '#2D6A4F',
-                color: '#FFF3E0',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                minHeight: '44px',
-              }}
-            >
+            <button className="combo-guess-btn combo-guess-btn--dismiss" onClick={handleDismiss}>
               Got it!
             </button>
           )}

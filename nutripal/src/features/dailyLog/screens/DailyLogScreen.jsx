@@ -73,38 +73,32 @@ export default function DailyLogScreen() {
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="daily-log-screen">
-        <MascotBubble text={mascotText} />
+        <div className="page-container">
+          <MascotBubble text={mascotText} />
 
-        <PlateDropTarget hasItems={plate.length > 0}>
-          {plate.map((food) => (
-            <FoodEntryCard
-              key={food.id}
-              food={food}
-              isOnPlate={true}
-              onRemove={() => handleRemoveFromPlate(food.id)}
-            />
-          ))}
-        </PlateDropTarget>
+          <PlateDropTarget hasItems={plate.length > 0}>
+            {plate.map((food) => (
+              <FoodEntryCard
+                key={food.id}
+                food={food}
+                isOnPlate={true}
+                onRemove={() => handleRemoveFromPlate(food.id)}
+              />
+            ))}
+          </PlateDropTarget>
 
-        <div className="food-box">
-          {allFoods.map((food) => (
-            <FoodEntryCard key={food.id} food={food} />
-          ))}
+          <div className="food-box">
+            {allFoods.map((food) => (
+              <FoodEntryCard key={food.id} food={food} />
+            ))}
+          </div>
         </div>
 
         <div className="daily-log-done-bar">
-          <button
-            className="btn-secondary"
-            onClick={() => navigate('/home')}
-            style={{ marginRight: '12px' }}
-          >
+          <button className="btn-secondary" onClick={() => navigate('/home')}>
             Back
           </button>
-          <button
-            className="btn-primary"
-            onClick={handleDone}
-            disabled={plate.length === 0}
-          >
+          <button className="btn-primary" onClick={handleDone} disabled={plate.length === 0}>
             Done
           </button>
         </div>

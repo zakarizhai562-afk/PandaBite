@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getItem } from '../../../core/utils/storage';
 
 export default function LandingScreen() {
   const navigate = useNavigate();
@@ -8,6 +9,12 @@ export default function LandingScreen() {
   const handleStart = useCallback(() => {
     navigate('/home');
   }, [navigate]);
+
+  const handleReplayOnboarding = useCallback(() => {
+    navigate('/onboarding');
+  }, [navigate]);
+
+  const hasSeen = !!getItem('hasSeenOnboarding');
 
   return (
     <div className="landing-screen">
@@ -19,10 +26,19 @@ export default function LandingScreen() {
           onError={() => setImgError(true)}
         />
       )}
-      <h1>NutriPal</h1>
-      <button className="btn-primary" onClick={handleStart}>
-        Start
-      </button>
+      {imgError && <div className="landing-fallback" />}
+      <div className="landing-content">
+        <h1>NutriPal</h1>
+        <p className="landing-subtitle">Healthy fun with Red Panda</p>
+        <button className="btn-primary landing-start" onClick={handleStart}>
+          Start
+        </button>
+        {hasSeen && (
+          <button className="btn-ghost landing-replay" onClick={handleReplayOnboarding}>
+            How to play?
+          </button>
+        )}
+      </div>
     </div>
   );
 }

@@ -61,7 +61,7 @@
       "name": { "my": "ငှက်ပျောသီး", "en": "Banana" },
       "groups": ["vitamins"],
       "tier": "Go",
-      "image": "/images/food/banana.png"
+      "image": "/images/food/mango.png"
     },
     {
       "id": "carrot",
@@ -75,21 +75,21 @@
       "name": { "my": "ဟင်းရွက်", "en": "Spinach" },
       "groups": ["vitamins"],
       "tier": "Go",
-      "image": "/images/food/spinach.png"
+      "image": "/images/food/carrot.png"
     },
     {
       "id": "fried_chicken",
       "name": { "my": "ကြက်ကြော်", "en": "Fried Chicken" },
       "groups": ["protein"],
       "tier": "Slow",
-      "image": "/images/food/fried_chicken.png"
+      "image": "/images/food/chicken.png"
     },
     {
       "id": "cheese",
       "name": { "my": "ဒိန်ခဲ", "en": "Cheese" },
       "groups": ["protein"],
       "tier": "Slow",
-      "image": "/images/food/cheese.png"
+      "image": "/images/food/beans.png"
     },
     {
       "id": "fries",

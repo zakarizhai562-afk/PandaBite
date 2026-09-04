@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { StarsProvider } from './core/context/StarsContext';
+import { PetStateProvider } from './core/context/PetStateContext';
 import './index.css';
 
 const root = createRoot(document.getElementById('root'));
@@ -9,7 +10,9 @@ try {
   root.render(
     <StrictMode>
       <StarsProvider>
-        <App />
+        <PetStateProvider>
+          <App />
+        </PetStateProvider>
       </StarsProvider>
     </StrictMode>
   );

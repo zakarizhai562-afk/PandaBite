@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 
-// Draggable food card — uses @dnd-kit/core useDraggable
 export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
+  const [imgError, setImgError] = useState(false);
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `food-${food.id}-${isOnPlate ? 'plate' : 'box'}`,
     data: { food, isOnPlate },
@@ -14,14 +15,20 @@ export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
       }
     : undefined;
 
+  const fallback = (
+    <div className="food-img-fallback" aria-label={food.name.en}>
+      {food.name.en.slice(0, 2).toUpperCase()}
+    </div>
+  );
+
   if (isOnPlate) {
     return (
-      <div
-        className="plate-item"
-        onClick={onRemove}
-        title="Tap to remove"
-      >
-        <img src={food.image} alt={food.name.en} />
+      <div className="plate-item" onClick={onRemove} title="Tap to remove">
+        {!imgError ? (
+          <img src={food.image} alt={food.name.en} onError={() => setImgError(true)} />
+        ) : (
+          fallback
+        )}
         <span className="food-name">{food.name.en}</span>
       </div>
     );
@@ -35,7 +42,11 @@ export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
       {...listeners}
       {...attributes}
     >
-      <img src={food.image} alt={food.name.en} />
+      {!imgError ? (
+        <img src={food.image} alt={food.name.en} onError={() => setImgError(true)} />
+      ) : (
+        fallback
+      )}
       <span className="food-name">{food.name.en}</span>
       <span className={`food-tier tier-${food.tier.toLowerCase()}`}>{food.tier}</span>
     </div>

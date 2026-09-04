@@ -3,7 +3,7 @@ export const goals = [
     id: 'grow-taller',
     name: { my: 'ပိုမြင့်စွာ ကြီးထွားဖို့', en: 'Grow Taller' },
     description: { my: 'အရိုးနှင့်ကြွက်သားများ ကြီးထွားဖို့ အစားအစာများ', en: 'Foods for strong bones and muscles' },
-    matchingFoods: ['egg', 'rice', 'milk'],
+    matchingFoods: ['egg', 'rice', 'fish'],
     nonMatchingFoods: ['candy'],
     reactions: {
       correct: { my: 'ဟုတ်ကဲ့! ဒါက ပိုမြင့်စွာ ကြီးထွားဖို့ ကူညီပါတယ်!', en: 'Yes! This helps you grow taller!' },
@@ -11,9 +11,9 @@ export const goals = [
       hintClue: { my: 'ဒါက ပရိုတင်းနှင့် ကယ်လ်စီယမ် ပါဝင်ပါသလား?', en: 'Does this have protein or calcium?' },
     },
     tips: [
-      { my: 'ဥနှင့်နို့သည် ပရိုတင်းနှင့် ကယ်လ်စီယမ် ပါဝင်ပါသည်', en: 'Eggs and milk are rich in protein and calcium' },
-      { my: 'ထမင်းသည် အင်အားပေးပါသည်', en: 'Rice gives you energy to play and grow' },
-    ],
+       { my: 'ဥနှင့်ငါးသည် ပရိုတင်းနှင့် ကယ်လ်စီယမ် ပါဝင်ပါသည်', en: 'Eggs and fish are rich in protein and calcium' },
+       { my: 'ထမင်းသည် အင်အားပေးပါသည်', en: 'Rice gives you energy to play and grow' },
+     ],
   },
   {
     id: 'more-energy',

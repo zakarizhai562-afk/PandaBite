@@ -121,152 +121,56 @@ export default function GoalsScreen() {
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div
-        className="goals-screen"
-        style={{
-          minHeight: '100vh',
-          backgroundColor: '#EAF4EE',
-          padding: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        {/* Header */}
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '20px',
-          }}
-        >
-          <button
-            onClick={() => selectedGoal ? handleBack() : navigate('/home')}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '12px',
-              border: 'none',
-              backgroundColor: '#2D6A4F',
-              color: '#FFF3E0',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '44px',
-            }}
-          >
-            {selectedGoal ? 'Back' : 'Home'}
-          </button>
-          <h2
-            style={{
-              fontFamily: 'Cambria, Georgia, serif',
-              fontSize: '20px',
-              color: '#1B2B22',
-              margin: 0,
-            }}
-          >
-            {selectedGoal ? goal?.name.en : 'Goals'}
-          </h2>
-          <div style={{ width: '80px' }} />
+      <div className="goals-screen">
+        <div className="page-container">
+          <div className="goals-header">
+            <button className="btn-secondary" onClick={() => (selectedGoal ? handleBack() : navigate('/home'))}>
+              {selectedGoal ? 'Back' : 'Home'}
+            </button>
+            <h2 className="goals-title">{selectedGoal ? goal?.name.en : 'Goals'}</h2>
+            <div className="goals-header-spacer" />
+          </div>
+
+          {reaction && (
+            <div className="goals-reaction-wrap">
+              <MascotBubble text={reaction.text} />
+            </div>
+          )}
+
+          {!selectedGoal ? (
+            <div className="goals-grid">
+              {goals.map((g) => (
+                <GoalCard key={g.id} goal={g} onSelect={handleSelectGoal} />
+              ))}
+            </div>
+          ) : (
+            <div className="goals-game">
+              <PandaFeedTarget isAnimating={animating} />
+
+              {round && !completedGoalId && (
+                <HintButton
+                  foodId={round.choices.find((f) => !round.results[f]?.resolved)}
+                  goalId={selectedGoal}
+                  onClue={handleClue}
+                  onReveal={handleReveal}
+                />
+              )}
+
+              {round && <FoodChoiceTray foodChoices={round.choices} resolvedFoods={resolvedFoods} />}
+
+              {completedGoalId && (
+                <div className="goals-actions">
+                  <button className="btn-primary goals-btn-tips" onClick={handleSeeTips}>
+                    See Tips
+                  </button>
+                  <button className="btn-secondary goals-btn-back" onClick={handleBack}>
+                    Back to Goals
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Mascot reaction */}
-        {reaction && (
-          <div style={{ width: '100%', maxWidth: '400px', marginBottom: '16px' }}>
-            <MascotBubble text={reaction.text} />
-          </div>
-        )}
-
-        {/* Content */}
-        {!selectedGoal ? (
-          /* Goal selection */
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-              gap: '16px',
-              width: '100%',
-              maxWidth: '400px',
-            }}
-          >
-            {goals.map((g) => (
-              <GoalCard key={g.id} goal={g} onSelect={handleSelectGoal} />
-            ))}
-          </div>
-        ) : (
-          /* Feeding mini-game */
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '400px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '20px',
-            }}
-          >
-            {/* Panda drop target */}
-            <PandaFeedTarget isAnimating={animating} />
-
-            {/* Hint button for first unresolved food */}
-            {round && !completedGoalId && (
-              <HintButton
-                foodId={round.choices.find((f) => !round.results[f]?.resolved)}
-                goalId={selectedGoal}
-                onClue={handleClue}
-                onReveal={handleReveal}
-              />
-            )}
-
-            {/* Food choice tray */}
-            {round && (
-              <FoodChoiceTray
-                foodChoices={round.choices}
-                resolvedFoods={resolvedFoods}
-              />
-            )}
-
-            {/* Round complete actions */}
-            {completedGoalId && (
-              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                <button
-                  onClick={handleSeeTips}
-                  style={{
-                    padding: '12px 24px',
-                    borderRadius: '12px',
-                    border: 'none',
-                    backgroundColor: '#FF8C42',
-                    color: '#FFF3E0',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    minHeight: '44px',
-                  }}
-                >
-                  See Tips
-                </button>
-                <button
-                  onClick={handleBack}
-                  style={{
-                    padding: '12px 24px',
-                    borderRadius: '12px',
-                    border: 'none',
-                    backgroundColor: '#2D6A4F',
-                    color: '#FFF3E0',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    minHeight: '44px',
-                  }}
-                >
-                  Back to Goals
-                </button>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </DndContext>
   );

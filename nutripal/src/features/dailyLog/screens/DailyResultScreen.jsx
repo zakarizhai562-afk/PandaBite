@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import MascotBubble from '../../../core/components/MascotBubble';
 import BalanceSummaryCard from '../components/BalanceSummaryCard';
+import ComboGuessPopup from '../../comboAlert/components/ComboGuessPopup';
+import { useComboAlert } from '../../comboAlert/hooks/useComboAlert';
 import { selectBalanceFeedback } from '../services/feedbackLibrary';
 import { awardStars } from '../../../core/services/starAwardService';
 import { useStars } from '../../../core/context/StarsContext';
@@ -12,6 +14,7 @@ export default function DailyResultScreen() {
   const { setStars } = useStars();
   const [feedback, setFeedback] = useState(null);
   const [starsEarned, setStarsEarned] = useState(0);
+  const { checkForComboAlert, comboAlertData, clearComboAlert } = useComboAlert();
 
   const result = location.state?.result || {
     coveredGroups: [],
@@ -19,16 +22,21 @@ export default function DailyResultScreen() {
     whoaCount: 0,
     isBalanced: false,
   };
+  const foodIds = location.state?.foodIds || [];
 
   useEffect(() => {
     const fb = selectBalanceFeedback(result);
     setFeedback(fb);
 
     if (result.isBalanced) {
-      const newTotal = awardStars(3, 'daily-log', setStars);
+      awardStars(3, 'daily-log', setStars);
       setStarsEarned(3);
     }
-  }, [result, setStars]);
+
+    if (foodIds.length >= 2) {
+      checkForComboAlert(foodIds);
+    }
+  }, [result, setStars, foodIds, checkForComboAlert]);
 
   const handleContinue = () => {
     navigate('/home');
@@ -36,23 +44,35 @@ export default function DailyResultScreen() {
 
   return (
     <div className="daily-result-screen">
-      <MascotBubble text={feedback?.text || null} />
+      <div className="page-container">
+        <MascotBubble text={feedback?.text || null} />
 
-      <BalanceSummaryCard result={result} />
+        <BalanceSummaryCard result={result} />
 
-      {starsEarned > 0 && (
-        <div className="stars-earned">
-          +{starsEarned} Stars earned!
+        {starsEarned > 0 && (
+          <div className="stars-earned">
+            +{starsEarned} Stars earned!
+          </div>
+        )}
+
+        <div className="daily-result-feedback">
+          {feedback?.text?.en || 'Great job checking in today!'}
         </div>
-      )}
 
-      <div className="daily-result-feedback">
-        {feedback?.text?.en || 'Great job checking in today!'}
+        <button className="btn-primary" onClick={handleContinue}>
+          Continue
+        </button>
       </div>
 
-      <button className="btn-primary" onClick={handleContinue}>
-        Continue
-      </button>
+      {comboAlertData && (
+        <ComboGuessPopup
+          pair={comboAlertData.pair}
+          foodAData={comboAlertData.foodAData}
+          foodBData={comboAlertData.foodBData}
+          triggerId={comboAlertData.triggerId}
+          onDismiss={clearComboAlert}
+        />
+      )}
     </div>
   );
 }
