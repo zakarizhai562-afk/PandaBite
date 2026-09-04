@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
 import MascotBubble from '../../../core/components/MascotBubble';
@@ -10,7 +10,8 @@ import { getPerItemReaction } from '../services/feedbackLibrary';
 import foodDatabase from '../../../data/foodDatabase.json';
 
 export default function DailyLogScreen() {
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const [loading, setLoading] = useState(() => !location.state?.skipLoading);
   const [plate, setPlate] = useState([]);
   const [mascotText, setMascotText] = useState(null);
   const { calculateResult, saveEntry } = useDailyLog();

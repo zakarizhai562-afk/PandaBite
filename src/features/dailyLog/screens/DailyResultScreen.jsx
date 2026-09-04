@@ -39,7 +39,7 @@ export default function DailyResultScreen() {
   }, [result, setStars, foodIds, checkForComboAlert]);
 
   const handleContinue = () => {
-    navigate('/home');
+    navigate('/daily-log', { state: { skipLoading: true } });
   };
 
   return (
@@ -59,9 +59,14 @@ export default function DailyResultScreen() {
           {feedback?.text?.en || 'Great job checking in today!'}
         </div>
 
-        <button className="btn-primary" onClick={handleContinue}>
-          Continue
-        </button>
+        <div className="daily-result-actions">
+          <button className="btn-secondary" onClick={() => navigate('/home')}>
+            Home
+          </button>
+          <button className="btn-primary" onClick={handleContinue}>
+            Continue
+          </button>
+        </div>
       </div>
 
       {comboAlertData && (

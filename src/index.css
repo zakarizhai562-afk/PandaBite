@@ -556,6 +556,12 @@ button {
   color: var(--color-accent);
 }
 
+.daily-result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
 .daily-result-feedback {
   background: var(--color-dark);
   color: #fff;
@@ -611,7 +617,7 @@ button {
   top: 0;
   z-index: 10;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
   background-color: rgba(234, 244, 238, 0.9);
