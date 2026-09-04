@@ -34,6 +34,11 @@ export default function OnboardingScreen() {
     complete();
   }, [complete]);
 
+  const handleHome = useCallback(() => {
+    setItem('hasSeenOnboarding', true);
+    navigate('/home');
+  }, [navigate]);
+
   const handleDotClick = useCallback((i) => {
     setIndex(i);
   }, []);
@@ -55,13 +60,16 @@ export default function OnboardingScreen() {
         <OnboardingPage slide={slide} />
 
         <div className="onboarding-actions">
+          <button className="btn-ghost" onClick={handleHome}>
+            Home
+          </button>
           {index >= 1 && !isLast && (
             <button className="btn-ghost" onClick={handleSkip}>
               Skip
             </button>
           )}
           <button className="btn-primary onboarding-next" onClick={handleNext}>
-            {isLast ? 'Get Started' : 'Next'}
+            {isLast ? 'Get Started' : 'Continue'}
           </button>
         </div>
 
