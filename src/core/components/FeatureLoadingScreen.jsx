@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 export default function FeatureLoadingScreen({
   image,
   label,
-  durationMs = 600,
+  durationMs = 1100,
   onDone,
 }) {
   const [imgError, setImgError] = useState(false);
@@ -20,28 +20,21 @@ export default function FeatureLoadingScreen({
 
   return (
     <div className="feature-loading">
-      {!imgError && (
+      {!imgError ? (
         <img
           src={image}
           alt={label || 'Loading...'}
           onError={() => setImgError(true)}
         />
+      ) : (
+        <div className="feature-loading-fallback" />
       )}
-      {imgError && (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundColor: '#EAF4EE',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div className="loading-spinner" />
+
+      <div className="loading-bar" role="progressbar" aria-label={`Loading ${label || ''}`.trim()}>
+        <div className="loading-bar-track">
+          <div className="loading-bar-fill" style={{ animationDuration: `${durationMs}ms` }} />
         </div>
-      )}
-      <div className="loading-spinner" />
+      </div>
     </div>
   );
 }

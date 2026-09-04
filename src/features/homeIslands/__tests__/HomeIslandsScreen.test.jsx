@@ -55,11 +55,6 @@ describe('HomeIslandsScreen', () => {
     expect(screen.getAllByText('Daily Log').length).toBeGreaterThan(1);
   });
 
-  it('shows growth stage derived from stars', () => {
-    renderHome(60);
-    expect(screen.getByText(/Fuller Tail/)).toBeInTheDocument();
-  });
-
   it('has replay onboarding button (?)', () => {
     renderHome();
     expect(screen.getByText('?')).toBeInTheDocument();

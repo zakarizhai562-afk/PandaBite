@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function IslandStop({ image, label, route, position }) {
+export default function IslandStop({ image, label, route }) {
   const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 
@@ -17,19 +17,21 @@ export default function IslandStop({ image, label, route, position }) {
 
   return (
     <div
-      className={`island-stop island-stop--${position}`}
+      className="island-stop"
       onClick={handleClick}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
     >
-      {!imgError ? (
-        <img src={image} alt={label.en} onError={() => setImgError(true)} />
-      ) : (
-        <div className="island-stop-fallback" style={{ backgroundColor: fallbackColors[route] || '#2D6A4F' }}>
-          {label.en}
-        </div>
-      )}
+      <div className="island-card-art">
+        {!imgError ? (
+          <img src={image} alt={label.en} onError={() => setImgError(true)} />
+        ) : (
+          <div className="island-stop-fallback" style={{ backgroundColor: fallbackColors[route] || '#2D6A4F' }}>
+            {label.en}
+          </div>
+        )}
+      </div>
       <div className="island-label">
         <span className="island-label-my">{label.my}</span>
         <br />
