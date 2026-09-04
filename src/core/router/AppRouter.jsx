@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoadingScreen from '../../features/loading/screens/LoadingScreen';
 import LandingScreen from '../../features/landing/screens/LandingScreen';
 import OnboardingScreen from '../../features/onboarding/screens/OnboardingScreen';
@@ -11,7 +11,7 @@ import PuzzleScreen from '../../features/puzzleGame/screens/PuzzleScreen';
 
 export default function AppRouter() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoadingScreen />} />
         <Route path="/landing" element={<LandingScreen />} />
@@ -34,6 +34,6 @@ export default function AppRouter() {
         {/* Fallback redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

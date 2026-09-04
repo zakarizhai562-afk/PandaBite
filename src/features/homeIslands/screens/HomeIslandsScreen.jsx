@@ -41,6 +41,7 @@ export default function HomeIslandsScreen() {
       </div>
 
       <div className="home-path">
+        <div className="tarot-row">
         {islands.map((island) => (
           <IslandStop
             key={island.route}
@@ -49,6 +50,7 @@ export default function HomeIslandsScreen() {
             route={island.route}
           />
         ))}
+        </div>
       </div>
     </div>
   );

@@ -17,13 +17,13 @@ export default function IslandStop({ image, label, route }) {
 
   return (
     <div
-      className="island-stop"
+      className="island-stop tarot-card"
       onClick={handleClick}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
     >
-      <div className="island-card-art">
+      <div className="tarot-card-art">
         {!imgError ? (
           <img src={image} alt={label.en} onError={() => setImgError(true)} />
         ) : (

@@ -147,7 +147,7 @@ export default function GoalsScreen() {
           )}
 
           {!selectedGoal ? (
-            <div className="goals-grid">
+            <div className="goals-grid tarot-row">
               {goals.map((g) => (
                 <GoalCard key={g.id} goal={g} onSelect={handleSelectGoal} />
               ))}

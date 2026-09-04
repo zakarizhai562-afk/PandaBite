@@ -329,6 +329,15 @@ button {
   gap: 10px;
 }
 
+.loading-bar-text {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--color-text);
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
+}
+
 .loading-bar-track {
   width: 100%;
   height: 12px;
@@ -635,19 +644,17 @@ button {
   font-size: 13px;
 }
 
-.home-path {
-  position: relative;
-  z-index: 1;
+/* Shared tarot-style card deck — used by home islands and goals */
+.tarot-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  padding: 48px 20px 80px;
-  min-height: calc(100vh - 60px);
+  width: 100%;
 }
 
-.island-stop {
+.tarot-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -659,19 +666,17 @@ button {
   border-radius: 20px;
   box-shadow: 0 10px 24px rgba(45, 106, 79, 0.18);
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
-.island-stop:nth-child(1) { transform: rotate(-6deg); }
-.island-stop:nth-child(3) { transform: rotate(6deg); }
-
-.island-stop:hover,
-.island-stop:focus-visible {
-  transform: translateY(-10px) rotate(0deg);
+.tarot-card:hover,
+.tarot-card:focus-visible {
+  border-color: var(--color-accent);
+  background: linear-gradient(180deg, #FFFDF8 0%, #FFF3E0 100%);
   box-shadow: 0 16px 32px rgba(45, 106, 79, 0.28);
 }
 
-.island-card-art {
+.tarot-card-art {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -680,12 +685,23 @@ button {
   border-radius: 14px;
   background: #fff;
   overflow: hidden;
+  font-size: 48px;
 }
 
-.island-stop img {
+.tarot-card-art img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.home-path {
+  position: relative;
+  z-index: 1;
+  padding: 48px 20px 80px;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .island-stop-fallback {
@@ -699,6 +715,17 @@ button {
   color: var(--color-panda-light);
   text-align: center;
   padding: 8px;
+}
+
+.goal-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  font-size: 34px;
 }
 
 .island-label {
@@ -880,10 +907,7 @@ button {
 }
 
 .goals-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  width: 100%;
+  padding: 24px 0 40px;
 }
 
 .goals-game {
@@ -1031,9 +1055,19 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 0 24px;
+  padding: 0 0 40px;
   position: relative;
   overflow-x: hidden;
+}
+
+.puzzle-screen .mascot-bubble {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  width: min(380px, calc(100% - 24px));
+  padding: 0;
+  background: none;
+  z-index: 60;
 }
 
 .puzzle-hud {
@@ -1681,8 +1715,7 @@ button {
 }
 
 @media (max-width: 400px) {
-  .island-stop {
+  .tarot-card {
     width: 140px;
-    transform: none;
   }
 }

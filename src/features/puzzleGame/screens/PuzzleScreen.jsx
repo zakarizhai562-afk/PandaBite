@@ -141,6 +141,11 @@ export default function PuzzleScreen() {
     [tutorialDismissed]
   );
 
+  const handleDragCancel = useCallback(() => {
+    setDraggedFoodGroup(null);
+    setActiveFood(null);
+  }, []);
+
   const handleDragEnd = useCallback(
     (event) => {
       const { active, over } = event;
@@ -315,11 +320,6 @@ export default function PuzzleScreen() {
       </div>
     );
   }
-
-  const handleDragCancel = useCallback(() => {
-    setDraggedFoodGroup(null);
-    setActiveFood(null);
-  }, []);
 
   const showTutorialArrow = !tutorialDismissed && isLevelOne && gameState.state === PLAYING && !feedback;
 

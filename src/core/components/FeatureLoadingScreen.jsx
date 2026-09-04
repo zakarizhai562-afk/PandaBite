@@ -10,12 +10,20 @@ export default function FeatureLoadingScreen({
   onDone,
 }) {
   const [imgError, setImgError] = useState(false);
+  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
+    const start = Date.now();
+    const tick = setInterval(() => {
+      setPercent(Math.min(100, Math.round(((Date.now() - start) / durationMs) * 100)));
+    }, 40);
     const timer = setTimeout(() => {
       if (onDone) onDone();
     }, durationMs);
-    return () => clearTimeout(timer);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(timer);
+    };
   }, [durationMs, onDone]);
 
   return (
@@ -30,7 +38,15 @@ export default function FeatureLoadingScreen({
         <div className="feature-loading-fallback" />
       )}
 
-      <div className="loading-bar" role="progressbar" aria-label={`Loading ${label || ''}`.trim()}>
+      <div
+        className="loading-bar"
+        role="progressbar"
+        aria-label={`Loading ${label || ''}`.trim()}
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <p className="loading-bar-text">Please wait ({percent}%)</p>
         <div className="loading-bar-track">
           <div className="loading-bar-fill" style={{ animationDuration: `${durationMs}ms` }} />
         </div>
