@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
 import MascotBubble from '../../../core/components/MascotBubble';
 import { useStars } from '../../../core/context/StarsContext';
@@ -48,6 +48,7 @@ export default function PuzzleScreen() {
   const [tutorialDismissed, setTutorialDismissed] = useState(() => false);
   const [showHintPicker, setShowHintPicker] = useState(false);
   const [draggedFoodGroup, setDraggedFoodGroup] = useState(null);
+  const [activeFood, setActiveFood] = useState(null);
   const feedbackTimerRef = useRef(null);
   const hintTimerRef = useRef(null);
 
@@ -130,6 +131,7 @@ export default function PuzzleScreen() {
       const food = event.active?.data?.current?.food;
       if (food) {
         setDraggedFoodGroup(food.groups[0]);
+        setActiveFood(food);
         if (!tutorialDismissed) {
           setTutorialDismissed(true);
           setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_IDLE, prev));
@@ -143,6 +145,7 @@ export default function PuzzleScreen() {
     (event) => {
       const { active, over } = event;
       setDraggedFoodGroup(null);
+      setActiveFood(null);
       if (gameState.state !== PLAYING || !active || !over) return;
       const food = active.data.current?.food;
       if (!food) return;
@@ -313,10 +316,15 @@ export default function PuzzleScreen() {
     );
   }
 
+  const handleDragCancel = useCallback(() => {
+    setDraggedFoodGroup(null);
+    setActiveFood(null);
+  }, []);
+
   const showTutorialArrow = !tutorialDismissed && isLevelOne && gameState.state === PLAYING && !feedback;
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={handleDragCancel}>
       <div className="puzzle-screen">
         <PuzzleHUD gameState={gameState} />
 
@@ -431,6 +439,18 @@ export default function PuzzleScreen() {
 
         <MascotBubble text={feedback ? { en: `${feedback.title} ${feedback.detail}`, my: feedback.title } : pandaMessage} />
       </div>
+      <DragOverlay dropAnimation={null}>
+        {activeFood ? (
+          <div className="puzzle-food puzzle-food--overlay">
+            <div className="puzzle-food__shadow" />
+            <div className="puzzle-food__image-wrap">
+              <img src={activeFood.image} alt={activeFood.name.en} className="puzzle-food__image" draggable={false} />
+            </div>
+            <div className="puzzle-food__name">{activeFood.name.en}</div>
+            {activeFood.tier && <div className={`puzzle-food__tier tier-${activeFood.tier.toLowerCase()}`}>{activeFood.tier}</div>}
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

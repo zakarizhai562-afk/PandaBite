@@ -9,12 +9,18 @@ export default function PuzzleFoodCard({ food, disabled = false, isFloatingScore
     disabled,
   });
 
-  const style = transform
+  const style = isDragging
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        zIndex: 500,
+        opacity: 0.35,
+        transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+        zIndex: 1,
       }
-    : undefined;
+    : transform
+      ? {
+          transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+          zIndex: 500,
+        }
+      : undefined;
 
   const fallback = (
     <div className="puzzle-food__fallback" aria-label={food.name.en}>

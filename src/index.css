@@ -313,24 +313,47 @@ button {
   object-fit: cover;
 }
 
-.loading-spinner {
+.feature-loading-fallback {
   position: absolute;
-  bottom: 20%;
+  inset: 0;
+  background: linear-gradient(180deg, #EAF4EE 0%, #d4edda 100%);
 }
 
-.loading-spinner::after {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  animation: pulse 0.8s infinite alternate;
+.loading-bar {
+  position: absolute;
+  bottom: 15%;
+  width: min(300px, 70vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-@keyframes pulse {
-  from { opacity: 0.3; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1.2); }
+.loading-bar-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid var(--color-primary);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent, #FF8C42));
+  animation: loading-bar-grow linear forwards;
+}
+
+@keyframes loading-bar-grow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-bar-fill { animation: none; width: 100%; }
 }
 
 /* ── Daily Log Screen ── */
@@ -606,12 +629,6 @@ button {
   color: var(--color-text);
 }
 
-.stars-pill-growth {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-muted);
-}
-
 .stars-replay-btn {
   margin-left: 12px;
   padding: 6px 12px;
@@ -620,10 +637,13 @@ button {
 
 .home-path {
   position: relative;
+  z-index: 1;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  padding: 40px 20px 80px;
+  gap: 20px;
+  padding: 48px 20px 80px;
   min-height: calc(100vh - 60px);
 }
 
@@ -631,47 +651,58 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  width: 180px;
+  padding: 16px 14px 18px;
+  background: linear-gradient(180deg, #FFF8EC 0%, #FFEFD9 100%);
+  border: 3px solid var(--color-panda-light);
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(45, 106, 79, 0.18);
   cursor: pointer;
-  margin: 16px 0;
-  min-width: 140px;
-  min-height: 44px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.island-stop--left { align-self: flex-start; margin-left: 8%; }
-.island-stop--right { align-self: flex-end; margin-right: 8%; }
+.island-stop:nth-child(1) { transform: rotate(-6deg); }
+.island-stop:nth-child(3) { transform: rotate(6deg); }
 
-.island-stop img {
-  width: 140px;
-  height: 140px;
-  object-fit: contain;
-  border-radius: 50%;
-  border: 4px solid var(--color-panda-light);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  background: #fff;
+.island-stop:hover,
+.island-stop:focus-visible {
+  transform: translateY(-10px) rotate(0deg);
+  box-shadow: 0 16px 32px rgba(45, 106, 79, 0.28);
 }
 
-.island-stop-fallback {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 4px solid var(--color-panda-light);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.island-card-art {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.island-stop img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.island-stop-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   font-size: 14px;
-  color: var(--color-panda-light);
   font-weight: bold;
+  color: var(--color-panda-light);
   text-align: center;
   padding: 8px;
 }
 
 .island-label {
-  margin-top: 8px;
-  padding: 6px 16px;
-  background-color: var(--color-panda-light);
-  border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-top: 12px;
   text-align: center;
 }
 
@@ -1279,10 +1310,20 @@ button {
 
 .puzzle-food:active { cursor: grabbing; }
 .puzzle-food--dragging {
-  opacity: 0.85;
+  opacity: 0.35;
   border-color: #FF8C42;
   box-shadow: 0 12px 28px rgba(0,0,0,0.16);
   transform: scale(1.04) !important;
+}
+
+.puzzle-food--overlay {
+  opacity: 1;
+  transform: rotate(3deg) scale(1.08);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.22);
+  border-color: #FF8C42;
+  cursor: grabbing;
+  pointer-events: none;
+  z-index: 9999;
 }
 
 .puzzle-food__shadow {
@@ -1639,11 +1680,9 @@ button {
   to { opacity: 1; transform: scale(1.15); }
 }
 
-@media (max-width: 360px) {
-  .island-stop--left,
-  .island-stop--right {
-    align-self: center;
-    margin-left: 0;
-    margin-right: 0;
+@media (max-width: 400px) {
+  .island-stop {
+    width: 140px;
+    transform: none;
   }
 }
