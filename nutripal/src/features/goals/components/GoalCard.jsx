@@ -44,7 +44,7 @@ export default function GoalCard({ goal, onSelect }) {
         }}
       >
         <span style={{ fontSize: '28px' }}>
-          {goal.id === 'grow-taller' ? '&#127794;' : goal.id === 'more-energy' ? '&#9889;' : '&#128156;'}
+          {goal.id === 'grow-taller' ? '🌱' : goal.id === 'more-energy' ? '⚡' : '✨'}
         </span>
       </div>
       <BilingualText my={goal.name.my} en={goal.name.en} />
