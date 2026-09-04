@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useStars } from '../../../core/context/StarsContext';
 import IslandStop from '../components/IslandStop';
 
 const islands = [
@@ -21,7 +20,6 @@ const islands = [
 ];
 
 export default function HomeIslandsScreen() {
-  const { stars } = useStars();
   const navigate = useNavigate();
 
   return (
@@ -31,10 +29,9 @@ export default function HomeIslandsScreen() {
       <div className="home-cloud home-cloud--3" />
 
       <div className="stars-counter">
-        <div className="stars-pill">
-          <span className="stars-pill-icon">&#11088;</span>
-          <span className="stars-pill-value">{stars ?? 0}</span>
-        </div>
+        <button className="btn-ghost" onClick={() => navigate('/')}>
+          ← Back
+        </button>
         <button className="btn-ghost stars-replay-btn" onClick={() => navigate('/onboarding')}>
           ?
         </button>

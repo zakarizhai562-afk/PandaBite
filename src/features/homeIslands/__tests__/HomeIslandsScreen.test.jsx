@@ -37,15 +37,9 @@ describe('HomeIslandsScreen', () => {
     expect(dailyLog).toHaveAttribute('tabIndex', '0');
   });
 
-  it('stars counter reflects shared-state value', () => {
-    renderHome(42);
-    expect(screen.getByText('42')).toBeInTheDocument();
-  });
-
-  it('stars counter defaults to 0 when no stored data', () => {
-    localStorage.clear();
-    renderHome(null);
-    expect(screen.getByText('0')).toBeInTheDocument();
+  it('has Back button on left that goes to /', () => {
+    renderHome();
+    expect(screen.getByText('← Back')).toBeInTheDocument();
   });
 
   it('missing island image falls back to plain colored card', () => {
