@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onboardingSlides } from '../models/onboardingContent';
 import OnboardingPage from '../components/OnboardingPage';
-import { setItem } from '../../../core/utils/storage';
+import { getItem, setItem } from '../../../core/utils/storage';
 
 export default function OnboardingScreen() {
   const navigate = useNavigate();
@@ -12,8 +12,14 @@ export default function OnboardingScreen() {
   const isLast = index === total - 1;
 
   const complete = useCallback(() => {
+    const wasSeenBefore = !!getItem('hasSeenOnboarding');
     setItem('hasSeenOnboarding', true);
-    navigate('/landing');
+    if (wasSeenBefore) {
+      if (window.history.length > 1) navigate(-1);
+      else navigate('/home');
+    } else {
+      navigate('/landing');
+    }
   }, [navigate]);
 
   const handleNext = useCallback(() => {
