@@ -7,10 +7,7 @@ import DailyLogScreen from '../../features/dailyLog/screens/DailyLogScreen';
 import DailyResultScreen from '../../features/dailyLog/screens/DailyResultScreen';
 import GoalsScreen from '../../features/goals/screens/GoalsScreen';
 import GoalTipsScreen from '../../features/goals/screens/GoalTipsScreen';
-import PuzzlePlaceholder from '../../features/puzzleGame/screens/PuzzlePlaceholder';
-
-// TODO: Import PuzzleScreen when Person 4 delivers it
-// import PuzzleScreen from '../../features/puzzleGame/screens/PuzzleScreen';
+import PuzzleScreen from '../../features/puzzleGame/screens/PuzzleScreen';
 
 export default function AppRouter() {
   return (
@@ -32,7 +29,7 @@ export default function AppRouter() {
         {/* Goals — route: /goals */}
         <Route path="/goals" element={<GoalsScreen />} />
         <Route path="/goals/tips" element={<GoalTipsScreen />} />
-        <Route path="/puzzle" element={<PuzzlePlaceholder />} />
+        <Route path="/puzzle" element={<PuzzleScreen />} />
 
         {/* Fallback redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
