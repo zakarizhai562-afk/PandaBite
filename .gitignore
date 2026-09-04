@@ -1,13 +1,11 @@
 # Dependencies
 node_modules/
-nutripal/node_modules/
 .pnp
 .pnp.js
 
 # Build
 dist/
 build/
-nutripal/dist/
 *.tsbuildinfo
 
 # Env
