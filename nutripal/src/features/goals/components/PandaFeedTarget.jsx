@@ -44,7 +44,7 @@ export default function PandaFeedTarget({ isAnimating }) {
             animation: isAnimating ? 'panda-bounce 0.5s ease' : 'none',
           }}
         >
-          &#128060;
+          🐾
         </div>
       )}
       <p

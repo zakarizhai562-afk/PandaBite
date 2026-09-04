@@ -2,27 +2,39 @@ import { useState } from 'react';
 import { spendPoints, HINT_COST } from '../../../core/services/spendPointsService';
 import { useStars } from '../../../core/context/StarsContext';
 
-export default function HintButton({ foodId, goalId, onClue, onReveal }) {
-  const { stars } = useStars();
+export default function HintButton({ foodId, goalId, onClue, onReveal, onNotEnough }) {
+  const { stars, setStars } = useStars();
   const [showTiers, setShowTiers] = useState(false);
 
   const canAffordClue = stars >= HINT_COST.CLUE;
   const canAffordReveal = stars >= HINT_COST.REVEAL;
 
   const handleClue = () => {
-    if (!canAffordClue) return;
+    if (!canAffordClue) {
+      if (onNotEnough) onNotEnough();
+      return;
+    }
     const result = spendPoints(HINT_COST.CLUE, 'goals-hint');
     if (result.success) {
+      setStars(result.remaining);
       onClue(foodId, goalId);
+    } else if (onNotEnough) {
+      onNotEnough();
     }
     setShowTiers(false);
   };
 
   const handleReveal = () => {
-    if (!canAffordReveal) return;
+    if (!canAffordReveal) {
+      if (onNotEnough) onNotEnough();
+      return;
+    }
     const result = spendPoints(HINT_COST.REVEAL, 'goals-hint');
     if (result.success) {
+      setStars(result.remaining);
       onReveal(foodId, goalId);
+    } else if (onNotEnough) {
+      onNotEnough();
     }
     setShowTiers(false);
   };
@@ -80,7 +92,7 @@ export default function HintButton({ foodId, goalId, onClue, onReveal }) {
               minHeight: '44px',
             }}
           >
-            Clue ({HINT_COST.CLUE} &#11088;)
+            Clue ({HINT_COST.CLUE} ⭐)
           </button>
           <button
             onClick={handleReveal}
@@ -98,7 +110,7 @@ export default function HintButton({ foodId, goalId, onClue, onReveal }) {
               minHeight: '44px',
             }}
           >
-            Reveal ({HINT_COST.REVEAL} &#11088;)
+            Reveal ({HINT_COST.REVEAL} ⭐)
           </button>
           <button
             onClick={() => setShowTiers(false)}

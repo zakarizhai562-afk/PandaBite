@@ -17,6 +17,11 @@ const GOAL_ROUND_COMPLETE = {
   en: 'Congratulations! You fed all the foods!',
 };
 
+const GOAL_HINT_NOT_ENOUGH = {
+  my: 'အမှတ်မလုံလောက်သေးပါဘူး!',
+  en: 'Not enough points yet — keep playing to earn more!',
+};
+
 export default function GoalsScreen() {
   const navigate = useNavigate();
   const { setStars } = useStars();
@@ -75,6 +80,10 @@ export default function GoalsScreen() {
   const handleClue = useCallback((foodId, goalId) => {
     const clueLine = getHintClue(goalId);
     setReaction({ text: clueLine, isCorrect: null });
+  }, []);
+
+  const handleNotEnough = useCallback(() => {
+    setReaction({ text: GOAL_HINT_NOT_ENOUGH, isCorrect: null });
   }, []);
 
   const handleReveal = useCallback((foodId, goalId) => {
@@ -153,6 +162,7 @@ export default function GoalsScreen() {
                   goalId={selectedGoal}
                   onClue={handleClue}
                   onReveal={handleReveal}
+                  onNotEnough={handleNotEnough}
                 />
               )}
 
