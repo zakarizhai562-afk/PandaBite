@@ -1283,6 +1283,14 @@ button {
   margin-bottom: 8px;
 }
 
+.combo-guess-reveal--right {
+  color: #2D6A4F;
+}
+
+.combo-guess-reveal--wrong {
+  color: #C0392B;
+}
+
 .combo-guess-explain {
   font-size: clamp(14px, 1.6vw, 17px);
   line-height: 1.5;

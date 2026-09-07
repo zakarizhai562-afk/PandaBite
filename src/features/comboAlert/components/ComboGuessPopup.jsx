@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { getComboReaction } from '../models/comboPair';
 import { awardStars } from '../../../core/services/starAwardService';
 import { useStars } from '../../../core/context/StarsContext';
-import { markAlertShown } from '../services/comboAlertService';
+import { markAlertShown, getComboType } from '../services/comboAlertService';
 
 function FoodImage({ foodId, image, name, withLabel }) {
   const [imgError, setImgError] = useState(false);
@@ -28,12 +28,17 @@ function FoodImage({ foodId, image, name, withLabel }) {
 export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss, onContinue, onBack }) {
   const [phase, setPhase] = useState('guessing');
   const [reaction, setReaction] = useState(null);
+  const [comboType, setComboType] = useState(pair.type);
   const { setStars } = useStars();
 
-  const handleAnswer = useCallback((childSaidYes) => {
+  const handleAnswer = useCallback(async (childSaidYes) => {
     if (phase !== 'guessing') return;
+    setPhase('checking');
 
-    const result = getComboReaction(pair, childSaidYes);
+    const resolvedType = (await getComboType(pair.foodA, pair.foodB)) || pair.type;
+    const result = getComboReaction({ ...pair, type: resolvedType }, childSaidYes);
+
+    setComboType(resolvedType);
     setReaction(result);
     setPhase('revealed');
 
@@ -48,8 +53,8 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
     if (onDismiss) onDismiss();
   }, [onDismiss]);
 
-  const isGuessing = phase === 'guessing';
-  const isGoodCombo = pair.type === 'good';
+  const isGuessing = phase !== 'revealed';
+  const isGoodCombo = comboType === 'good';
 
   const pandaMood = isGuessing ? 'curious' : reaction?.isCorrect ? 'happy' : 'sad';
 
@@ -70,8 +75,8 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
             </p>
           ) : (
             <>
-              <p className="combo-guess-reveal">
-                {reaction?.isCorrect ? "That's right!" : 'Good try!'}
+              <p className={`combo-guess-reveal combo-guess-reveal--${reaction?.isCorrect ? 'right' : 'wrong'}`}>
+                {reaction?.isCorrect ? "That's right!" : 'Wrong answer!'}
               </p>
               {reaction?.text?.my && (
                 <p className="combo-guess-explain combo-guess-explain--my">{reaction.text.my}</p>
