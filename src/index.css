@@ -10,8 +10,8 @@
   --color-panda-fur: #C9673A;
   --color-panda-light: #FFF3E0;
   --color-panda-dark: #4A2E23;
-  --font-heading: Cambria, Georgia, serif;
-  --font-body: system-ui, -apple-system, sans-serif;
+  --font-heading: 'Comic Sans MS', 'Comic Neue', cursive;
+  --font-body: 'Comic Sans MS', 'Comic Neue', cursive;
 }
 
 * {
@@ -1225,7 +1225,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 120;
-  overflow-y: auto;
+  overflow: hidden;
   background: url('/images/combobox/background.png') center/cover no-repeat fixed, #8FD36A;
 }
 
@@ -1233,14 +1233,15 @@ button {
   position: relative;
   width: 100%;
   max-width: 900px;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
-  padding: 88px 24px 32px;
+  padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 24px;
+  gap: clamp(10px, 2vh, 24px);
+  overflow: hidden;
 }
 
 .combo-guess-back {
@@ -1301,10 +1302,41 @@ button {
 }
 
 .combo-guess-panda {
-  width: clamp(130px, 20vw, 240px);
+  width: min(360px, 28vw + 60px, 42vh);
+  aspect-ratio: 1 / 1;
   flex-shrink: 0;
   align-self: flex-end;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
+  background-image: url('/images/combobox/panda.png');
+  background-size: 300% 200%;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
+  mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
+}
+
+.combo-guess-scene--thanks {
+  align-items: center;
+}
+
+.combo-guess-scene--thanks .combo-guess-panda {
+  align-self: center;
+}
+
+.combo-guess-scene--thanks .combo-guess-speech,
+.combo-guess-scene--thanks .combo-guess-buttons {
+  width: 100%;
+}
+
+.combo-guess-panda--curious {
+  background-position: 75% 100%;
+}
+
+.combo-guess-panda--happy {
+  background-position: 50% 0%;
+}
+
+.combo-guess-panda--sad {
+  background-position: 100% 0%;
 }
 
 .combo-guess-content {
@@ -1350,8 +1382,8 @@ button {
 }
 
 .combo-guess-food-img {
-  width: clamp(84px, 11vw, 132px);
-  height: clamp(84px, 11vw, 132px);
+  width: min(132px, 11vw + 40px, 18vh);
+  height: min(132px, 11vw + 40px, 18vh);
   object-fit: contain;
 }
 

@@ -29,10 +29,17 @@ export default function ComboAlertScreen() {
   const [loading, setLoading] = useState(true);
   const [round, setRound] = useState(() => pickRound());
   const [roundKey, setRoundKey] = useState(0);
+  const [finished, setFinished] = useState(false);
 
   const handleContinue = () => {
     setRound(pickRound(round?.triggerId));
     setRoundKey((key) => key + 1);
+  };
+
+  const handlePlayAgain = () => {
+    setRound(pickRound());
+    setRoundKey((key) => key + 1);
+    setFinished(false);
   };
 
   if (loading) {
@@ -42,6 +49,37 @@ export default function ComboAlertScreen() {
         label="Combo Alert"
         onDone={() => setLoading(false)}
       />
+    );
+  }
+
+  if (finished) {
+    return (
+      <div className="combo-guess-overlay">
+        <div className="combo-guess-scene combo-guess-scene--thanks">
+          <div className="combo-guess-panda combo-guess-panda--happy" role="img" aria-label="Red Panda" />
+          <div className="combo-guess-speech">
+            <p className="combo-guess-reveal">Thank you for playing!</p>
+            <p className="combo-guess-explain combo-guess-explain--my">
+              ကစားပေးတဲ့အတွက် ကျေးဇူးတင်ပါတယ်!
+            </p>
+            <p className="combo-guess-explain">Come back soon for more food combos.</p>
+          </div>
+          <div className="combo-guess-buttons">
+            <button
+              className="combo-guess-btn combo-guess-btn--continue"
+              onClick={handlePlayAgain}
+            >
+              Play Again
+            </button>
+            <button
+              className="combo-guess-btn combo-guess-btn--dismiss"
+              onClick={() => navigate('/home')}
+            >
+              Home
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -72,7 +110,8 @@ export default function ComboAlertScreen() {
       foodAData={round.foodAData}
       foodBData={round.foodBData}
       triggerId={round.triggerId}
-      onDismiss={() => navigate('/home')}
+      onDismiss={() => setFinished(true)}
+      onBack={() => navigate('/home')}
       onContinue={handleContinue}
     />
   );

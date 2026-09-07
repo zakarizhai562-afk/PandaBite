@@ -25,7 +25,7 @@ function FoodImage({ foodId, image, name, withLabel }) {
   );
 }
 
-export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss, onContinue }) {
+export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss, onContinue, onBack }) {
   const [phase, setPhase] = useState('guessing');
   const [reaction, setReaction] = useState(null);
   const { setStars } = useStars();
@@ -51,18 +51,15 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
   const isGuessing = phase === 'guessing';
   const isGoodCombo = pair.type === 'good';
 
-  const pandaSrc = isGuessing
-    ? '/panda/panda_thinking.png'
-    : reaction?.isCorrect
-      ? '/panda/panda_celebrating.png'
-      : '/panda/panda_nudge.png';
+  const pandaMood = isGuessing ? 'curious' : reaction?.isCorrect ? 'happy' : 'sad';
+
 
   return (
     <div className="combo-guess-overlay">
       <div className="combo-guess-scene">
         <button
           className="daily-log-back-btn combo-guess-back"
-          onClick={handleDismiss}
+          onClick={onBack || handleDismiss}
           aria-label="Back"
         />
 
@@ -85,7 +82,11 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
         </div>
 
         <div className="combo-guess-stage">
-          <img className="combo-guess-panda" src={pandaSrc} alt="Red Panda" />
+          <div
+            className={`combo-guess-panda combo-guess-panda--${pandaMood}`}
+            role="img"
+            aria-label="Red Panda"
+          />
 
           <div className="combo-guess-content">
             {isGuessing ? (
