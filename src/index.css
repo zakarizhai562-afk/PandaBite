@@ -1226,14 +1226,7 @@ button {
   inset: 0;
   z-index: 120;
   overflow-y: auto;
-  background: linear-gradient(
-    180deg,
-    #7EC8F2 0%,
-    #A8DDF5 24%,
-    #C9E9A8 44%,
-    #8FD36A 66%,
-    #6FC24F 100%
-  );
+  background: url('/images/combobox/background.png') center/cover no-repeat fixed, #8FD36A;
 }
 
 .combo-guess-scene {
