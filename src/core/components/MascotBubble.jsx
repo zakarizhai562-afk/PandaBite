@@ -12,15 +12,13 @@ export default function MascotBubble({ text, style }) {
   return (
     <div className="mascot-bubble" style={style}>
       <div className="mascot-avatar">
-        <svg viewBox="0 0 56 56" width="56" height="56">
-          <circle cx="28" cy="28" r="28" fill="#C9673A" />
-          <circle cx="28" cy="30" r="18" fill="#FFF3E0" />
-          <circle cx="20" cy="26" r="4" fill="#1B2B22" />
-          <circle cx="36" cy="26" r="4" fill="#1B2B22" />
-          <circle cx="21" cy="25" r="1.5" fill="#fff" />
-          <circle cx="37" cy="25" r="1.5" fill="#fff" />
-          <ellipse cx="28" cy="32" rx="4" ry="2.5" fill="#4A2E23" />
-        </svg>
+        <img
+          src="/panda/panda_encouraging.png"
+          alt="Red Panda"
+          width="56"
+          height="56"
+          style={{ borderRadius: '50%' }}
+        />
       </div>
       <div className="mascot-speech">
         {displayText.my && <p className="mascot-text-my">{displayText.my}</p>}

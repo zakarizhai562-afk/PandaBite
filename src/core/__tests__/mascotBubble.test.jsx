@@ -17,9 +17,10 @@ describe('MascotBubble', () => {
     expect(screen.getByText('မြန်မာစာ')).toBeInTheDocument();
   });
 
-  it('renders the mascot avatar SVG', () => {
-    const { container } = render(<MascotBubble />);
-    const svg = container.querySelector('svg');
-    expect(svg).toBeInTheDocument();
+  it('renders the mascot avatar image', () => {
+    render(<MascotBubble />);
+    const img = screen.getByAltText('Red Panda');
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute('src', '/panda/panda_encouraging.png');
   });
 });

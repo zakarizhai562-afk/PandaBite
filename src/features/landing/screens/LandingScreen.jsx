@@ -10,34 +10,24 @@ export default function LandingScreen() {
     navigate('/home');
   }, [navigate]);
 
-  const handleReplayOnboarding = useCallback(() => {
-    navigate('/onboarding');
-  }, [navigate]);
-
-  const hasSeen = !!getItem('hasSeenOnboarding');
-
   return (
     <div className="landing-screen">
       {!imgError && (
         <img
           src="/world_art/landing_page.png"
-          alt="NutriPal"
+          alt="PandaBite"
           className="landing-bg"
           onError={() => setImgError(true)}
         />
       )}
       {imgError && <div className="landing-fallback" />}
       <div className="landing-content">
-        <h1>NutriPal</h1>
-        <p className="landing-subtitle">Healthy fun with Red Panda</p>
-        <button className="btn-primary landing-start" onClick={handleStart}>
+        {/* <div className="landing-tagline">
+          <span className="landing-tagline-text">Eat Smart, Grow Strong!</span>
+        </div> */}
+        <button className="landing-start-btn" onClick={handleStart}>
           Start
         </button>
-        {hasSeen && (
-          <button className="btn-ghost landing-replay" onClick={handleReplayOnboarding}>
-            How to play?
-          </button>
-        )}
       </div>
     </div>
   );

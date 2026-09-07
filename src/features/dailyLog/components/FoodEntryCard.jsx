@@ -48,7 +48,7 @@ export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
         fallback
       )}
       <span className="food-name">{food.name.en}</span>
-      <span className={`food-tier tier-${food.tier.toLowerCase()}`}>{food.tier}</span>
+      <span className="food-go-btn">Go</span>
     </div>
   );
 }

@@ -334,10 +334,10 @@ export default function PuzzleScreen() {
               <img
                 src={
                   pandaMood === 'happy'
-                    ? '/panda/panda_celebrating.svg'
+                    ? '/panda/panda_celebrating.png'
                     : pandaMood === 'sad'
-                      ? '/panda/panda_nudge.svg'
-                      : '/panda/panda_encouraging.svg'
+                      ? '/panda/panda_nudge.png'
+                      : '/panda/panda_encouraging.png'
                 }
                 alt="Panda"
                 className="puzzle-panda__img"

@@ -1,10 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
 import MascotBubble from '../../../core/components/MascotBubble';
 import FoodEntryCard from '../components/FoodEntryCard';
 import PlateDropTarget from '../components/PlateDropTarget';
+import DailyLogDoneBar from '../components/DailyLogDoneBar';
+import DailyLogGoalPoints from '../components/DailyLogGoalPoints';
 import { useDailyLog } from '../hooks/useDailyLog';
 import { getPerItemReaction } from '../services/feedbackLibrary';
 import foodDatabase from '../../../data/foodDatabase.json';
@@ -16,6 +18,13 @@ export default function DailyLogScreen() {
   const [mascotText, setMascotText] = useState(null);
   const { calculateResult, saveEntry } = useDailyLog();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setMascotText({
+      my: 'Daily Log အင်္ကျ မေ့ Zawmor sore! သင်ပြန်လာတဲ့ အတွက် ကျermainya မေ့ စားချွuye ဤစောင်ရွက်ကို ကာဗိုဟိုက်ဒရိတ်။',
+      en: 'Welcome back! Drag foods to build a healthy meal and check your balance.',
+    });
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -30,14 +39,11 @@ export default function DailyLogScreen() {
     const isOnPlate = active.data.current?.isOnPlate;
 
     if (over.id === 'plate-drop-target') {
-      if (isOnPlate) return; // already on plate
-      // Add to plate
+      if (isOnPlate) return;
       setPlate((prev) => [...prev, food]);
-      // Show per-item reaction
       const reaction = getPerItemReaction(food.id);
       setMascotText(reaction.text);
     } else if (isOnPlate) {
-      // Dragged off the plate — remove it
       setPlate((prev) => prev.filter((f) => f.id !== food.id));
     }
   }, []);
@@ -74,35 +80,58 @@ export default function DailyLogScreen() {
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="daily-log-screen">
-        <div className="page-container">
-          <MascotBubble text={mascotText} />
+        <button
+          className="daily-log-back-btn"
+          onClick={() => navigate('/home')}
+          aria-label="Back"
+        />
 
-          <PlateDropTarget hasItems={plate.length > 0}>
-            {plate.map((food) => (
-              <FoodEntryCard
-                key={food.id}
-                food={food}
-                isOnPlate={true}
-                onRemove={() => handleRemoveFromPlate(food.id)}
+        <div className="daily-log-bubble">
+          Drag the <span className="highlight-red">food</span> onto the plate to build a healthy meal!
+        </div>
+
+        <DailyLogGoalPoints />
+
+        <div className="daily-log-layout">
+          <div className="daily-log-left">
+            <div className="plate-platform">
+              <PlateDropTarget hasItems={plate.length > 0}>
+                {plate.map((food) => (
+                  <FoodEntryCard
+                    key={food.id}
+                    food={food}
+                    isOnPlate={true}
+                    onRemove={() => handleRemoveFromPlate(food.id)}
+                  />
+                ))}
+              </PlateDropTarget>
+            </div>
+          </div>
+
+          <div className="daily-log-right">
+            <div className="daily-log-panda">
+              <img
+                src="/panda/panda_encouraging.png"
+                alt="Red Panda"
+                className="panda-img"
               />
-            ))}
-          </PlateDropTarget>
-
-          <div className="food-box">
-            {allFoods.map((food) => (
-              <FoodEntryCard key={food.id} food={food} />
-            ))}
+            </div>
+            <div className="daily-log-help-text">
+              Choose foods that give you <span className="highlight-orange">energy</span>, help you <span className="highlight-green">grow</span>, and keep you <span className="highlight-blue">healthy</span>!
+            </div>
+            <div className="food-box">
+              {allFoods.map((food) => (
+                <FoodEntryCard key={food.id} food={food} />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="daily-log-done-bar">
-          <button className="btn-secondary" onClick={() => navigate('/home')}>
-            Back
-          </button>
-          <button className="btn-primary" onClick={handleDone} disabled={plate.length === 0}>
-            Done
-          </button>
-        </div>
+        <DailyLogDoneBar itemCount={plate.length} onDone={handleDone} />
+
+        {mascotText && (
+          <MascotBubble text={mascotText} />
+        )}
       </div>
     </DndContext>
   );

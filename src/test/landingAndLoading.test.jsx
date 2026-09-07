@@ -14,22 +14,12 @@ describe('LandingScreen', () => {
     expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
   });
 
-  it('displays the app title', () => {
-    render(
-      <MemoryRouter>
-        <LandingScreen />
-      </MemoryRouter>
-    );
-    expect(screen.getByText('NutriPal')).toBeInTheDocument();
-  });
-
   it('renders without crashing on direct route load', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <LandingScreen />
       </MemoryRouter>
     );
-    expect(screen.getByText('NutriPal')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
   });
 });

@@ -20,7 +20,7 @@ export default function PandaFeedTarget({ isAnimating }) {
     >
       {!imgError ? (
         <img
-          src="/panda/panda_encouraging.svg"
+          src="/panda/panda_encouraging.png"
           alt="Red Panda"
           onError={() => setImgError(true)}
           style={{

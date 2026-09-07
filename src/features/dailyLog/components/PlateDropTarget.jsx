@@ -10,6 +10,12 @@ export default function PlateDropTarget({ children, hasItems }) {
       className={`plate-area ${isOver ? 'drag-over' : ''} ${!hasItems ? 'empty' : ''}`}
     >
       {children}
+      {!hasItems && (
+        <div className="plate-empty-state">
+          <div className="plate-panda-outline" />
+          <span className="plate-question">?</span>
+        </div>
+      )}
     </div>
   );
 }
