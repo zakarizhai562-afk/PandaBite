@@ -17,6 +17,11 @@ const islands = [
     label: { my: 'ရည်မှန်းချက်များ', en: 'Goals' },
     route: '/goals',
   },
+  {
+    image: '/world_art/island_combo.png',
+    label: { my: 'အစားအစာ တွဲဖက်', en: 'Combo Alert' },
+    route: '/combo',
+  },
 ];
 
 export default function HomeIslandsScreen() {

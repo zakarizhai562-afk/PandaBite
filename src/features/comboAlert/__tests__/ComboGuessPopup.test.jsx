@@ -56,9 +56,11 @@ describe('ComboGuessPopup', () => {
 
   it('renders both food images and the Yes/No question', () => {
     renderPopup();
-    expect(screen.getByText('Would you eat these two together?')).toBeInTheDocument();
-    expect(screen.getByText('Yes, I would!')).toBeInTheDocument();
-    expect(screen.getByText("No, I wouldn't")).toBeInTheDocument();
+    expect(
+      screen.getByText('These two foods are often eaten together. Will you eat them together?')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Yes')).toBeInTheDocument();
+    expect(screen.getByText('No')).toBeInTheDocument();
     expect(screen.getByAltText('Candy')).toBeInTheDocument();
     expect(screen.getByAltText('Rice')).toBeInTheDocument();
   });
@@ -66,8 +68,8 @@ describe('ComboGuessPopup', () => {
   it('tapping No on a bad pair shows correct praise and awards a star', () => {
     const spy = vi.spyOn(starAward, 'awardStars');
     renderPopup();
-    fireEvent.click(screen.getByText("No, I wouldn't"));
-    expect(screen.getByText('Great instinct!')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('No'));
+    expect(screen.getByText("That's right!")).toBeInTheDocument();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(1, 'comboAlert', expect.any(Function));
     spy.mockRestore();
@@ -76,7 +78,7 @@ describe('ComboGuessPopup', () => {
   it('tapping Yes on a bad pair shows incorrect explanation and no star', () => {
     const spy = vi.spyOn(starAward, 'awardStars');
     renderPopup();
-    fireEvent.click(screen.getByText('Yes, I would!'));
+    fireEvent.click(screen.getByText('Yes'));
     expect(screen.getByText('Good try!')).toBeInTheDocument();
     expect(spy).not.toHaveBeenCalled();
     spy.mockRestore();
@@ -88,8 +90,8 @@ describe('ComboGuessPopup', () => {
       foodAData: { id: 'egg', name: { en: 'Egg' }, image: '/images/food/egg.png' },
       foodBData: { id: 'rice', name: { en: 'Rice' }, image: '/images/food/rice.png' },
     });
-    fireEvent.click(screen.getByText('Yes, I would!'));
-    expect(screen.getByText('Great instinct!')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Yes'));
+    expect(screen.getByText("That's right!")).toBeInTheDocument();
     expect(spy).toHaveBeenCalledTimes(1);
     spy.mockRestore();
   });
@@ -100,7 +102,7 @@ describe('ComboGuessPopup', () => {
       foodAData: { id: 'egg', name: { en: 'Egg' }, image: '/images/food/egg.png' },
       foodBData: { id: 'rice', name: { en: 'Rice' }, image: '/images/food/rice.png' },
     });
-    fireEvent.click(screen.getByText("No, I wouldn't"));
+    fireEvent.click(screen.getByText('No'));
     expect(screen.getByText('Good try!')).toBeInTheDocument();
     expect(spy).not.toHaveBeenCalled();
     spy.mockRestore();
@@ -116,7 +118,7 @@ describe('ComboGuessPopup', () => {
   it('Got it! dismisses the popup via onDismiss', () => {
     const onDismiss = vi.fn();
     renderPopup(mockPairBad, { onDismiss });
-    fireEvent.click(screen.getByText("No, I wouldn't"));
+    fireEvent.click(screen.getByText('No'));
     const btn = screen.getByText('Got it!');
     fireEvent.click(btn);
     expect(onDismiss).toHaveBeenCalledTimes(1);

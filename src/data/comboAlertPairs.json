@@ -7,7 +7,52 @@
       "reactions": {
         "badCorrect": {
           "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
-          "en": "That's right! These two don't go well together!"
+          "en": "That's right! Candy and rice are both full of sugar and starch, so eating them together gives you a big energy rush and then a big crash."
+        },
+        "badIncorrect": {
+          "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
+          "en": "Hmm, eating these two together might give you a mild tummy ache and make you feel super thirsty! Let's pair them with something else instead!"
+        }
+      }
+    },
+    {
+      "foodA": "ice_cream",
+      "foodB": "fried_chicken",
+      "type": "bad",
+      "reactions": {
+        "badCorrect": {
+          "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
+          "en": "Great job noticing that! Cold ice cream and greasy fried chicken are both heavy, so your tummy has to work extra hard to digest them."
+        },
+        "badIncorrect": {
+          "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
+          "en": "Hmm, eating these two together might give you a mild tummy ache and make you feel super thirsty! Let's pair them with something else instead!"
+        }
+      }
+    },
+    {
+      "foodA": "soda",
+      "foodB": "fries",
+      "type": "bad",
+      "reactions": {
+        "badCorrect": {
+          "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
+          "en": "You spotted it! Fizzy soda with salty fries makes you feel more thirsty, not less, and neither one gives your body much to grow on."
+        },
+        "badIncorrect": {
+          "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
+          "en": "Hmm, eating these two together might give you a mild tummy ache and make you feel super thirsty! Let's pair them with something else instead!"
+        }
+      }
+    },
+    {
+      "foodA": "cake",
+      "foodB": "juice",
+      "type": "bad",
+      "reactions": {
+        "badCorrect": {
+          "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
+          "en": "Well noticed! Cake and juice are both sweet, so together they are a lot of sugar at once. Water goes much better with a slice of cake."
         },
         "badIncorrect": {
           "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
@@ -22,11 +67,86 @@
       "reactions": {
         "goodCorrect": {
           "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
-          "en": "Yes, it's delicious! These two are great together!"
+          "en": "Yes, delicious! Rice gives you energy and egg gives you growing power, so together they make a really complete meal."
         },
         "goodIncorrect": {
           "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
-          "en": "Actually they're great together! They make a nutritious and healthy combination!"
+          "en": "Actually these two are great together! Rice brings the energy and egg brings the protein your body needs to grow."
+        }
+      }
+    },
+    {
+      "foodA": "rice",
+      "foodB": "beans",
+      "type": "good",
+      "reactions": {
+        "goodCorrect": {
+          "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
+          "en": "Great combo! Rice and beans together give your body all the building blocks it needs, which neither one can do on its own."
+        },
+        "goodIncorrect": {
+          "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
+          "en": "Actually these two are great together! Rice and beans team up to make a complete protein for growing strong."
+        }
+      }
+    },
+    {
+      "foodA": "fish",
+      "foodB": "carrot",
+      "type": "good",
+      "reactions": {
+        "goodCorrect": {
+          "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
+          "en": "Lovely choice! Fish helps build your body and carrot protects your eyes, so this plate looks after you in two ways at once."
+        },
+        "goodIncorrect": {
+          "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
+          "en": "Actually these two are great together! Fish is a growing food and carrot is a protective food, which is exactly the mix your body likes."
+        }
+      }
+    },
+    {
+      "foodA": "bread",
+      "foodB": "egg",
+      "type": "good",
+      "reactions": {
+        "goodCorrect": {
+          "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
+          "en": "Yum! Bread keeps you going all morning and egg helps you grow, which is why they make such a good breakfast pair."
+        },
+        "goodIncorrect": {
+          "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
+          "en": "Actually these two are great together! Bread brings the energy and egg brings the protein, so you stay full and strong."
+        }
+      }
+    },
+    {
+      "foodA": "chicken",
+      "foodB": "spinach",
+      "type": "good",
+      "reactions": {
+        "goodCorrect": {
+          "my": "ဟုတ်ကဲ့၊ အရသာရှိလိုက်တာ! ဒီနှစ်ခုက အတူတူစားရင် ကောင်းပါတယ်!",
+          "en": "Nice one! Chicken and spinach together help your blood and muscles, so you feel strong and full of energy."
+        },
+        "goodIncorrect": {
+          "my": "တကယ်ကောင်းပါတယ်! ဒီနှစ်ခုက အတူတူစားရင် အာဟာရပြည့်ပြီး ကျန်းမာပါတယ်!",
+          "en": "Actually these two are great together! Chicken builds your muscles and spinach fills you with iron and vitamins."
+        }
+      }
+    },
+    {
+      "foodA": "banana",
+      "foodB": "candy",
+      "type": "bad",
+      "reactions": {
+        "badCorrect": {
+          "my": "မှန်ပါတယ်! ဒီနှစ်ခုကို တွဲမစားသင့်ဘူးနော်!",
+          "en": "Smart thinking! Banana is already sweet enough on its own, so adding candy on top is far more sugar than your body wants."
+        },
+        "badIncorrect": {
+          "my": "အင်း.. ဒီ အစားအစာ နှစ်ခုကို တွဲစားလိုက်ရင် ဗိုက်ထဲ မအီမသာဖြစ်ပြီး ရေခဏခဏ ငတ်တတ်တယ်နော်! တခြား အစားအစာလေးနဲ့ တွဲစားကြည့်ရအောင်!",
+          "en": "Hmm, eating these two together might give you a mild tummy ache and make you feel super thirsty! Let's pair them with something else instead!"
         }
       }
     }

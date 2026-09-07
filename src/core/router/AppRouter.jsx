@@ -8,6 +8,7 @@ import DailyResultScreen from '../../features/dailyLog/screens/DailyResultScreen
 import GoalsScreen from '../../features/goals/screens/GoalsScreen';
 import GoalTipsScreen from '../../features/goals/screens/GoalTipsScreen';
 import PuzzleScreen from '../../features/puzzleGame/screens/PuzzleScreen';
+import ComboAlertScreen from '../../features/comboAlert/screens/ComboAlertScreen';
 
 export default function AppRouter() {
   return (
@@ -30,6 +31,9 @@ export default function AppRouter() {
         <Route path="/goals" element={<GoalsScreen />} />
         <Route path="/goals/tips" element={<GoalTipsScreen />} />
         <Route path="/puzzle" element={<PuzzleScreen />} />
+
+        {/* Combo Alert — route: /combo */}
+        <Route path="/combo" element={<ComboAlertScreen />} />
 
         {/* Fallback redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />

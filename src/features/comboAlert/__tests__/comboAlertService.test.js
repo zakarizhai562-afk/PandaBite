@@ -47,7 +47,7 @@ describe('comboAlertService', () => {
   });
 
   it('findMatchingCombo returns null when no pair matches', async () => {
-    const match = await findMatchingCombo(['fish', 'carrot']);
+    const match = await findMatchingCombo(['fish', 'milk']);
     expect(match).toBeNull();
   });
 

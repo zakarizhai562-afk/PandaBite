@@ -1224,58 +1224,165 @@ button {
 .combo-guess-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0,0,0,0.5);
+  z-index: 120;
+  overflow-y: auto;
+  background: linear-gradient(
+    180deg,
+    #7EC8F2 0%,
+    #A8DDF5 24%,
+    #C9E9A8 44%,
+    #8FD36A 66%,
+    #6FC24F 100%
+  );
+}
+
+.combo-guess-scene {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 88px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+}
+
+.combo-guess-back {
+  position: fixed;
+  z-index: 130;
+}
+
+.combo-guess-speech {
+  position: relative;
+  margin: 0 0 0 72px;
+  padding: 18px 26px;
+  background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
+  border: 3px solid #E8D5A8;
+  border-radius: 22px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.combo-guess-speech::after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  bottom: -15px;
+  border-style: solid;
+  border-width: 16px 14px 0 0;
+  border-color: #E8D5A8 transparent transparent transparent;
+}
+
+.combo-guess-question,
+.combo-guess-reveal {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.4vw, 24px);
+  font-weight: 700;
+  color: var(--color-dark);
+  line-height: 1.35;
+}
+
+.combo-guess-reveal {
+  margin-bottom: 8px;
+}
+
+.combo-guess-explain {
+  font-size: clamp(14px, 1.6vw, 17px);
+  line-height: 1.5;
+  color: #2F5D45;
+}
+
+.combo-guess-explain--my {
+  font-size: clamp(13px, 1.5vw, 16px);
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.combo-guess-stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.combo-guess-panda {
+  width: clamp(130px, 20vw, 240px);
+  flex-shrink: 0;
+  align-self: flex-end;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.25));
+}
+
+.combo-guess-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.combo-guess-panel {
+  padding: 20px;
+  background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
+  border: 3px solid #E8D5A8;
+  border-radius: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.combo-guess-foods {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.combo-guess-result-foods {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 120;
-  padding: 20px;
+  gap: 20px;
 }
 
 .combo-guess-card {
-  background-color: var(--color-bg);
-  border-radius: 24px;
-  padding: 24px;
-  max-width: 360px;
-  width: 100%;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  position: relative;
-}
-
-.combo-guess-images {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  align-items: center;
-}
-
-.combo-guess-amp {
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  color: var(--color-accent);
-  font-weight: bold;
+  gap: 10px;
+  flex: 1;
+  padding: 18px 14px;
+  background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
+  border: 3px solid #E8D5A8;
+  border-radius: 22px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .combo-guess-food-img {
-  width: 100px;
-  height: 100px;
+  width: clamp(84px, 11vw, 132px);
+  height: clamp(84px, 11vw, 132px);
   object-fit: contain;
-  border-radius: 16px;
-  border: 3px solid var(--color-panda-light);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  background: #fff;
+}
+
+.combo-guess-food-name {
+  font-family: var(--font-heading);
+  font-size: clamp(15px, 1.8vw, 19px);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.combo-guess-plus {
+  font-size: clamp(28px, 3.4vw, 42px);
+  font-weight: 800;
+  color: var(--color-primary);
 }
 
 .combo-guess-placeholder {
-  width: 100px;
-  height: 100px;
+  width: clamp(84px, 11vw, 132px);
+  height: clamp(84px, 11vw, 132px);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   color: var(--color-panda-light);
   text-align: center;
@@ -1283,43 +1390,111 @@ button {
   background-color: var(--color-primary);
 }
 
-.combo-guess-question {
-  text-align: center;
-  font-size: 16px;
-  color: var(--color-text);
-  margin-bottom: 16px;
-  line-height: 1.4;
+.combo-guess-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 700;
 }
 
-.combo-guess-reveal {
-  text-align: center;
-  font-size: 14px;
-  color: var(--color-muted);
-  margin-bottom: 16px;
-  line-height: 1.4;
+.combo-guess-badge-icon {
+  margin-right: 8px;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.combo-guess-badge--good {
+  background: #FBE9A8;
+  border: 2px solid #E8C96A;
+  color: #8A5A12;
+}
+
+.combo-guess-badge--bad {
+  background: #FBD9DD;
+  border: 2px solid #F0B3BB;
+  color: #8A2F3D;
 }
 
 .combo-guess-buttons {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 20px;
 }
 
 .combo-guess-btn {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  min-height: 44px;
-  color: var(--color-panda-light);
+  max-width: 260px;
+  padding: 15px 22px;
+  border-radius: 999px;
+  border: 3px solid rgba(0, 0, 0, 0.12);
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 1.9vw, 21px);
+  font-weight: 700;
+  color: #fff;
+  min-height: 52px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.1s, box-shadow 0.1s;
 }
 
-.combo-guess-btn--yes { background: var(--color-primary); }
-.combo-guess-btn--no { background: var(--color-accent); }
-.combo-guess-btn--dismiss { background: var(--color-primary); }
+.combo-guess-btn::before {
+  margin-right: 8px;
+  font-weight: 900;
+}
+
+.combo-guess-btn--yes,
+.combo-guess-btn--dismiss {
+  background: linear-gradient(180deg, #5BB85C 0%, #3E9142 100%);
+  box-shadow: 0 4px 0 #2E6B32;
+}
+
+.combo-guess-btn--yes::before {
+  content: '\2714';
+}
+
+.combo-guess-btn--no {
+  background: linear-gradient(180deg, #F08087 0%, #DE5C66 100%);
+  box-shadow: 0 4px 0 #B03F49;
+}
+
+.combo-guess-btn--no::before {
+  content: '\2716';
+}
+
+.combo-guess-btn--dismiss {
+  max-width: 240px;
+}
+
+.combo-guess-btn--continue {
+  background: linear-gradient(180deg, #FFC24A 0%, #F5A214 100%);
+  box-shadow: 0 4px 0 #C57C05;
+}
+
+.combo-guess-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 420px) {
+  .combo-guess-panda {
+    width: 84px;
+  }
+
+  .combo-guess-food-img,
+  .combo-guess-placeholder {
+    width: 64px;
+    height: 64px;
+  }
+
+  .combo-guess-btn {
+    font-size: 15px;
+    padding: 12px 10px;
+  }
+}
 
 .daily-log-done-bar .btn-secondary {
   margin-right: 12px;
@@ -1404,6 +1579,7 @@ button {
     transform: translateY(-50%);
     width: 95%;
     height: 280px;
+  }
 
   .daily-log-goal-star {
     font-size: 24px;
@@ -2051,6 +2227,70 @@ button {
   margin-top: 4px;
 }
 
+@media (min-width: 900px) and (max-height: 860px) {
+  .puzzle-screen {
+    height: 100vh;
+    height: 100dvh;
+    justify-content: center;
+    padding: 0 0 12px;
+    overflow: hidden;
+  }
+
+  .puzzle-hud,
+  .puzzle-top-row,
+  .puzzle-food-area,
+  .puzzle-baskets-row,
+  .puzzle-controls {
+    max-width: 760px;
+  }
+
+  .puzzle-hud {
+    padding: 8px 16px 0;
+  }
+
+  .puzzle-top-row {
+    padding: 8px 16px 0;
+  }
+
+  .puzzle-panda-wrap,
+  .puzzle-panda {
+    width: 72px;
+    height: 76px;
+  }
+
+  .puzzle-food-area {
+    min-height: 0;
+    flex: 1;
+    margin: 10px 16px 0;
+    padding: 12px;
+  }
+
+  .puzzle-baskets-row {
+    padding: 10px 16px 0;
+  }
+
+  .puzzle-basket {
+    min-height: 0;
+    padding: 8px 8px 6px;
+    gap: 6px;
+  }
+
+  .puzzle-basket__image-wrap,
+  .puzzle-basket__image,
+  .puzzle-basket__fallback {
+    width: 64px;
+    height: 64px;
+  }
+
+  .puzzle-controls {
+    padding-top: 8px;
+  }
+
+  .puzzle-screen .mascot-bubble {
+    width: min(320px, calc(100% - 24px));
+  }
+}
+
 @keyframes food-wobble {
   0%, 100% { transform: rotate(-2deg); }
   50% { transform: rotate(2deg); }
@@ -2091,5 +2331,4 @@ button {
   .tarot-card {
     width: 140px;
   }
-}
 }

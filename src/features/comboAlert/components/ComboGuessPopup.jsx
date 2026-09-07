@@ -1,30 +1,31 @@
 import { useState, useCallback } from 'react';
-import MascotBubble from '../../../core/components/MascotBubble';
 import { getComboReaction } from '../models/comboPair';
 import { awardStars } from '../../../core/services/starAwardService';
 import { useStars } from '../../../core/context/StarsContext';
 import { markAlertShown } from '../services/comboAlertService';
 
-
-
-function FoodImage({ foodId, image, name }) {
+function FoodImage({ foodId, image, name, withLabel }) {
   const [imgError, setImgError] = useState(false);
+  const label = name?.en || foodId;
 
   if (imgError) {
-    return <div className="combo-guess-placeholder">{name?.en || foodId}</div>;
+    return <div className="combo-guess-placeholder">{label}</div>;
   }
 
   return (
-    <img
-      src={image}
-      alt={name?.en || foodId}
-      onError={() => setImgError(true)}
-      className="combo-guess-food-img"
-    />
+    <>
+      <img
+        src={image}
+        alt={label}
+        onError={() => setImgError(true)}
+        className="combo-guess-food-img"
+      />
+      {withLabel && <span className="combo-guess-food-name">{label}</span>}
+    </>
   );
 }
 
-export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss }) {
+export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId, onDismiss, onContinue }) {
   const [phase, setPhase] = useState('guessing');
   const [reaction, setReaction] = useState(null);
   const { setStars } = useStars();
@@ -41,48 +42,131 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
     }
 
     markAlertShown(triggerId);
-  }, [phase, pair, triggerId]);
+  }, [phase, pair, triggerId, setStars]);
 
   const handleDismiss = useCallback(() => {
     if (onDismiss) onDismiss();
   }, [onDismiss]);
 
+  const isGuessing = phase === 'guessing';
+  const isGoodCombo = pair.type === 'good';
+
+  const pandaSrc = isGuessing
+    ? '/panda/panda_thinking.png'
+    : reaction?.isCorrect
+      ? '/panda/panda_celebrating.png'
+      : '/panda/panda_nudge.png';
+
   return (
     <div className="combo-guess-overlay">
-      <div className="combo-guess-card">
-        {reaction && (
-          <div style={{ marginBottom: '16px' }}>
-            <MascotBubble text={reaction.text} />
-          </div>
-        )}
+      <div className="combo-guess-scene">
+        <button
+          className="daily-log-back-btn combo-guess-back"
+          onClick={handleDismiss}
+          aria-label="Back"
+        />
 
-        <div className="combo-guess-images">
-          <FoodImage foodId={foodAData.id} image={foodAData.image} name={foodAData.name} />
-          <div className="combo-guess-amp">&amp;</div>
-          <FoodImage foodId={foodBData.id} image={foodBData.image} name={foodBData.name} />
+        <div className="combo-guess-speech">
+          {isGuessing ? (
+            <p className="combo-guess-question">
+              These two foods are often eaten together. Will you eat them together?
+            </p>
+          ) : (
+            <>
+              <p className="combo-guess-reveal">
+                {reaction?.isCorrect ? "That's right!" : 'Good try!'}
+              </p>
+              {reaction?.text?.my && (
+                <p className="combo-guess-explain combo-guess-explain--my">{reaction.text.my}</p>
+              )}
+              <p className="combo-guess-explain">{reaction?.text?.en}</p>
+            </>
+          )}
         </div>
 
-        {phase === 'guessing' ? (
-          <p className="combo-guess-question">Would you eat these two together?</p>
-        ) : (
-          <p className="combo-guess-reveal">{reaction?.isCorrect ? 'Great instinct!' : 'Good try!'}</p>
-        )}
+        <div className="combo-guess-stage">
+          <img className="combo-guess-panda" src={pandaSrc} alt="Red Panda" />
 
-        <div className="combo-guess-buttons">
-          {phase === 'guessing' ? (
-            <>
-              <button className="combo-guess-btn combo-guess-btn--yes" onClick={() => handleAnswer(true)}>
-                Yes, I would!
-              </button>
-              <button className="combo-guess-btn combo-guess-btn--no" onClick={() => handleAnswer(false)}>
-                No, I wouldn't
-              </button>
-            </>
-          ) : (
-            <button className="combo-guess-btn combo-guess-btn--dismiss" onClick={handleDismiss}>
-              Got it!
-            </button>
-          )}
+          <div className="combo-guess-content">
+            {isGuessing ? (
+              <div className="combo-guess-foods">
+                <div className="combo-guess-card">
+                  <FoodImage
+                    foodId={foodAData.id}
+                    image={foodAData.image}
+                    name={foodAData.name}
+                    withLabel
+                  />
+                </div>
+                <div className="combo-guess-card">
+                  <FoodImage
+                    foodId={foodBData.id}
+                    image={foodBData.image}
+                    name={foodBData.name}
+                    withLabel
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="combo-guess-panel">
+                <div className="combo-guess-result-foods">
+                  <FoodImage
+                    foodId={foodAData.id}
+                    image={foodAData.image}
+                    name={foodAData.name}
+                  />
+                  <span className="combo-guess-plus" aria-hidden="true">+</span>
+                  <FoodImage
+                    foodId={foodBData.id}
+                    image={foodBData.image}
+                    name={foodBData.name}
+                  />
+                </div>
+                <div className={`combo-guess-badge combo-guess-badge--${isGoodCombo ? 'good' : 'bad'}`}>
+                  <span className="combo-guess-badge-icon" aria-hidden="true">
+                    {isGoodCombo ? '★' : '♥'}
+                  </span>
+                  {isGoodCombo ? 'Great Combo!' : 'Not a good combo'}
+                </div>
+              </div>
+            )}
+
+            <div className="combo-guess-buttons">
+              {isGuessing ? (
+                <>
+                  <button
+                    className="combo-guess-btn combo-guess-btn--yes"
+                    onClick={() => handleAnswer(true)}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="combo-guess-btn combo-guess-btn--no"
+                    onClick={() => handleAnswer(false)}
+                  >
+                    No
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="combo-guess-btn combo-guess-btn--dismiss"
+                    onClick={handleDismiss}
+                  >
+                    Got it!
+                  </button>
+                  {onContinue && (
+                    <button
+                      className="combo-guess-btn combo-guess-btn--continue"
+                      onClick={onContinue}
+                    >
+                      Continue
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
