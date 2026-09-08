@@ -219,7 +219,7 @@ button {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   width: 100%;
   max-width: 480px;
@@ -1310,16 +1310,13 @@ button {
 }
 
 .combo-guess-panda {
-  width: min(360px, 28vw + 60px, 42vh);
-  aspect-ratio: 1 / 1;
+  width: min(460px, 34vw + 80px, 64vh);
+  aspect-ratio: 3 / 2;
   flex-shrink: 0;
   align-self: flex-end;
-  background-image: url('/images/combobox/panda.png');
-  background-size: 300% 200%;
-  background-position: 0% 0%;
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
-  mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 58%, transparent 72%);
 }
 
 .combo-guess-scene--thanks {
@@ -1336,15 +1333,23 @@ button {
 }
 
 .combo-guess-panda--curious {
-  background-position: 75% 100%;
+  background-image: url('/comboalert/thinking.png');
 }
 
 .combo-guess-panda--happy {
-  background-position: 50% 0%;
+  background-image: url('/comboalert/correct.png');
 }
 
 .combo-guess-panda--sad {
-  background-position: 100% 0%;
+  background-image: url('/comboalert/wrong.png');
+}
+
+.combo-guess-panda--thanks {
+  background-image: url('/comboalert/happy.png');
+}
+
+.combo-guess-panda--excited {
+  background-image: url('/comboalert/excited.png');
 }
 
 .combo-guess-content {

@@ -56,7 +56,7 @@ export default function ComboAlertScreen() {
     return (
       <div className="combo-guess-overlay">
         <div className="combo-guess-scene combo-guess-scene--thanks">
-          <div className="combo-guess-panda combo-guess-panda--happy" role="img" aria-label="Red Panda" />
+          <div className="combo-guess-panda combo-guess-panda--thanks" role="img" aria-label="Red Panda" />
           <div className="combo-guess-speech">
             <p className="combo-guess-reveal">Thank you for playing!</p>
             <p className="combo-guess-explain combo-guess-explain--my">
