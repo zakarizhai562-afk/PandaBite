@@ -1230,6 +1230,7 @@ button {
 }
 
 .combo-guess-scene {
+  --combo-panda-w: min(560px, 40vw + 100px, 76vh);
   position: relative;
   width: 100%;
   max-width: 900px;
@@ -1251,7 +1252,8 @@ button {
 
 .combo-guess-speech {
   position: relative;
-  margin: 0 0 0 72px;
+  width: 100%;
+  margin: 0 0 -10px;
   padding: 18px 26px;
   background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
   border: 3px solid #E8D5A8;
@@ -1263,10 +1265,11 @@ button {
 .combo-guess-speech::after {
   content: '';
   position: absolute;
-  left: 30px;
+  left: calc(var(--combo-panda-w) / 2);
+  transform: translateX(-50%);
   bottom: -15px;
   border-style: solid;
-  border-width: 16px 14px 0 0;
+  border-width: 16px 14px 0 14px;
   border-color: #E8D5A8 transparent transparent transparent;
 }
 
@@ -1310,7 +1313,7 @@ button {
 }
 
 .combo-guess-panda {
-  width: min(460px, 34vw + 80px, 64vh);
+  width: var(--combo-panda-w);
   aspect-ratio: 3 / 2;
   flex-shrink: 0;
   align-self: flex-end;
@@ -1325,6 +1328,10 @@ button {
 
 .combo-guess-scene--thanks .combo-guess-panda {
   align-self: center;
+}
+
+.combo-guess-scene--thanks .combo-guess-speech::after {
+  display: none;
 }
 
 .combo-guess-scene--thanks .combo-guess-speech,
@@ -1518,8 +1525,8 @@ button {
 }
 
 @media (max-width: 420px) {
-  .combo-guess-panda {
-    width: 84px;
+  .combo-guess-scene {
+    --combo-panda-w: 200px;
   }
 
   .combo-guess-food-img,
