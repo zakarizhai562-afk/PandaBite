@@ -1333,23 +1333,23 @@ button {
 }
 
 .combo-guess-panda--curious {
-  background-image: url('/comboalert/thinking.png');
+  background-image: url('/images/combobox/thinking.png');
 }
 
 .combo-guess-panda--happy {
-  background-image: url('/comboalert/correct.png');
+  background-image: url('/images/combobox/correct.png');
 }
 
 .combo-guess-panda--sad {
-  background-image: url('/comboalert/wrong.png');
+  background-image: url('/images/combobox/wrong.png');
 }
 
 .combo-guess-panda--thanks {
-  background-image: url('/comboalert/happy.png');
+  background-image: url('/images/combobox/happy.png');
 }
 
 .combo-guess-panda--excited {
-  background-image: url('/comboalert/excited.png');
+  background-image: url('/images/combobox/excited.png');
 }
 
 .combo-guess-content {
