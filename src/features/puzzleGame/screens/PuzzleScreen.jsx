@@ -123,8 +123,12 @@ export default function PuzzleScreen() {
     setDraggedFoodGroup(null);
   }, [currentFood, audio, clearFeedbackAfter]);
 
+  // Falling only ever pauses for dragging, pausing, or the loading splash --
+  // NOT for the feedback card. The Python reference calls current_food.fall()
+  // every frame regardless of whether "Great Job!"/"Try Again!" is showing,
+  // so food must never sit still at the top waiting for feedback to clear.
   const { fallProgress, resetFall } = useFallingFood({
-    active: !loading && isPlaying && !activeFood && !feedback,
+    active: !loading && isPlaying && !activeFood,
     level: gameState.level,
     foodKey: currentFood?.name,
     onReachBottom: handleReachBottom,
