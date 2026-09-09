@@ -8,7 +8,8 @@ import {
   togglePause,
   starRating,
   checkAnswer,
-  validateFoodData,
+  getFeedbackForCorrect,
+  getFeedbackForWrong,
   STARTING_LIVES,
   POINTS_PER_CORRECT,
   SCORE_TO_LEVEL_COMPLETE,
@@ -19,43 +20,62 @@ import {
   GAME_COMPLETE,
   GAME_OVER,
 } from '../services/puzzleService';
-import { PUZZLE_FOODS, BASKETS, getFoodById, getRandomFood, validatePuzzleFoods } from '../services/puzzleData';
+import { FOOD_DATA, VALID_GROUPS, validateFoodData, getRandomFood } from '../data/foodData';
+import { BASKETS, getBasketByGroup, getBasketById } from '../data/basketData';
 
-describe('puzzleData', () => {
-  it('has 3 baskets with correct groups', () => {
-    expect(BASKETS).toHaveLength(3);
-    expect(BASKETS.map((b) => b.id)).toEqual(['energy', 'body', 'protective']);
-    expect(BASKETS.map((b) => b.group)).toEqual(['carbs', 'protein', 'vitamins']);
+describe('foodData (migrated from Python FOOD_DATA)', () => {
+  it('has exactly 28 foods: 10 energy, 9 body, 9 protective', () => {
+    expect(FOOD_DATA).toHaveLength(28);
+    const counts = { energy: 0, body: 0, protective: 0 };
+    FOOD_DATA.forEach((f) => counts[f.group]++);
+    expect(counts).toEqual({ energy: 10, body: 9, protective: 9 });
   });
 
-  it('PUZZLE_FOODS validates and has no duplicates', () => {
-    expect(() => validatePuzzleFoods()).not.toThrow();
-    expect(() => validateFoodData(PUZZLE_FOODS)).not.toThrow();
-    const ids = PUZZLE_FOODS.map((f) => f.id);
-    expect(new Set(ids).size).toBe(ids.length);
+  it('validates with no duplicate names and only valid groups', () => {
+    expect(() => validateFoodData()).not.toThrow();
+    const names = FOOD_DATA.map((f) => f.name);
+    expect(new Set(names).size).toBe(names.length);
+    FOOD_DATA.forEach((f) => expect(VALID_GROUPS).toContain(f.group));
   });
 
-  it('contains migrated python foods', () => {
-    const ids = PUZZLE_FOODS.map((f) => f.id);
-    expect(ids).toContain('corn');
-    expect(ids).toContain('potato');
-    expect(ids).toContain('broccoli');
-    expect(ids).toContain('apple');
-    expect(ids).toContain('rice');
+  it('contains known items from the Python reference in their exact groups', () => {
+    const byName = Object.fromEntries(FOOD_DATA.map((f) => [f.name, f.group]));
+    expect(byName.Rice).toBe('energy');
+    expect(byName.Banana).toBe('energy');
+    expect(byName.Chicken).toBe('body');
+    expect(byName.Cheese).toBe('body');
+    expect(byName.Carrot).toBe('protective');
+    expect(byName.Apple).toBe('protective');
   });
 
-  it('getFoodById and getRandomFood work', () => {
-    expect(getFoodById('rice')?.name.en).toBe('Rice');
-    expect(getFoodById('nonexistent')).toBeNull();
+  it('getRandomFood excludes the given name when possible', () => {
     const f = getRandomFood();
     expect(f).toBeDefined();
-    expect(f.id).toBeDefined();
-    const f2 = getRandomFood(f.id);
-    expect(f2.id).not.toBe(f.id);
+    const f2 = getRandomFood(f.name);
+    expect(f2.name).not.toBe(f.name);
   });
 });
 
-describe('puzzleService gameState', () => {
+describe('basketData (migrated from Python create_baskets)', () => {
+  it('has 3 baskets with the exact Python names/labels', () => {
+    expect(BASKETS).toHaveLength(3);
+    expect(BASKETS.map((b) => b.id)).toEqual(['energy', 'body', 'protective']);
+    expect(BASKETS.map((b) => b.name)).toEqual([
+      'Energy-Giving Foods',
+      'Body-Building Foods',
+      'Protective Foods',
+    ]);
+    expect(BASKETS.map((b) => b.shortLabel)).toEqual(['Energy', 'Body', 'Protective']);
+  });
+
+  it('getBasketByGroup / getBasketById resolve correctly', () => {
+    expect(getBasketByGroup('energy')?.id).toBe('energy');
+    expect(getBasketByGroup('nonexistent')).toBeNull();
+    expect(getBasketById('body')?.group).toBe('body');
+  });
+});
+
+describe('puzzleService gameState (migrated from Python GameState)', () => {
   it('creates initial state', () => {
     const s = createInitialState();
     expect(s.score).toBe(0);
@@ -64,11 +84,12 @@ describe('puzzleService gameState', () => {
     expect(s.state).toBe(PLAYING);
   });
 
-  it('addScore increments and triggers level complete', () => {
+  it('addScore increments and triggers level complete at 100', () => {
     let s = createInitialState();
     s = { ...s, score: 90 };
     s = addScore(s, POINTS_PER_CORRECT);
     expect(s.score).toBe(100);
+    expect(s.score).toBe(SCORE_TO_LEVEL_COMPLETE);
     expect(s.state).toBe(LEVEL_COMPLETE);
   });
 
@@ -78,7 +99,7 @@ describe('puzzleService gameState', () => {
     expect(s.state).toBe(GAME_COMPLETE);
   });
 
-  it('loseLife decrements and triggers game over', () => {
+  it('loseLife decrements and triggers game over at 0', () => {
     let s = { ...createInitialState(), lives: 1 };
     s = loseLife(s);
     expect(s.lives).toBe(0);
@@ -86,14 +107,14 @@ describe('puzzleService gameState', () => {
     expect(s.mistakesThisLevel).toBe(1);
   });
 
-  it('starRating reflects mistakes', () => {
+  it('starRating reflects mistakes (0=3 stars, 1-2=2 stars, 3+=1 star)', () => {
     expect(starRating(0)).toBe(3);
     expect(starRating(1)).toBe(2);
     expect(starRating(2)).toBe(2);
     expect(starRating(3)).toBe(1);
   });
 
-  it('togglePause switches', () => {
+  it('togglePause switches PLAYING<->PAUSED and no-ops elsewhere', () => {
     let s = createInitialState();
     s = togglePause(s);
     expect(s.state).toBe(PAUSED);
@@ -103,7 +124,7 @@ describe('puzzleService gameState', () => {
     expect(togglePause(s).state).toBe(GAME_OVER);
   });
 
-  it('nextLevel and resetGame', () => {
+  it('nextLevel resets score/mistakes and resetGame restores level 1', () => {
     let s = { ...createInitialState(), score: 100, mistakesThisLevel: 2, level: 1, state: LEVEL_COMPLETE };
     s = nextLevel(s);
     expect(s.level).toBe(2);
@@ -112,17 +133,25 @@ describe('puzzleService gameState', () => {
     s = resetGame();
     expect(s.level).toBe(1);
     expect(s.score).toBe(0);
+    expect(s.lives).toBe(STARTING_LIVES);
   });
 
-  it('checkAnswer validates correct and wrong', () => {
-    const rice = PUZZLE_FOODS.find((f) => f.id === 'rice');
-    expect(rice.groups[0]).toBe('carbs');
-    let res = checkAnswer('rice', 'energy');
+  it('checkAnswer compares the food group against the basket id', () => {
+    let res = checkAnswer('energy', 'energy');
     expect(res.isCorrect).toBe(true);
-    res = checkAnswer('rice', 'body');
+    res = checkAnswer('energy', 'body');
     expect(res.isCorrect).toBe(false);
     expect(res.correctBasket.id).toBe('energy');
-    res = checkAnswer('chicken', 'body');
-    expect(res.isCorrect).toBe(true);
+  });
+
+  it('feedback text matches the Python reference exactly', () => {
+    expect(getFeedbackForCorrect()).toEqual({ title: 'Great Job!', detail: '+10 Points', isCorrect: true });
+
+    const rice = FOOD_DATA.find((f) => f.name === 'Rice');
+    const energyBasket = getBasketByGroup('energy');
+    const wrong = getFeedbackForWrong(rice, energyBasket);
+    expect(wrong.title).toBe('Try Again!');
+    expect(wrong.detail).toBe('Rice → Energy-Giving Foods');
+    expect(wrong.isCorrect).toBe(false);
   });
 });

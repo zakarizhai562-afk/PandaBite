@@ -1642,7 +1642,7 @@ button {
 /* ── Puzzle Game (Person 4) — migrated from Python PandaBite ── */
 .puzzle-screen {
   min-height: 100vh;
-  background: linear-gradient(180deg, #EAF4EE 0%, #d4edda 40%, #FFF3E0 100%);
+  background: url('/puzzle-classic/images/background.png') center bottom / cover no-repeat, #EAF4EE;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1767,18 +1767,6 @@ button {
   object-fit: contain;
 }
 
-.puzzle-panda__fallback {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: #C9673A;
-  color: #fff;
-  font-size: 36px;
-  align-items: center;
-  justify-content: center;
-  border: 3px solid #4A2E23;
-}
-
 .puzzle-message-box {
   flex: 1;
   background: #fff;
@@ -1820,12 +1808,6 @@ button {
   line-height: 1.35;
 }
 
-.puzzle-idle-text__my {
-  font-size: 13px;
-  color: #5B6B61;
-  line-height: 1.4;
-}
-
 .puzzle-feedback {
   display: flex;
   align-items: center;
@@ -1864,16 +1846,12 @@ button {
 .puzzle-feedback__detail { font-size: 14px; font-weight: 600; opacity: 0.9; }
 
 .puzzle-food-area {
+  /* No backdrop panel here on purpose -- the food falls straight against the
+     background art (sky/scenery), not inside a box, same as the Python reference. */
   width: 100%;
   max-width: 480px;
   min-height: 320px;
   margin: 16px 16px 0;
-  background: rgba(255,255,255,0.55);
-  border-radius: 24px;
-  border: 2px dashed rgba(45,106,79,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   overflow: hidden;
   padding: 24px;
@@ -1909,39 +1887,33 @@ button {
 }
 
 .puzzle-food {
-  width: 140px;
-  background: #fff;
-  border-radius: 18px;
-  padding: 14px 12px 10px;
+  width: 100px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   cursor: grab;
   user-select: none;
   touch-action: none;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  border: 2px solid transparent;
   position: relative;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  transition: opacity 0.15s;
 }
 
 .puzzle-food:active { cursor: grabbing; }
 .puzzle-food--dragging {
   opacity: 0.35;
-  border-color: #FF8C42;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.16);
-  transform: scale(1.04) !important;
 }
 
 .puzzle-food--overlay {
-  opacity: 1;
-  transform: rotate(3deg) scale(1.08);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.22);
-  border-color: #FF8C42;
+  /* Lifted (scaled up, soft shadow) but never rotated -- stays perfectly
+     under the cursor while dragging, same as the Python reference. */
+  transform: scale(1.06);
   cursor: grabbing;
   pointer-events: none;
   z-index: 9999;
+}
+
+.puzzle-food--overlay .puzzle-food__shadow {
+  opacity: 1;
 }
 
 .puzzle-food__shadow {
@@ -1957,50 +1929,40 @@ button {
 }
 
 .puzzle-food__image-wrap {
-  width: 88px;
-  height: 88px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .puzzle-food__image {
-  width: 88px;
-  height: 88px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   pointer-events: none;
 }
 
-.puzzle-food__fallback {
-  width: 88px;
-  height: 88px;
-  border-radius: 16px;
-  background: #2D6A4F;
-  color: #FFF3E0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 20px;
-}
-
-.puzzle-food__name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-text);
-  text-align: center;
-  line-height: 1.2;
-}
-
-.puzzle-food__tier {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 999px;
-  letter-spacing: 0.04em;
-}
-
+.puzzle-food__bob { animation: food-bob 1s ease-in-out infinite; }
 .puzzle-food__wobble { animation: food-wobble 1.4s ease-in-out infinite; }
+
+.puzzle-food-disappear {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  z-index: 2;
+  pointer-events: none;
+  animation: food-disappear 0.3s ease forwards;
+}
+
+.puzzle-food-disappear img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 .puzzle-floating-score {
   position: absolute;
@@ -2029,7 +1991,7 @@ button {
 }
 
 .puzzle-paused-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
   display: flex;
@@ -2037,7 +1999,7 @@ button {
   align-items: center;
   justify-content: center;
   color: #fff;
-  border-radius: 24px;
+  z-index: 200;
   backdrop-filter: blur(4px);
 }
 
@@ -2067,9 +2029,20 @@ button {
   min-height: 150px;
 }
 
-.puzzle-basket--over { transform: translateY(-2px); }
-.puzzle-basket--correct-over { transform: translateY(-4px) scale(1.02); }
-.puzzle-basket--hint { animation: hint-pulse 1s ease 2; }
+.puzzle-basket--over {
+  transform: scale(1.05);
+  border-color: #FFD700;
+  box-shadow: 0 0 0 8px rgba(255,215,0,0.22);
+}
+.puzzle-basket--correct-over {
+  transform: scale(1.09);
+  border-color: #46C35A;
+  box-shadow: 0 0 0 10px rgba(140,230,130,0.35);
+}
+.puzzle-basket--hint {
+  border-color: #BEDCFF;
+  animation: hint-pulse 1s ease 2;
+}
 
 .puzzle-basket__drop-hint {
   position: absolute;
@@ -2239,7 +2212,7 @@ button {
   color: #F08C28;
 }
 
-.puzzle-result-panda { font-size: 64px; line-height: 1; }
+.puzzle-result-panda { width: 130px; height: 130px; object-fit: contain; }
 .puzzle-result-subtitle { font-size: 22px; font-weight: 800; color: var(--color-text); }
 .puzzle-result-score { font-size: 16px; color: var(--color-muted); font-weight: 600; }
 
@@ -2256,11 +2229,6 @@ button {
   width: 100%;
   max-width: 280px;
   margin-top: 8px;
-}
-
-.puzzle-result-back {
-  font-size: 14px;
-  margin-top: 4px;
 }
 
 @media (min-width: 900px) and (max-height: 860px) {
@@ -2324,8 +2292,18 @@ button {
 }
 
 @keyframes food-wobble {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2deg); }
+  0%, 100% { transform: rotate(-12deg); }
+  50% { transform: rotate(12deg); }
+}
+
+@keyframes food-bob {
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(4px); }
+}
+
+@keyframes food-disappear {
+  from { opacity: 1; transform: translateX(-50%) scale(1); }
+  to { opacity: 0; transform: translateX(-50%) scale(0.6); }
 }
 
 @keyframes float-up {

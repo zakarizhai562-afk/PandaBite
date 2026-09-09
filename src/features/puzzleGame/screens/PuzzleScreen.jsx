@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
@@ -6,9 +6,16 @@ import { useStars } from '../../../core/context/StarsContext';
 import { awardStars } from '../../../core/services/starAwardService';
 import { spendPoints, HINT_COST } from '../../../core/services/spendPointsService';
 import PuzzleHUD from '../components/PuzzleHUD';
+import PandaMessage from '../components/PandaMessage';
 import PuzzleBasket from '../components/PuzzleBasket';
 import PuzzleFoodCard from '../components/PuzzleFoodCard';
-import { BASKETS, getRandomFood } from '../services/puzzleData';
+import PauseOverlay from '../components/PauseOverlay';
+import ResultScreen from '../components/ResultScreen';
+import { BASKETS, getBasketByGroup } from '../data/basketData';
+import { getRandomFood } from '../data/foodData';
+import { MESSAGE_TEXTS_IDLE, MESSAGE_TEXTS_HAPPY, MESSAGE_TEXTS_SAD, TUTORIAL_HINT_TEXT, pickMessage } from '../data/messages';
+import { createAudioController } from '../services/audioService';
+import { useFallingFood } from '../hooks/useFallingFood';
 import {
   createInitialState,
   addScore,
@@ -16,104 +23,112 @@ import {
   nextLevel,
   resetGame,
   togglePause,
+  checkAnswer,
+  getFeedbackForCorrect,
+  getFeedbackForWrong,
   PLAYING,
   PAUSED,
   LEVEL_COMPLETE,
   GAME_COMPLETE,
   GAME_OVER,
-  POINTS_PER_CORRECT,
-  starRating,
-  checkAnswer,
-  pickRandomMessage,
-  MESSAGE_TEXTS_IDLE,
-  MESSAGE_TEXTS_HAPPY,
-  MESSAGE_TEXTS_SAD,
-  TUTORIAL_HINT_TEXT,
   FEEDBACK_DURATION_MS,
-  HINT_DURATION_MS,
-  FALL_DURATION_SECONDS_BY_LEVEL,
+  BASKET_HINT_DURATION_MS,
+  TUTORIAL_HINT_DURATION_MS,
 } from '../services/puzzleService';
 
-const MAX_FALL_TOP_PERCENT = 78; // keep the falling food fully inside the food area, above the floor
+const MAX_FALL_TOP_PERCENT = 82; // keep the falling food fully inside the food area, above the floor
 
 export default function PuzzleScreen() {
   const navigate = useNavigate();
   const { setStars } = useStars();
+  const audio = useMemo(() => createAudioController(), []);
+
   const [loading, setLoading] = useState(true);
   const [gameState, setGameState] = useState(() => createInitialState());
   const [currentFood, setCurrentFood] = useState(() => getRandomFood());
+  const [disappearingFood, setDisappearingFood] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [pandaMood, setPandaMood] = useState('idle');
-  const [pandaMessage, setPandaMessage] = useState(() => pickRandomMessage(MESSAGE_TEXTS_IDLE));
+  const [pandaMessage, setPandaMessage] = useState(() => pickMessage(MESSAGE_TEXTS_IDLE));
   const [floatingScore, setFloatingScore] = useState(null);
   const [hintedBasketId, setHintedBasketId] = useState(null);
-  const [tutorialDismissed, setTutorialDismissed] = useState(() => false);
+  const [tutorialDismissed, setTutorialDismissed] = useState(false);
   const [showHintPicker, setShowHintPicker] = useState(false);
   const [draggedFoodGroup, setDraggedFoodGroup] = useState(null);
   const [activeFood, setActiveFood] = useState(null);
-  const [fallProgress, setFallProgress] = useState(0);
+
   const feedbackTimerRef = useRef(null);
+  const feedbackStartedAtRef = useRef(0);
+  const feedbackRemainingMsRef = useRef(0);
   const hintTimerRef = useRef(null);
-  const missHandledRef = useRef(false);
 
   const isLevelOne = gameState.level === 1;
+  const isPlaying = gameState.state === PLAYING;
 
+  // One-time Level-1 tutorial hint, exactly as the Python reference: shown
+  // for TUTORIAL_HINT_DURATION_MS or until the player starts their first
+  // drag, whichever comes first -- then dismissed for the rest of this
+  // session (Play Again / Next Level never bring it back).
   useEffect(() => {
-    if (isLevelOne && !tutorialDismissed) {
-      const timer = setTimeout(() => {
-        setTutorialDismissed(true);
-        setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_IDLE, prev));
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isLevelOne, tutorialDismissed]);
-
-  useEffect(() => {
-    if (!tutorialDismissed && isLevelOne) {
-      setPandaMessage(TUTORIAL_HINT_TEXT);
-    }
-  }, [tutorialDismissed, isLevelOne]);
+    // Gated on `loading` (not just an empty dep array): all hooks in this
+    // component run even while the loading splash is still showing, so an
+    // unguarded timer here would start counting down before the player ever
+    // sees the game -- same pitfall as the falling-food interval below.
+    if (loading || !isLevelOne || tutorialDismissed) return undefined;
+    setPandaMessage(TUTORIAL_HINT_TEXT);
+    const timer = setTimeout(() => {
+      setTutorialDismissed(true);
+      setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_IDLE, prev));
+    }, TUTORIAL_HINT_DURATION_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 120, tolerance: 5 } })
   );
 
-  // Reset the fall whenever a new food appears.
-  useEffect(() => {
-    setFallProgress(0);
-    missHandledRef.current = false;
-  }, [currentFood]);
-
-  // Drive the falling animation: paused while dragging, showing feedback, or not actively playing.
-  // A fixed-interval timer (rather than requestAnimationFrame) keeps this smooth and predictable
-  // without relying on real display vsync timing.
-  useEffect(() => {
-    if (loading || gameState.state !== PLAYING || activeFood || feedback || !currentFood) {
-      return undefined;
-    }
-    const TICK_MS = 60;
-    const duration = FALL_DURATION_SECONDS_BY_LEVEL[gameState.level] || FALL_DURATION_SECONDS_BY_LEVEL[1];
-    const step = TICK_MS / 1000 / duration;
-    const id = setInterval(() => {
-      setFallProgress((prev) => Math.min(1, prev + step));
-    }, TICK_MS);
-    return () => clearInterval(id);
-  }, [loading, gameState.state, gameState.level, activeFood, feedback, currentFood]);
-
-  const clearFeedbackLater = useCallback(() => {
+  const clearFeedbackAfter = useCallback((durationMs) => {
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    feedbackStartedAtRef.current = Date.now();
+    feedbackRemainingMsRef.current = durationMs;
     feedbackTimerRef.current = setTimeout(() => {
       setFeedback(null);
       setPandaMood('idle');
-      setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_IDLE, prev));
-    }, FEEDBACK_DURATION_MS);
+      setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_IDLE, prev));
+    }, durationMs);
   }, []);
 
   const spawnNextFood = useCallback(() => {
-    setCurrentFood((prev) => getRandomFood(prev?.id));
+    setCurrentFood((prev) => getRandomFood(prev?.name));
     setDraggedFoodGroup(null);
   }, []);
+
+  const handleReachBottom = useCallback(() => {
+    if (!currentFood) return;
+    const correctBasket = getBasketByGroup(currentFood.group);
+    setGameState((prevState) => loseLife(prevState));
+    setPandaMood('sad');
+    setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_SAD, prev));
+    setFeedback(getFeedbackForWrong(currentFood, correctBasket));
+    audio.playWrong();
+    if (correctBasket) {
+      setHintedBasketId(correctBasket.id);
+      if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
+      hintTimerRef.current = setTimeout(() => setHintedBasketId(null), BASKET_HINT_DURATION_MS);
+    }
+    clearFeedbackAfter(FEEDBACK_DURATION_MS);
+    setCurrentFood(getRandomFood(currentFood.name)); // a fresh food, same as Python's spawn_falling_food()
+    setDraggedFoodGroup(null);
+  }, [currentFood, audio, clearFeedbackAfter]);
+
+  const { fallProgress, resetFall } = useFallingFood({
+    active: !loading && isPlaying && !activeFood && !feedback,
+    level: gameState.level,
+    foodKey: currentFood?.name,
+    onReachBottom: handleReachBottom,
+  });
 
   const handleCorrect = useCallback(
     (food) => {
@@ -121,73 +136,51 @@ export default function PuzzleScreen() {
       const isLevelUp = next.state === LEVEL_COMPLETE || next.state === GAME_COMPLETE;
       setGameState(next);
       awardStars(1, 'puzzle-game', setStars);
+      audio.playCorrect();
+      if (isLevelUp) audio.playLevelComplete();
       setPandaMood('happy');
-      setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_HAPPY, prev));
-      setFeedback({ title: 'Great Job!', detail: `+${POINTS_PER_CORRECT} Points`, isCorrect: true });
-      setFloatingScore({ id: Date.now(), pos: 'center' });
+      setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_HAPPY, prev));
+      setFeedback(getFeedbackForCorrect());
+      setFloatingScore({ id: Date.now() });
       setTimeout(() => setFloatingScore(null), 700);
-      clearFeedbackLater();
+      setDisappearingFood({ image: food.image, name: food.name, id: Date.now() });
+      setTimeout(() => setDisappearingFood(null), 300);
+      clearFeedbackAfter(FEEDBACK_DURATION_MS);
       if (!isLevelUp) {
-        setTimeout(spawnNextFood, 500);
+        spawnNextFood(); // instant respawn, same as the Python reference
       }
     },
-    [gameState, setStars, clearFeedbackLater, spawnNextFood]
+    [gameState, setStars, audio, clearFeedbackAfter, spawnNextFood]
   );
 
-  const handleWrong = useCallback(
+  const handleWrongDrop = useCallback(
     (food, correctBasket) => {
-      const next = loseLife(gameState);
-      setGameState(next);
+      setGameState((prev) => loseLife(prev));
       setPandaMood('sad');
-      setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_SAD, prev));
-      const detail = correctBasket ? `${food.name.en} → ${correctBasket.fullName}` : food.name.en;
-      setFeedback({ title: 'Try Again!', detail, isCorrect: false });
+      setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_SAD, prev));
+      setFeedback(getFeedbackForWrong(food, correctBasket));
+      audio.playWrong();
       if (correctBasket) {
         setHintedBasketId(correctBasket.id);
         if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
-        hintTimerRef.current = setTimeout(() => setHintedBasketId(null), HINT_DURATION_MS);
+        hintTimerRef.current = setTimeout(() => setHintedBasketId(null), BASKET_HINT_DURATION_MS);
       }
-      clearFeedbackLater();
+      clearFeedbackAfter(FEEDBACK_DURATION_MS);
+      resetFall(); // same food snaps back to the top and resumes falling
     },
-    [gameState, clearFeedbackLater]
+    [audio, clearFeedbackAfter, resetFall]
   );
-
-  const handleMiss = useCallback(
-    (food) => {
-      const next = loseLife(gameState);
-      setGameState(next);
-      setPandaMood('sad');
-      setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_SAD, prev));
-      const basket = BASKETS.find((b) => b.group === food.groups[0]);
-      setFeedback({
-        title: 'Oops!',
-        detail: basket ? `It fell! ${food.name.en} → ${basket.fullName}` : `${food.name.en} fell!`,
-        isCorrect: false,
-      });
-      clearFeedbackLater();
-      if (next.state === PLAYING) {
-        setTimeout(spawnNextFood, 600);
-      }
-    },
-    [gameState, clearFeedbackLater, spawnNextFood]
-  );
-
-  useEffect(() => {
-    if (fallProgress >= 1 && gameState.state === PLAYING && currentFood && !missHandledRef.current) {
-      missHandledRef.current = true;
-      handleMiss(currentFood);
-    }
-  }, [fallProgress, gameState.state, currentFood, handleMiss]);
 
   const handleDragStart = useCallback(
     (event) => {
       const food = event.active?.data?.current?.food;
       if (food) {
-        setDraggedFoodGroup(food.groups[0]);
+        setFeedback(null);
+        setDraggedFoodGroup(food.group);
         setActiveFood(food);
         if (!tutorialDismissed) {
           setTutorialDismissed(true);
-          setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_IDLE, prev));
+          setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_IDLE, prev));
         }
       }
     },
@@ -204,88 +197,117 @@ export default function PuzzleScreen() {
       const { active, over } = event;
       setDraggedFoodGroup(null);
       setActiveFood(null);
-      if (gameState.state !== PLAYING || !active || !over) return;
+      if (!isPlaying || !active) return;
       const food = active.data.current?.food;
       if (!food) return;
-      const basketId = over.id;
-      const basket = BASKETS.find((b) => b.id === basketId);
-      if (!basket) return;
 
-      const { isCorrect, correctBasket } = checkAnswer(food.id, basketId);
+      if (!over) {
+        // Dropped outside every basket: silently snap back to the top, no
+        // penalty -- matches the Python reference exactly.
+        resetFall();
+        return;
+      }
 
+      const { isCorrect, correctBasket } = checkAnswer(food.group, over.id);
       if (isCorrect) {
         handleCorrect(food);
       } else {
-        handleWrong(food, correctBasket);
+        handleWrongDrop(food, correctBasket);
       }
     },
-    [gameState.state, handleCorrect, handleWrong]
+    [isPlaying, handleCorrect, handleWrongDrop, resetFall]
   );
 
   const handleNextLevel = useCallback(() => {
+    audio.playClick();
     setGameState((prev) => nextLevel(prev));
     setFeedback(null);
     setPandaMood('idle');
-    setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_IDLE, prev));
+    setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_IDLE, prev));
     spawnNextFood();
-  }, [spawnNextFood]);
+  }, [audio, spawnNextFood]);
 
   const handlePlayAgain = useCallback(() => {
+    audio.playClick();
     setGameState(resetGame());
     setFeedback(null);
     setPandaMood('idle');
-    setPandaMessage(pickRandomMessage(MESSAGE_TEXTS_IDLE));
-    setTutorialDismissed(false);
+    setPandaMessage((prev) => pickMessage(MESSAGE_TEXTS_IDLE, prev));
     setHintedBasketId(null);
     spawnNextFood();
-  }, [spawnNextFood]);
+    // tutorialDismissed is deliberately NOT reset here -- once dismissed it
+    // stays dismissed for the rest of this session, same as the Python reference.
+  }, [audio, spawnNextFood]);
 
   const handleClue = useCallback(() => {
     if (!currentFood) return;
     const result = spendPoints(HINT_COST.CLUE, 'puzzle-hint');
     if (!result.success) {
       setFeedback({ title: 'Not enough points yet', detail: `Need ${HINT_COST.CLUE} ⭐ for a clue`, isCorrect: false });
-      clearFeedbackLater();
+      clearFeedbackAfter(FEEDBACK_DURATION_MS);
       setShowHintPicker(false);
       return;
     }
     setStars(result.remaining);
-    const correct = BASKETS.find((b) => b.group === currentFood.groups[0]);
+    const correct = getBasketByGroup(currentFood.group);
     if (correct) {
       setHintedBasketId(correct.id);
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
       hintTimerRef.current = setTimeout(() => setHintedBasketId(null), 1500);
       setFeedback({ title: 'Clue!', detail: `Try the ${correct.shortLabel} basket`, isCorrect: true });
-      clearFeedbackLater();
+      clearFeedbackAfter(FEEDBACK_DURATION_MS);
     }
     setShowHintPicker(false);
-  }, [currentFood, setStars, clearFeedbackLater]);
+  }, [currentFood, setStars, clearFeedbackAfter]);
 
   const handleReveal = useCallback(() => {
     if (!currentFood) return;
     const result = spendPoints(HINT_COST.REVEAL, 'puzzle-hint');
     if (!result.success) {
       setFeedback({ title: 'Not enough points yet', detail: `Need ${HINT_COST.REVEAL} ⭐ to reveal`, isCorrect: false });
-      clearFeedbackLater();
+      clearFeedbackAfter(FEEDBACK_DURATION_MS);
       setShowHintPicker(false);
       return;
     }
     setStars(result.remaining);
-    setFeedback({ title: 'Revealed!', detail: `${currentFood.name.en} sorted!`, isCorrect: true });
-    clearFeedbackLater();
+    setFeedback({ title: 'Revealed!', detail: `${currentFood.name} sorted!`, isCorrect: true });
+    clearFeedbackAfter(FEEDBACK_DURATION_MS);
     setTimeout(spawnNextFood, 600);
     setShowHintPicker(false);
-  }, [currentFood, setStars, clearFeedbackLater, spawnNextFood]);
+  }, [currentFood, setStars, clearFeedbackAfter, spawnNextFood]);
+
+  // PLAYING <-> PAUSED. Pausing stops music and (if a feedback card is
+  // showing) freezes its remaining display time instead of letting it expire
+  // while paused -- both matching the Python reference's main loop. Shared by
+  // the ESC key, the Pause/Resume button, and tapping the pause overlay.
+  const handleTogglePause = useCallback(() => {
+    setGameState((prev) => {
+      const next = togglePause(prev);
+      if (next.state === PAUSED) {
+        audio.pauseBgm();
+        if (feedbackTimerRef.current) {
+          clearTimeout(feedbackTimerRef.current);
+          const elapsed = Date.now() - feedbackStartedAtRef.current;
+          feedbackRemainingMsRef.current = Math.max(0, feedbackRemainingMsRef.current - elapsed);
+        }
+      } else if (next.state === PLAYING) {
+        audio.resumeBgm();
+        if (feedback && feedbackRemainingMsRef.current > 0) {
+          clearFeedbackAfter(feedbackRemainingMsRef.current);
+        }
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audio, feedback]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setGameState((prev) => togglePause(prev));
-      }
+      if (e.key === 'Escape') handleTogglePause();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+  }, [handleTogglePause]);
 
   useEffect(() => {
     return () => {
@@ -293,6 +315,11 @@ export default function PuzzleScreen() {
       if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
     };
   }, []);
+
+  // Browsers block audio before a user gesture -- start music on the first tap/click.
+  const handleFirstInteraction = useCallback(() => {
+    audio.startBgmOnce();
+  }, [audio]);
 
   if (loading) {
     return (
@@ -306,124 +333,56 @@ export default function PuzzleScreen() {
 
   if (gameState.state === GAME_OVER) {
     return (
-      <div className="puzzle-result-screen puzzle-result-screen--over">
-        <div className="puzzle-result-card">
-          <h1 className="puzzle-result-title">PandaBite</h1>
-          <div className="puzzle-result-panda">🐼</div>
-          <h2 className="puzzle-result-subtitle">Great Try!</h2>
-          <p className="puzzle-result-score">Your Score: {gameState.score}</p>
-          <button className="btn-primary puzzle-result-btn" onClick={handlePlayAgain}>
-            PLAY AGAIN
-          </button>
-          <button className="btn-ghost puzzle-result-back" onClick={() => navigate('/home')}>
-            Back Home
-          </button>
-        </div>
-      </div>
+      <ResultScreen
+        variant="over"
+        pandaMood="sad"
+        subtitleText="Great Try!"
+        scoreText={`Your Score: ${gameState.score}`}
+        buttonLabel="PLAY AGAIN"
+        showStars={false}
+        onButtonClick={handlePlayAgain}
+      />
     );
   }
 
   if (gameState.state === LEVEL_COMPLETE) {
     return (
-      <div className="puzzle-result-screen puzzle-result-screen--level">
-        <div className="puzzle-result-card">
-          <h1 className="puzzle-result-title">PandaBite</h1>
-          <div className="puzzle-result-panda">🎉</div>
-          <h2 className="puzzle-result-subtitle">Level Complete!</h2>
-          <p className="puzzle-result-score">
-            Level {gameState.level} Score: {gameState.score}
-          </p>
-          <div className="puzzle-result-stars" aria-label={`Rating ${starRating(gameState.mistakesThisLevel)} of 3`}>
-            {[0, 1, 2].map((i) => (
-              <span key={i} className={i < starRating(gameState.mistakesThisLevel) ? 'star-filled' : 'star-empty'}>
-                ★
-              </span>
-            ))}
-          </div>
-          <button className="btn-primary puzzle-result-btn" onClick={handleNextLevel}>
-            NEXT LEVEL
-          </button>
-        </div>
-      </div>
+      <ResultScreen
+        variant="level"
+        pandaMood="happy"
+        subtitleText="Level Complete!"
+        scoreText={`Level ${gameState.level} Score: ${gameState.score}`}
+        buttonLabel="NEXT LEVEL"
+        showStars
+        mistakesThisLevel={gameState.mistakesThisLevel}
+        onButtonClick={handleNextLevel}
+      />
     );
   }
 
   if (gameState.state === GAME_COMPLETE) {
     return (
-      <div className="puzzle-result-screen puzzle-result-screen--complete">
-        <div className="puzzle-result-card">
-          <h1 className="puzzle-result-title">PandaBite</h1>
-          <div className="puzzle-result-panda">🏆</div>
-          <h2 className="puzzle-result-subtitle">You Win!</h2>
-          <p className="puzzle-result-score">Final Score: {gameState.score}</p>
-          <div className="puzzle-result-stars">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className={i < starRating(gameState.mistakesThisLevel) ? 'star-filled' : 'star-empty'}>
-                ★
-              </span>
-            ))}
-          </div>
-          <button className="btn-primary puzzle-result-btn" onClick={handlePlayAgain}>
-            PLAY AGAIN
-          </button>
-          <button className="btn-ghost puzzle-result-back" onClick={() => navigate('/home')}>
-            Back Home
-          </button>
-        </div>
-      </div>
+      <ResultScreen
+        variant="complete"
+        pandaMood="happy"
+        subtitleText="You Win!"
+        scoreText={`Final Score: ${gameState.score}`}
+        buttonLabel="PLAY AGAIN"
+        showStars
+        mistakesThisLevel={gameState.mistakesThisLevel}
+        onButtonClick={handlePlayAgain}
+      />
     );
   }
 
-  const showTutorialArrow = !tutorialDismissed && isLevelOne && gameState.state === PLAYING && !feedback;
+  const showTutorialArrow = !tutorialDismissed && isLevelOne && isPlaying && !feedback;
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={handleDragCancel}>
-      <div className="puzzle-screen">
+      <div className="puzzle-screen" onPointerDown={handleFirstInteraction}>
         <PuzzleHUD gameState={gameState} />
 
-        <div className="puzzle-top-row">
-          <div className="puzzle-panda-wrap">
-            <div className={`puzzle-panda puzzle-panda--${pandaMood}`}>
-              <img
-                src={
-                  pandaMood === 'happy'
-                    ? '/panda/panda_celebrating.png'
-                    : pandaMood === 'sad'
-                      ? '/panda/panda_nudge.png'
-                      : '/panda/panda_encouraging.png'
-                }
-                alt="Panda"
-                className="puzzle-panda__img"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="puzzle-panda__fallback" style={{ display: 'none' }}>
-                🐼
-              </div>
-            </div>
-          </div>
-
-          <div className="puzzle-message-box">
-            {feedback ? (
-              <div className={`puzzle-feedback ${feedback.isCorrect ? 'puzzle-feedback--correct' : 'puzzle-feedback--wrong'}`}>
-                <span className="puzzle-feedback__icon">{feedback.isCorrect ? '★' : '✕'}</span>
-                <div className="puzzle-feedback__text">
-                  <span className="puzzle-feedback__title">{feedback.title}</span>
-                  <span className="puzzle-feedback__detail">{feedback.detail}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="puzzle-idle-text">
-                <span className="puzzle-idle-text__en">{pandaMessage.en}</span>
-                {pandaMessage.my && pandaMessage.my !== pandaMessage.en && (
-                  <span className="puzzle-idle-text__my">{pandaMessage.my}</span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <PandaMessage mood={pandaMood} message={pandaMessage} feedback={feedback} />
 
         <div className="puzzle-food-area">
           <div className="puzzle-food-area__decor">
@@ -433,41 +392,37 @@ export default function PuzzleScreen() {
             <span className="puzzle-decor-dot puzzle-decor-dot--4" />
           </div>
 
-          {gameState.state === PLAYING && currentFood && (
+          {isPlaying && currentFood && (
             <div className="puzzle-food-slot" style={{ top: `${fallProgress * MAX_FALL_TOP_PERCENT}%` }}>
-              <PuzzleFoodCard key={currentFood.id} food={currentFood} />
+              <PuzzleFoodCard key={currentFood.name} food={currentFood} disabled={!isPlaying} />
               {floatingScore && <div className="puzzle-floating-score">+10 ⭐</div>}
               {showTutorialArrow && <div className="puzzle-tutorial-arrow">⬇ Drag me to a basket!</div>}
             </div>
           )}
 
-          {gameState.state === PAUSED && (
-            <div className="puzzle-paused-overlay">
-              <h2>PAUSED</h2>
-              <p>Press ESC to Resume</p>
+          {disappearingFood && (
+            <div className="puzzle-food-disappear">
+              <img src={disappearingFood.image} alt={disappearingFood.name} />
             </div>
           )}
         </div>
 
         <div className="puzzle-baskets-row">
-          {BASKETS.map((basket) => {
-            const isCorrectTarget = draggedFoodGroup ? basket.group === draggedFoodGroup : false;
-            return (
-              <PuzzleBasket
-                key={basket.id}
-                basket={basket}
-                isCorrectTarget={isCorrectTarget}
-                isHinted={hintedBasketId === basket.id}
-              />
-            );
-          })}
+          {BASKETS.map((basket) => (
+            <PuzzleBasket
+              key={basket.id}
+              basket={basket}
+              isCorrectDragTarget={draggedFoodGroup === basket.group}
+              isHinted={hintedBasketId === basket.id}
+            />
+          ))}
         </div>
 
         <div className="puzzle-controls">
           <button className="btn-ghost" onClick={() => navigate('/home')}>
             Home
           </button>
-          <button className="btn-ghost" onClick={() => setGameState((prev) => togglePause(prev))}>
+          <button className="btn-ghost" onClick={handleTogglePause}>
             {gameState.state === PAUSED ? 'Resume' : 'Pause'}
           </button>
           <div className="puzzle-hint-wrap">
@@ -489,16 +444,16 @@ export default function PuzzleScreen() {
             )}
           </div>
         </div>
+
+        {gameState.state === PAUSED && <PauseOverlay onResume={handleTogglePause} />}
       </div>
       <DragOverlay dropAnimation={null}>
         {activeFood ? (
           <div className="puzzle-food puzzle-food--overlay">
             <div className="puzzle-food__shadow" />
             <div className="puzzle-food__image-wrap">
-              <img src={activeFood.image} alt={activeFood.name.en} className="puzzle-food__image" draggable={false} />
+              <img src={activeFood.image} alt={activeFood.name} className="puzzle-food__image" draggable={false} />
             </div>
-            <div className="puzzle-food__name">{activeFood.name.en}</div>
-            {activeFood.tier && <div className={`puzzle-food__tier tier-${activeFood.tier.toLowerCase()}`}>{activeFood.tier}</div>}
           </div>
         ) : null}
       </DragOverlay>
