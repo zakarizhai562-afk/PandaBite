@@ -22,7 +22,7 @@ export default function PuzzleFoodCard({ food, disabled = false }) {
     >
       <div className="puzzle-food__shadow" />
       <div className={`puzzle-food__image-wrap ${!isDragging && !disabled ? 'puzzle-food__bob' : ''}`}>
-        <div className={!isDragging && !disabled ? 'puzzle-food__wobble' : ''}>
+        <div className={`puzzle-food__inner ${!isDragging && !disabled ? 'puzzle-food__wobble' : ''}`}>
           <img src={food.image} alt={food.name} className="puzzle-food__image" draggable={false} />
         </div>
       </div>

@@ -119,8 +119,12 @@ export default function PuzzleScreen() {
       hintTimerRef.current = setTimeout(() => setHintedBasketId(null), BASKET_HINT_DURATION_MS);
     }
     clearFeedbackAfter(FEEDBACK_DURATION_MS);
-    setCurrentFood(getRandomFood(currentFood.name)); // a fresh food, same as Python's spawn_falling_food()
+    // Same food snaps back to the top and keeps falling -- it never
+    // disappears/swaps out just because it reached the bottom uncaught,
+    // same treatment as a wrong-basket drop.
+    resetFall();
     setDraggedFoodGroup(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentFood, audio, clearFeedbackAfter]);
 
   // Falling only ever pauses for dragging, pausing, or the loading splash --
