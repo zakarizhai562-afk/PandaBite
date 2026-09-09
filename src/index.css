@@ -1774,12 +1774,15 @@ button {
 }
 
 .puzzle-message-box {
+  /* Sized to sit close behind the panda's height (the panda intentionally
+     pokes up a bit above it, mascot-style) rather than a much taller box
+     with a lot of dead space around a single line of text. */
   flex: 1;
   background: #fff;
   border: 3px solid #FFC8BE;
   border-radius: 28px;
-  padding: clamp(12px, 1.6vh, 18px) clamp(16px, 2vw, 24px);
-  min-height: clamp(80px, 9vh, 112px);
+  padding: clamp(10px, 1.3vh, 14px) clamp(16px, 2vw, 24px);
+  min-height: clamp(68px, 11.5vh, 96px);
   display: flex;
   align-items: center;
   position: relative;
