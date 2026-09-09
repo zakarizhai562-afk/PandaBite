@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
-import MascotBubble from '../../../core/components/MascotBubble';
 import { useStars } from '../../../core/context/StarsContext';
 import { awardStars } from '../../../core/services/starAwardService';
 import { spendPoints, HINT_COST } from '../../../core/services/spendPointsService';
@@ -32,7 +31,10 @@ import {
   TUTORIAL_HINT_TEXT,
   FEEDBACK_DURATION_MS,
   HINT_DURATION_MS,
+  FALL_DURATION_SECONDS_BY_LEVEL,
 } from '../services/puzzleService';
+
+const MAX_FALL_TOP_PERCENT = 78; // keep the falling food fully inside the food area, above the floor
 
 export default function PuzzleScreen() {
   const navigate = useNavigate();
@@ -49,8 +51,10 @@ export default function PuzzleScreen() {
   const [showHintPicker, setShowHintPicker] = useState(false);
   const [draggedFoodGroup, setDraggedFoodGroup] = useState(null);
   const [activeFood, setActiveFood] = useState(null);
+  const [fallProgress, setFallProgress] = useState(0);
   const feedbackTimerRef = useRef(null);
   const hintTimerRef = useRef(null);
+  const missHandledRef = useRef(false);
 
   const isLevelOne = gameState.level === 1;
 
@@ -74,6 +78,28 @@ export default function PuzzleScreen() {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 120, tolerance: 5 } })
   );
+
+  // Reset the fall whenever a new food appears.
+  useEffect(() => {
+    setFallProgress(0);
+    missHandledRef.current = false;
+  }, [currentFood]);
+
+  // Drive the falling animation: paused while dragging, showing feedback, or not actively playing.
+  // A fixed-interval timer (rather than requestAnimationFrame) keeps this smooth and predictable
+  // without relying on real display vsync timing.
+  useEffect(() => {
+    if (loading || gameState.state !== PLAYING || activeFood || feedback || !currentFood) {
+      return undefined;
+    }
+    const TICK_MS = 60;
+    const duration = FALL_DURATION_SECONDS_BY_LEVEL[gameState.level] || FALL_DURATION_SECONDS_BY_LEVEL[1];
+    const step = TICK_MS / 1000 / duration;
+    const id = setInterval(() => {
+      setFallProgress((prev) => Math.min(1, prev + step));
+    }, TICK_MS);
+    return () => clearInterval(id);
+  }, [loading, gameState.state, gameState.level, activeFood, feedback, currentFood]);
 
   const clearFeedbackLater = useCallback(() => {
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
@@ -125,6 +151,33 @@ export default function PuzzleScreen() {
     },
     [gameState, clearFeedbackLater]
   );
+
+  const handleMiss = useCallback(
+    (food) => {
+      const next = loseLife(gameState);
+      setGameState(next);
+      setPandaMood('sad');
+      setPandaMessage((prev) => pickRandomMessage(MESSAGE_TEXTS_SAD, prev));
+      const basket = BASKETS.find((b) => b.group === food.groups[0]);
+      setFeedback({
+        title: 'Oops!',
+        detail: basket ? `It fell! ${food.name.en} → ${basket.fullName}` : `${food.name.en} fell!`,
+        isCorrect: false,
+      });
+      clearFeedbackLater();
+      if (next.state === PLAYING) {
+        setTimeout(spawnNextFood, 600);
+      }
+    },
+    [gameState, clearFeedbackLater, spawnNextFood]
+  );
+
+  useEffect(() => {
+    if (fallProgress >= 1 && gameState.state === PLAYING && currentFood && !missHandledRef.current) {
+      missHandledRef.current = true;
+      handleMiss(currentFood);
+    }
+  }, [fallProgress, gameState.state, currentFood, handleMiss]);
 
   const handleDragStart = useCallback(
     (event) => {
@@ -381,8 +434,8 @@ export default function PuzzleScreen() {
           </div>
 
           {gameState.state === PLAYING && currentFood && (
-            <div className="puzzle-food-slot">
-              <PuzzleFoodCard food={currentFood} />
+            <div className="puzzle-food-slot" style={{ top: `${fallProgress * MAX_FALL_TOP_PERCENT}%` }}>
+              <PuzzleFoodCard key={currentFood.id} food={currentFood} />
               {floatingScore && <div className="puzzle-floating-score">+10 ⭐</div>}
               {showTutorialArrow && <div className="puzzle-tutorial-arrow">⬇ Drag me to a basket!</div>}
             </div>
@@ -436,8 +489,6 @@ export default function PuzzleScreen() {
             )}
           </div>
         </div>
-
-        <MascotBubble text={feedback ? { en: `${feedback.title} ${feedback.detail}`, my: feedback.title } : pandaMessage} />
       </div>
       <DragOverlay dropAnimation={null}>
         {activeFood ? (

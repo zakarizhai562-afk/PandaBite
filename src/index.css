@@ -1651,16 +1651,6 @@ button {
   overflow-x: hidden;
 }
 
-.puzzle-screen .mascot-bubble {
-  position: fixed;
-  left: 12px;
-  bottom: 12px;
-  width: min(380px, calc(100% - 24px));
-  padding: 0;
-  background: none;
-  z-index: 60;
-}
-
 .puzzle-hud {
   width: 100%;
   max-width: 480px;
@@ -1876,7 +1866,7 @@ button {
 .puzzle-food-area {
   width: 100%;
   max-width: 480px;
-  min-height: 260px;
+  min-height: 320px;
   margin: 16px 16px 0;
   background: rgba(255,255,255,0.55);
   border-radius: 24px;
@@ -1907,7 +1897,10 @@ button {
 .puzzle-decor-dot--4 { width: 16px; height: 16px; right: 14%; bottom: 16%; }
 
 .puzzle-food-slot {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2061,10 +2054,10 @@ button {
 }
 
 .puzzle-basket {
-  background: #fff;
+  background: transparent;
   border-radius: 18px;
   border: 3px solid transparent;
-  padding: 12px 8px 10px;
+  padding: 8px 8px 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2095,8 +2088,8 @@ button {
 }
 
 .puzzle-basket__image-wrap {
-  width: 84px;
-  height: 84px;
+  width: 108px;
+  height: 108px;
   position: relative;
   display: flex;
   align-items: center;
@@ -2105,14 +2098,15 @@ button {
 }
 
 .puzzle-basket__image {
-  width: 84px;
-  height: 84px;
+  width: 108px;
+  height: 108px;
   object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
 }
 
 .puzzle-basket__fallback {
-  width: 84px;
-  height: 84px;
+  width: 108px;
+  height: 108px;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -2283,7 +2277,7 @@ button {
   .puzzle-food-area,
   .puzzle-baskets-row,
   .puzzle-controls {
-    max-width: 760px;
+    max-width: 1160px;
   }
 
   .puzzle-hud {
@@ -2320,16 +2314,12 @@ button {
   .puzzle-basket__image-wrap,
   .puzzle-basket__image,
   .puzzle-basket__fallback {
-    width: 64px;
-    height: 64px;
+    width: 96px;
+    height: 96px;
   }
 
   .puzzle-controls {
     padding-top: 8px;
-  }
-
-  .puzzle-screen .mascot-bubble {
-    width: min(320px, calc(100% - 24px));
   }
 }
 

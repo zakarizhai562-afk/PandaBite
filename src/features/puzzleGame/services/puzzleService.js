@@ -7,6 +7,10 @@ export const MAX_LEVEL = 3;
 export const FEEDBACK_DURATION_MS = 1600;
 export const HINT_DURATION_MS = 1000;
 
+// Seconds for a food to fall from the top to the bottom of the food area, per level.
+// Gentle at level 1, a little quicker each level after — kept child-friendly throughout.
+export const FALL_DURATION_SECONDS_BY_LEVEL = { 1: 7, 2: 5.5, 3: 4.5 };
+
 export const PLAYING = 'PLAYING';
 export const PAUSED = 'PAUSED';
 export const LEVEL_COMPLETE = 'LEVEL_COMPLETE';
