@@ -1641,29 +1641,36 @@ button {
 
 /* ── Puzzle Game (Person 4) — migrated from Python PandaBite ── */
 .puzzle-screen {
-  min-height: 100vh;
+  /* Full-viewport game canvas -- no scrolling, no fixed narrow container.
+     Sections below size themselves via flex (food area gets the lion's
+     share) and clamp()-based fluid values, so this works from 1024x768 up
+     through 1920x1080+ without a brittle single breakpoint. */
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
   background: url('/puzzle-classic/images/background.png') center bottom / cover no-repeat, #EAF4EE;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 0 0 40px;
+  align-items: stretch;
+  overflow: hidden;
   position: relative;
-  overflow-x: hidden;
+  padding: clamp(10px, 1.8vh, 22px) clamp(16px, 4vw, 72px);
+  gap: clamp(6px, 1.4vh, 16px);
+  box-sizing: border-box;
 }
 
 .puzzle-hud {
   width: 100%;
-  max-width: 480px;
-  padding: 10px 16px 0;
+  flex: 0 0 auto;
 }
 
 .puzzle-hud__panel {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 24px;
-  padding: 12px 16px;
+  padding: clamp(10px, 1.4vh, 18px) clamp(16px, 2.2vw, 28px);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1vw, 16px);
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   backdrop-filter: blur(8px);
 }
@@ -1672,7 +1679,7 @@ button {
   font-family: var(--font-heading);
   font-weight: 900;
   color: #F08C28;
-  font-size: 18px;
+  font-size: clamp(16px, 1.6vw, 24px);
   white-space: nowrap;
 }
 
@@ -1683,7 +1690,7 @@ button {
 }
 
 .puzzle-hud__heart {
-  font-size: 18px;
+  font-size: clamp(16px, 1.5vw, 22px);
   line-height: 1;
 }
 
@@ -1703,7 +1710,7 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: clamp(13px, 1.1vw, 17px);
   font-weight: 700;
   color: var(--color-text);
 }
@@ -1712,7 +1719,7 @@ button {
 
 .puzzle-hud__progress-bg {
   width: 100%;
-  max-width: 200px;
+  max-width: clamp(160px, 16vw, 260px);
   height: 10px;
   background: #E1DCD2;
   border-radius: 999px;
@@ -1727,7 +1734,7 @@ button {
 }
 
 .puzzle-hud__level {
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 15px);
   font-weight: 800;
   color: var(--color-text);
   white-space: nowrap;
@@ -1735,25 +1742,24 @@ button {
 
 .puzzle-top-row {
   width: 100%;
-  max-width: 480px;
+  flex: 0 0 auto;
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  padding: 16px 16px 0;
+  gap: clamp(10px, 1.5vw, 18px);
 }
 
 .puzzle-panda-wrap {
   flex-shrink: 0;
-  width: 86px;
-  height: 92px;
+  width: clamp(80px, 8vw, 140px);
+  height: clamp(86px, 8.6vw, 150px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
 .puzzle-panda {
-  width: 86px;
-  height: 92px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1772,8 +1778,8 @@ button {
   background: #fff;
   border: 3px solid #FFC8BE;
   border-radius: 28px;
-  padding: 14px 16px;
-  min-height: 92px;
+  padding: clamp(12px, 1.6vh, 18px) clamp(16px, 2vw, 24px);
+  min-height: clamp(80px, 9vh, 112px);
   display: flex;
   align-items: center;
   position: relative;
@@ -1802,7 +1808,7 @@ button {
 }
 
 .puzzle-idle-text__en {
-  font-size: 15px;
+  font-size: clamp(14px, 1.15vw, 18px);
   font-weight: 600;
   color: #3C2D23;
   line-height: 1.35;
@@ -1842,19 +1848,20 @@ button {
   flex-wrap: wrap;
 }
 
-.puzzle-feedback__title { font-weight: 800; font-size: 16px; }
-.puzzle-feedback__detail { font-size: 14px; font-weight: 600; opacity: 0.9; }
+.puzzle-feedback__title { font-weight: 800; font-size: clamp(15px, 1.2vw, 19px); }
+.puzzle-feedback__detail { font-size: clamp(13px, 1vw, 16px); font-weight: 600; opacity: 0.9; }
 
 .puzzle-food-area {
   /* No backdrop panel here on purpose -- the food falls straight against the
-     background art (sky/scenery), not inside a box, same as the Python reference. */
+     background art (sky/scenery), not inside a box, same as the Python reference.
+     flex:1 lets this section claim most of the vertical space (~45-55% of the
+     viewport in practice), same as the Python reference's large play area. */
   width: 100%;
-  max-width: 480px;
-  min-height: 320px;
-  margin: 16px 16px 0;
+  flex: 1 1 auto;
+  min-height: 0;
   position: relative;
   overflow: hidden;
-  padding: 24px;
+  padding: clamp(10px, 1.6vh, 20px);
 }
 
 .puzzle-food-area__decor {
@@ -1887,7 +1894,7 @@ button {
 }
 
 .puzzle-food {
-  width: 100px;
+  width: clamp(72px, 7vw, 130px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1929,16 +1936,16 @@ button {
 }
 
 .puzzle-food__image-wrap {
-  width: 100px;
-  height: 100px;
+  width: clamp(72px, 7vw, 130px);
+  height: clamp(72px, 7vw, 130px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .puzzle-food__image {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -1951,8 +1958,8 @@ button {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  width: 100px;
-  height: 100px;
+  width: clamp(72px, 7vw, 130px);
+  height: clamp(72px, 7vw, 130px);
   z-index: 2;
   pointer-events: none;
   animation: food-disappear 0.3s ease forwards;
@@ -2008,11 +2015,10 @@ button {
 
 .puzzle-baskets-row {
   width: 100%;
-  max-width: 480px;
+  flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 20px 16px 0;
+  gap: clamp(16px, 3vw, 48px);
 }
 
 .puzzle-basket {
@@ -2026,7 +2032,7 @@ button {
   gap: 10px;
   position: relative;
   transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-  min-height: 150px;
+  min-height: clamp(140px, 19vh, 210px);
 }
 
 .puzzle-basket--over {
@@ -2061,8 +2067,8 @@ button {
 }
 
 .puzzle-basket__image-wrap {
-  width: 108px;
-  height: 108px;
+  width: clamp(96px, 9vw, 170px);
+  height: clamp(96px, 9vw, 170px);
   position: relative;
   display: flex;
   align-items: center;
@@ -2071,15 +2077,15 @@ button {
 }
 
 .puzzle-basket__image {
-  width: 108px;
-  height: 108px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.15));
 }
 
 .puzzle-basket__fallback {
-  width: 108px;
-  height: 108px;
+  width: clamp(96px, 9vw, 170px);
+  height: clamp(96px, 9vw, 170px);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -2106,7 +2112,7 @@ button {
   background: #fff;
   border: 2px solid #2D6A4F;
   border-radius: 14px;
-  padding: 6px 10px;
+  padding: clamp(5px, 0.8vh, 8px) clamp(10px, 1.2vw, 16px);
   text-align: center;
   min-width: 90px;
   transition: background 0.15s;
@@ -2116,14 +2122,14 @@ button {
 .puzzle-basket__label--correct { background: #E1FAE1; }
 
 .puzzle-basket__label-title {
-  font-size: 12px;
+  font-size: clamp(12px, 1vw, 15px);
   font-weight: 900;
   letter-spacing: 0.04em;
   line-height: 1;
 }
 
 .puzzle-basket__label-sub {
-  font-size: 10px;
+  font-size: clamp(10px, 0.85vw, 13px);
   font-weight: 600;
   opacity: 0.85;
   margin-top: 2px;
@@ -2131,13 +2137,18 @@ button {
 
 .puzzle-controls {
   width: 100%;
-  max-width: 480px;
+  flex: 0 0 auto;
   display: flex;
-  gap: 10px;
+  gap: clamp(10px, 1.5vw, 20px);
   justify-content: center;
   align-items: center;
-  padding: 16px;
   flex-wrap: wrap;
+}
+
+.puzzle-controls .btn-ghost,
+.puzzle-controls .btn-secondary {
+  font-size: clamp(14px, 1.1vw, 17px);
+  padding: clamp(10px, 1.4vh, 15px) clamp(18px, 2vw, 28px);
 }
 
 .puzzle-hint-wrap { position: relative; }
@@ -2231,63 +2242,34 @@ button {
   margin-top: 8px;
 }
 
-@media (min-width: 900px) and (max-height: 860px) {
+/* Small/phone screens: the fixed-height no-scroll canvas above doesn't have
+   room for every section at a readable size, so fall back to a scrollable,
+   more compact stacked layout instead of shrinking everything into
+   illegibility. Everything from 1024x768 up (the smallest resolution this
+   game targets) uses the full-screen flex layout above, untouched. */
+@media (max-width: 700px) {
   .puzzle-screen {
-    height: 100vh;
-    height: 100dvh;
-    justify-content: center;
-    padding: 0 0 12px;
-    overflow: hidden;
-  }
-
-  .puzzle-hud,
-  .puzzle-top-row,
-  .puzzle-food-area,
-  .puzzle-baskets-row,
-  .puzzle-controls {
-    max-width: 1160px;
-  }
-
-  .puzzle-hud {
-    padding: 8px 16px 0;
-  }
-
-  .puzzle-top-row {
-    padding: 8px 16px 0;
-  }
-
-  .puzzle-panda-wrap,
-  .puzzle-panda {
-    width: 72px;
-    height: 76px;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
+    padding: 10px 12px 20px;
+    gap: 10px;
   }
 
   .puzzle-food-area {
-    min-height: 0;
-    flex: 1;
-    margin: 10px 16px 0;
-    padding: 12px;
-  }
-
-  .puzzle-baskets-row {
-    padding: 10px 16px 0;
+    flex: none;
+    min-height: 280px;
   }
 
   .puzzle-basket {
     min-height: 0;
-    padding: 8px 8px 6px;
+    padding: 6px 6px 6px;
     gap: 6px;
   }
 
-  .puzzle-basket__image-wrap,
-  .puzzle-basket__image,
-  .puzzle-basket__fallback {
-    width: 96px;
-    height: 96px;
-  }
-
-  .puzzle-controls {
-    padding-top: 8px;
+  .puzzle-baskets-row {
+    gap: 10px;
   }
 }
 
