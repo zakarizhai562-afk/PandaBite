@@ -403,8 +403,13 @@ export default function PuzzleScreen() {
           {isPlaying && currentFood && (
             <div className="puzzle-food-slot" style={{ top: `${fallProgress * MAX_FALL_TOP_PERCENT}%` }}>
               <PuzzleFoodCard key={currentFood.name} food={currentFood} disabled={!isPlaying} />
-              {floatingScore && <div className="puzzle-floating-score">+10 ⭐</div>}
               {showTutorialArrow && <div className="puzzle-tutorial-arrow">⬇ Drag me to a basket!</div>}
+            </div>
+          )}
+
+          {floatingScore && (
+            <div className="puzzle-floating-score-wrap">
+              <div className="puzzle-floating-score">+10 ⭐</div>
             </div>
           )}
 

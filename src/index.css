@@ -1648,7 +1648,7 @@ button {
   height: 100vh;
   height: 100dvh;
   width: 100%;
-  background: url('/puzzle-classic/images/background.png') center bottom / cover no-repeat, #EAF4EE;
+  background: url('/images/combobox/background.png') center bottom / cover no-repeat, #EAF4EE;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -1982,19 +1982,29 @@ button {
   object-fit: contain;
 }
 
-.puzzle-floating-score {
+.puzzle-floating-score-wrap {
+  /* Centered in the food area itself (not the food slot, which can sit
+     right at the area's top edge and get its overflow:hidden clipped)
+     so the popup is always fully visible regardless of where the catch
+     happened or where the next food has already spawned. */
   position: absolute;
-  top: -10px;
-  right: -10px;
+  left: 50%;
+  top: 42%;
+  transform: translateX(-50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.puzzle-floating-score {
   background: #50B464;
   color: #fff;
   font-weight: 900;
-  font-size: 14px;
-  padding: 6px 10px;
+  font-size: clamp(14px, 1.3vw, 18px);
+  padding: 8px 14px;
   border-radius: 999px;
   box-shadow: 0 4px 12px rgba(80,180,100,0.4);
   animation: float-up 0.7s ease forwards;
-  pointer-events: none;
+  white-space: nowrap;
 }
 
 .puzzle-tutorial-arrow {
