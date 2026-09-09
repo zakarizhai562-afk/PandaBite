@@ -68,24 +68,6 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
           aria-label="Back"
         />
 
-        <div className="combo-guess-speech">
-          {isGuessing ? (
-            <p className="combo-guess-question">
-              These two foods are often eaten together. Will you eat them together?
-            </p>
-          ) : (
-            <>
-              <p className={`combo-guess-reveal combo-guess-reveal--${reaction?.isCorrect ? 'right' : 'wrong'}`}>
-                {reaction?.isCorrect ? "That's right!" : 'Wrong answer!'}
-              </p>
-              {reaction?.text?.my && (
-                <p className="combo-guess-explain combo-guess-explain--my">{reaction.text.my}</p>
-              )}
-              <p className="combo-guess-explain">{reaction?.text?.en}</p>
-            </>
-          )}
-        </div>
-
         <div className="combo-guess-stage">
           <div
             className={`combo-guess-panda combo-guess-panda--${pandaMood}`}
@@ -94,6 +76,24 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
           />
 
           <div className="combo-guess-content">
+            <div className="combo-guess-speech">
+              {isGuessing ? (
+                <p className="combo-guess-question">
+                  These two foods are often eaten together. Will you eat them together?
+                </p>
+              ) : (
+                <>
+                  <p className={`combo-guess-reveal combo-guess-reveal--${reaction?.isCorrect ? 'right' : 'wrong'}`}>
+                    {reaction?.isCorrect ? "That's right!" : 'Wrong answer!'}
+                  </p>
+                  {reaction?.text?.my && (
+                    <p className="combo-guess-explain combo-guess-explain--my">{reaction.text.my}</p>
+                  )}
+                  <p className="combo-guess-explain">{reaction?.text?.en}</p>
+                </>
+              )}
+            </div>
+
             {isGuessing ? (
               <div className="combo-guess-foods">
                 <div className="combo-guess-card">
