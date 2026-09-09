@@ -1233,7 +1233,7 @@ button {
   --combo-panda-w: min(600px, 40vw, 105vh);
   position: relative;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1120px;
   height: 100vh;
   height: 100dvh;
   margin: 0 auto;
@@ -1254,7 +1254,7 @@ button {
   position: relative;
   width: 100%;
   margin: 0;
-  padding: 20px 28px;
+  padding: 16px 24px;
   background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
   border: 3px solid #E8D5A8;
   border-radius: 22px;
@@ -1323,6 +1323,7 @@ button {
 }
 
 .combo-guess-scene--thanks {
+  --combo-panda-w: min(420px, 30vw, 60vh);
   align-items: center;
 }
 
@@ -1337,7 +1338,7 @@ button {
 
 .combo-guess-scene--thanks .combo-guess-speech,
 .combo-guess-scene--thanks .combo-guess-buttons {
-  width: 100%;
+  width: min(100%, 680px);
 }
 
 .combo-guess-panda--curious {
@@ -1364,7 +1365,7 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .combo-guess-panel {
@@ -1393,9 +1394,9 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   flex: 1;
-  padding: 18px 14px;
+  padding: 12px 14px;
   background: linear-gradient(180deg, #FFFBEC 0%, #F5E6C8 100%);
   border: 3px solid #E8D5A8;
   border-radius: 22px;
@@ -1469,13 +1470,12 @@ button {
 .combo-guess-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 .combo-guess-btn {
   flex: 1;
-  max-width: 260px;
-  padding: 15px 22px;
+  padding: 12px 20px;
   border-radius: 999px;
   border: 3px solid rgba(0, 0, 0, 0.12);
   font-family: var(--font-heading);
@@ -1509,10 +1509,6 @@ button {
 
 .combo-guess-btn--no::before {
   content: '\2716';
-}
-
-.combo-guess-btn--dismiss {
-  max-width: 240px;
 }
 
 .combo-guess-btn--continue {
