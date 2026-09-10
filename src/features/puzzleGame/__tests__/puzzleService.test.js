@@ -24,11 +24,14 @@ import { FOOD_DATA, VALID_GROUPS, validateFoodData, getRandomFood } from '../dat
 import { BASKETS, getBasketByGroup, getBasketById } from '../data/basketData';
 
 describe('foodData (migrated from Python FOOD_DATA)', () => {
-  it('has exactly 28 foods: 10 energy, 9 body, 9 protective', () => {
-    expect(FOOD_DATA).toHaveLength(28);
+  it('has exactly 26 foods: 8 energy, 9 body, 9 protective (Noodles and Wheat / Flour removed)', () => {
+    expect(FOOD_DATA).toHaveLength(26);
     const counts = { energy: 0, body: 0, protective: 0 };
     FOOD_DATA.forEach((f) => counts[f.group]++);
-    expect(counts).toEqual({ energy: 10, body: 9, protective: 9 });
+    expect(counts).toEqual({ energy: 8, body: 9, protective: 9 });
+    const names = FOOD_DATA.map((f) => f.name);
+    expect(names).not.toContain('Noodles');
+    expect(names).not.toContain('Wheat / Flour');
   });
 
   it('validates with no duplicate names and only valid groups', () => {

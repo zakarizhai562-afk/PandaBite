@@ -1,8 +1,7 @@
-// Food dataset migrated 1:1 from the Python/Pygame reference (old/game/food.py
-// FOOD_DATA). Names, groups, and image assignments are exactly as authored
-// there -- do not invent, remove, or re-classify entries here. Images live in
-// public/puzzle-classic/images/, copied verbatim from the Python project's
-// assets/images/ folder.
+// Food dataset originally migrated 1:1 from the Python/Pygame reference
+// (old/game/food.py FOOD_DATA), with Noodles and Wheat / Flour removed by
+// request. Images live in public/puzzle-classic/images/, copied verbatim
+// from the Python project's assets/images/ folder.
 export const VALID_GROUPS = ['energy', 'body', 'protective'];
 
 const IMAGE_BASE = '/puzzle-classic/images';
@@ -11,13 +10,11 @@ export const FOOD_DATA = [
   // Energy-Giving Foods
   { name: 'Rice', group: 'energy', image: `${IMAGE_BASE}/rice.png` },
   { name: 'Bread', group: 'energy', image: `${IMAGE_BASE}/bread.png` },
-  { name: 'Noodles', group: 'energy', image: `${IMAGE_BASE}/noodles.png` },
   { name: 'Corn', group: 'energy', image: `${IMAGE_BASE}/corn.png` },
   { name: 'Potato', group: 'energy', image: `${IMAGE_BASE}/potato.png` },
   { name: 'Sweet Potato', group: 'energy', image: `${IMAGE_BASE}/sweet_potato.png` },
   { name: 'Cereals', group: 'energy', image: `${IMAGE_BASE}/cereals.png` },
   { name: 'Pancakes', group: 'energy', image: `${IMAGE_BASE}/pancakes.png` },
-  { name: 'Wheat / Flour', group: 'energy', image: `${IMAGE_BASE}/wheat_flour.png` },
   { name: 'Banana', group: 'energy', image: `${IMAGE_BASE}/banana.png` },
 
   // Body-Building Foods
