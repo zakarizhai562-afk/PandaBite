@@ -1897,7 +1897,7 @@ button {
 }
 
 .puzzle-food {
-  width: clamp(50px, 4.8vw, 90px);
+  width: clamp(58px, 5.6vw, 100px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1939,8 +1939,8 @@ button {
 }
 
 .puzzle-food__image-wrap {
-  width: clamp(50px, 4.8vw, 90px);
-  height: clamp(50px, 4.8vw, 90px);
+  width: clamp(58px, 5.6vw, 100px);
+  height: clamp(58px, 5.6vw, 100px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1969,8 +1969,8 @@ button {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  width: clamp(50px, 4.8vw, 90px);
-  height: clamp(50px, 4.8vw, 90px);
+  width: clamp(58px, 5.6vw, 100px);
+  height: clamp(58px, 5.6vw, 100px);
   z-index: 2;
   pointer-events: none;
   animation: food-disappear 0.3s ease forwards;
@@ -2039,7 +2039,7 @@ button {
   flex: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 3vw, 48px);
+  gap: clamp(8px, 1.2vw, 20px);
 }
 
 .puzzle-basket {
