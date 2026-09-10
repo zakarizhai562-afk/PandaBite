@@ -1894,6 +1894,10 @@ button {
   align-items: center;
   gap: 12px;
   z-index: 1;
+  /* Smooths every position update (falling ticks every 50ms, and snapping
+     back to the top on a wrong drop or a miss) into continuous motion
+     instead of the food instantly teleporting/vanishing at the old spot. */
+  transition: top 0.2s ease-out;
 }
 
 .puzzle-food {

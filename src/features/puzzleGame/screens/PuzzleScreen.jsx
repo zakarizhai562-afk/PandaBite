@@ -36,7 +36,7 @@ import {
   TUTORIAL_HINT_DURATION_MS,
 } from '../services/puzzleService';
 
-const MAX_FALL_TOP_PERCENT = 82; // keep the falling food fully inside the food area, above the floor
+const MAX_FALL_TOP_PERCENT = 58; // stop well clear of the food area's bottom edge so food never visually overlaps the baskets below it
 
 export default function PuzzleScreen() {
   const navigate = useNavigate();
