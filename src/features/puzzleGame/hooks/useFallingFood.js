@@ -8,7 +8,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 // travel distance and make any fall speed feel much faster than intended.
 export const FOOD_SIZE_PX = 90;
 const SPAWN_MARGIN_PX = 10;
-const BOTTOM_CLEARANCE_PX = 22; // keeps the food from ever visually reaching the baskets below
+// Small enough that the food travels almost the full height of its
+// container -- right up near the food area's own bottom edge, which sits
+// just above the baskets row (separated only by the screen's own small
+// section gap) -- while still leaving a sliver of margin so the food's
+// shadow doesn't get clipped by the area's overflow:hidden.
+const BOTTOM_CLEARANCE_PX = 4;
 
 // Drives one falling food using requestAnimationFrame + delta time (not
 // setInterval), with a real pixel position measured against the food area's
@@ -65,11 +70,20 @@ export function useFallingFood({ areaEl, active, fallSpeedPxPerSec, foodKey, onR
 
   // Keep the measured area size fresh across window/container resizes
   // (1024x768 up to 1920x1080+) without moving the food mid-fall.
+  //
+  // Reads clientWidth/clientHeight off the element itself (content + padding
+  // box) rather than entry.contentRect (content-box only, EXCLUDING padding)
+  // -- .puzzle-food-area has real CSS padding, so those two disagree by
+  // roughly 2x the padding. Mixing them meant the observer's very first
+  // callback (which always fires shortly after observe(), even with no
+  // visible size change) silently shrank the tracked height mid-fall,
+  // cutting the travel distance short well before the intended boundary.
+  // Keeping both measurements on the same box model fixes that.
   useEffect(() => {
     if (!areaEl || typeof ResizeObserver === 'undefined') return undefined;
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
-      if (entry) dimsRef.current = { width: entry.contentRect.width, height: entry.contentRect.height };
+      if (entry) dimsRef.current = { width: entry.target.clientWidth, height: entry.target.clientHeight };
     });
     observer.observe(areaEl);
     return () => observer.disconnect();
