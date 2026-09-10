@@ -34,14 +34,18 @@ import {
   FEEDBACK_DURATION_MS,
   BASKET_HINT_DURATION_MS,
   TUTORIAL_HINT_DURATION_MS,
+  FALL_SPEED_PX_PER_SEC_BY_LEVEL,
 } from '../services/puzzleService';
-
-const MAX_FALL_TOP_PERCENT = 58; // stop well clear of the food area's bottom edge so food never visually overlaps the baskets below it
 
 export default function PuzzleScreen() {
   const navigate = useNavigate();
   const { setStars } = useStars();
   const audio = useMemo(() => createAudioController(), []);
+  // A callback-ref-backed state (not a plain useRef) -- the loading splash
+  // renders first, so .puzzle-food-area doesn't exist in the DOM on mount;
+  // useFallingFood needs to know the moment it actually attaches, which
+  // only a reactive value (not a ref's mutated .current) can trigger.
+  const [foodAreaEl, setFoodAreaEl] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [gameState, setGameState] = useState(() => createInitialState());
@@ -131,9 +135,10 @@ export default function PuzzleScreen() {
   // NOT for the feedback card. The Python reference calls current_food.fall()
   // every frame regardless of whether "Great Job!"/"Try Again!" is showing,
   // so food must never sit still at the top waiting for feedback to clear.
-  const { fallProgress, resetFall } = useFallingFood({
+  const { position: foodPosition, resetFall, foodSize } = useFallingFood({
+    areaEl: foodAreaEl,
     active: !loading && isPlaying && !activeFood,
-    level: gameState.level,
+    fallSpeedPxPerSec: FALL_SPEED_PX_PER_SEC_BY_LEVEL[gameState.level] || FALL_SPEED_PX_PER_SEC_BY_LEVEL[1],
     foodKey: currentFood?.name,
     onReachBottom: handleReachBottom,
   });
@@ -392,7 +397,7 @@ export default function PuzzleScreen() {
 
         <PandaMessage mood={pandaMood} message={pandaMessage} feedback={feedback} />
 
-        <div className="puzzle-food-area">
+        <div className="puzzle-food-area" ref={setFoodAreaEl}>
           <div className="puzzle-food-area__decor">
             <span className="puzzle-decor-dot puzzle-decor-dot--1" />
             <span className="puzzle-decor-dot puzzle-decor-dot--2" />
@@ -401,7 +406,10 @@ export default function PuzzleScreen() {
           </div>
 
           {isPlaying && currentFood && (
-            <div className="puzzle-food-slot" style={{ top: `${fallProgress * MAX_FALL_TOP_PERCENT}%` }}>
+            <div
+              className="puzzle-food-slot"
+              style={{ left: `${foodPosition.x}px`, top: `${foodPosition.y}px`, width: `${foodSize}px` }}
+            >
               <PuzzleFoodCard key={currentFood.name} food={currentFood} disabled={!isPlaying} />
               {showTutorialArrow && <div className="puzzle-tutorial-arrow">⬇ Drag me to a basket!</div>}
             </div>

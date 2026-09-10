@@ -20,14 +20,20 @@ export const FEEDBACK_DURATION_MS = 1600;
 export const BASKET_HINT_DURATION_MS = 1000;
 export const TUTORIAL_HINT_DURATION_MS = 3000;
 
-// Seconds for a food to fall the height of the food area, per level.
-// Derived from the Python reference's actual physics (FOOD_FALL_SPEED=1.3
-// px/frame at 60 FPS = 78px/s, +0.7px/frame per level above 1) applied to
-// the food area's height at the reference 1280x720 layout (~250px): that
-// gives ~78px/s, ~120px/s, ~162px/s for levels 1-3, i.e. ~3.2s/2.1s/1.5s to
-// cross. Expressed as a duration (not a fixed px/s) so it scales naturally
-// to other screen sizes while preserving the same relative pace.
-export const FALL_DURATION_SECONDS_BY_LEVEL = { 1: 3.2, 2: 2.1, 3: 1.5 };
+// Fall speed in actual pixels/second (not a duration or a percentage), used
+// directly by the requestAnimationFrame-driven fall loop: position advances
+// by `fallSpeed * deltaTime` every frame, same physics regardless of the
+// screen's refresh rate.
+//
+// Calibrated against this layout's real food-area travel distance (~130px
+// at a typical 1280x720 window, after food size + spawn/bottom margins --
+// see useFallingFood.js), not picked in the abstract: at that distance
+// these values give ~2.9s/2.2s/1.7s falls for levels 1-3, enough time to
+// see, grab, drag, and drop before a miss. A flat 100+ px/s (a reasonable-
+// sounding number in isolation) crosses that same ~130px in about a
+// second -- nowhere near enough reaction time -- so don't restore a bare
+// "100" here without re-deriving it against the actual travel distance.
+export const FALL_SPEED_PX_PER_SEC_BY_LEVEL = { 1: 45, 2: 60, 3: 75 };
 
 export function createInitialState() {
   return {
