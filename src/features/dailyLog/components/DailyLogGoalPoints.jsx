@@ -1,11 +1,15 @@
+import { useStars } from '../../../core/context/StarsContext';
+
 export default function DailyLogGoalPoints() {
+  const { stars = 0 } = useStars() || {};
+
   return (
     <div className="daily-log-goal-points">
-      <img
-        src="/world_art/daily_log_wooden_box.png"
-        alt="Goal Points"
-        className="daily-log-goal-points-img"
-      />
+      <div className="daily-log-goal-points-title">Goal Point</div>
+      <div className="daily-log-goal-points-value">
+        <span className="daily-log-goal-star">★</span>
+        <span>{stars}</span>
+      </div>
     </div>
   );
 }

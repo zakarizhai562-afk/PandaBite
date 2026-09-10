@@ -1,8 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DndContext, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
-import MascotBubble from '../../../core/components/MascotBubble';
 import FoodEntryCard from '../components/FoodEntryCard';
 import PlateDropTarget from '../components/PlateDropTarget';
 import DailyLogDoneBar from '../components/DailyLogDoneBar';
@@ -16,13 +22,14 @@ export default function DailyLogScreen() {
   const [loading, setLoading] = useState(() => !location.state?.skipLoading);
   const [plate, setPlate] = useState([]);
   const [mascotText, setMascotText] = useState(null);
+  const [activeDragFood, setActiveDragFood] = useState(null);
   const { calculateResult, saveEntry } = useDailyLog();
   const navigate = useNavigate();
 
   useEffect(() => {
     setMascotText({
-      my: 'Daily Log အင်္ကျ မေ့ Zawmor sore! သင်ပြန်လာတဲ့ အတွက် ကျermainya မေ့ စားချွuye ဤစောင်ရွက်ကို ကာဗိုဟိုက်ဒရိတ်။',
-      en: 'Welcome back! Drag foods to build a healthy meal and check your balance.',
+      my: 'ပြန်လာတာ ကြိုဆိုပါတယ်။ အစားအစာတွေကို ပန်းကန်ထဲ ဆွဲထည့်ပြီး မင်းရဲ့နေ့စဉ်အာဟာရကို စစ်ကြည့်ရအောင်။',
+      en: 'Welcome back! Drag foods to the plate and check your meal.',
     });
   }, []);
 
@@ -31,8 +38,17 @@ export default function DailyLogScreen() {
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
   );
 
+  const handleDragStart = useCallback((event) => {
+    setActiveDragFood(event.active?.data.current?.food || null);
+  }, []);
+
+  const handleDragCancel = useCallback(() => {
+    setActiveDragFood(null);
+  }, []);
+
   const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
+    setActiveDragFood(null);
     if (!active || !over) return;
 
     const food = active.data.current?.food;
@@ -78,7 +94,12 @@ export default function DailyLogScreen() {
   const allFoods = foodDatabase.foods;
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragCancel={handleDragCancel}
+      onDragEnd={handleDragEnd}
+    >
       <div className="daily-log-screen">
         <button
           className="daily-log-back-btn"
@@ -87,7 +108,12 @@ export default function DailyLogScreen() {
         />
 
         <div className="daily-log-bubble">
-          Drag the <span className="highlight-red">food</span> onto the plate to build a healthy meal!
+          <span className="daily-log-bubble-my">
+            အစားအစာတွေကို ပန်းကန်ပေါ် ဆွဲတင်ပြီး ကျန်းမာတဲ့အစားအစာတစ်ပွဲ ပြုလုပ်ကြရအောင်။
+          </span>
+          <span className="daily-log-bubble-en">
+            Drag the <span className="highlight-red">food</span> onto the plate to build a healthy meal!
+          </span>
         </div>
 
         <DailyLogGoalPoints />
@@ -111,13 +137,18 @@ export default function DailyLogScreen() {
           <div className="daily-log-right">
             <div className="daily-log-panda">
               <img
-                src="/panda/panda_encouraging.png"
+                src="/images/combobox/excited.png"
                 alt="Red Panda"
                 className="panda-img"
               />
             </div>
             <div className="daily-log-help-text">
-              Choose foods that give you <span className="highlight-orange">energy</span>, help you <span className="highlight-green">grow</span>, and keep you <span className="highlight-blue">healthy</span>!
+              <span className="daily-log-help-my">
+                အင်အား၊ ကြီးထွားမှုနဲ့ ကျန်းမာရေးအတွက် ကောင်းတဲ့အစားအစာတွေကို ရွေးပါ။
+              </span>
+              <span className="daily-log-help-en">
+                Choose foods that give you <span className="highlight-orange">energy</span>, help you <span className="highlight-green">grow</span>, and keep you <span className="highlight-blue">healthy</span>!
+              </span>
             </div>
             <div className="food-box">
               {allFoods.map((food) => (
@@ -128,11 +159,18 @@ export default function DailyLogScreen() {
         </div>
 
         <DailyLogDoneBar itemCount={plate.length} onDone={handleDone} />
-
-        {mascotText && (
-          <MascotBubble text={mascotText} />
-        )}
       </div>
+      <DragOverlay dropAnimation={null} zIndex={9999}>
+        {activeDragFood ? (
+          <div className="food-card daily-log-drag-overlay">
+            <img src={activeDragFood.image} alt={activeDragFood.name.en} />
+            <span className="food-name">{activeDragFood.name.en}</span>
+            <span className={`food-go-btn food-tier tier-${(activeDragFood.tier || 'Go').toLowerCase()}`}>
+              {activeDragFood.tier || 'Go'}
+            </span>
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

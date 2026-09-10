@@ -1,23 +1,27 @@
-import BilingualText from '../../../core/components/BilingualText';
-
-const GOAL_ICONS = {
-  'grow-taller': '🌱',
-  'more-energy': '⚡',
+const GOAL_IMAGES = {
+  'grow-taller': '/world_art/grow_taller.png',
+  'more-energy': '/world_art/gain_more_energy.png',
+  'clear-skin': '/world_art/clear_skin.png',
 };
 
 export default function GoalCard({ goal, onSelect }) {
   return (
-    <div
-      className="goal-card tarot-card"
+    <button
+      type="button"
+      className="goal-card goal-image-card"
       onClick={() => onSelect(goal.id)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(goal.id); }}
+      aria-label={goal.name.en}
     >
-      <div className="tarot-card-art">
-        <span className="goal-card-icon">{GOAL_ICONS[goal.id] || '✨'}</span>
-      </div>
-      <BilingualText my={goal.name.my} en={goal.name.en} />
-    </div>
+      <img
+        src={GOAL_IMAGES[goal.id]}
+        alt=""
+        className="goal-image-card__image"
+        draggable="false"
+      />
+      <span className="goal-image-card__label">
+        <span>{goal.name.my}</span>
+        <span>{goal.name.en}</span>
+      </span>
+    </button>
   );
 }

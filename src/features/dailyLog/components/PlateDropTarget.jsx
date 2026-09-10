@@ -12,7 +12,6 @@ export default function PlateDropTarget({ children, hasItems }) {
       {children}
       {!hasItems && (
         <div className="plate-empty-state">
-          <div className="plate-panda-outline" />
           <span className="plate-question">?</span>
         </div>
       )}

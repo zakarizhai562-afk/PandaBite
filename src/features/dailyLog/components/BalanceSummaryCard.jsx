@@ -1,28 +1,31 @@
-// Balance summary card shown on Daily Result screen
-// Shows checkmarks for covered groups, flags for missing groups
-
 const GROUPS = [
-  { key: 'carbs', label: 'Energy', emoji: '⚡' },
-  { key: 'protein', label: 'Growth', emoji: '💪' },
-  { key: 'vitamins', label: 'Health', emoji: '🌿' },
+  { key: 'carbs', label: 'Energy', my: 'အင်အား' },
+  { key: 'protein', label: 'Growth', my: 'ကြီးထွားမှု' },
+  { key: 'vitamins', label: 'Health', my: 'ကျန်းမာရေး' },
 ];
 
 export default function BalanceSummaryCard({ result }) {
   return (
     <div className="balance-summary">
-      {GROUPS.map(({ key, label, emoji }) => {
+      {GROUPS.map(({ key, label, my }) => {
         const covered = result.coveredGroups.includes(key);
         return (
           <div key={key} className={`balance-row ${covered ? 'covered' : 'missing'}`}>
-            <span>{covered ? '✓' : '✗'}</span>
-            <span>{emoji} {label}</span>
+            <span className="balance-row-icon">{covered ? '✓' : '!'}</span>
+            <span className="balance-row-text">
+              <span>{my}</span>
+              <span>{label}</span>
+            </span>
           </div>
         );
       })}
       {result.whoaCount > 0 && (
         <div className="balance-row missing">
-          <span>⚠</span>
-          <span>Treats: {result.whoaCount}</span>
+          <span className="balance-row-icon">!</span>
+          <span className="balance-row-text">
+            <span>အချို/မုန့်</span>
+            <span>Whoa foods: {result.whoaCount}</span>
+          </span>
         </div>
       )}
     </div>
