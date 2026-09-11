@@ -27,6 +27,7 @@ function pickRound(excludeTriggerId) {
 export default function ComboAlertScreen() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [started, setStarted] = useState(false);
   const [round, setRound] = useState(() => pickRound());
   const [roundKey, setRoundKey] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -40,6 +41,7 @@ export default function ComboAlertScreen() {
     setRound(pickRound());
     setRoundKey((key) => key + 1);
     setFinished(false);
+    setStarted(true);
   };
 
   if (loading) {
@@ -52,10 +54,43 @@ export default function ComboAlertScreen() {
     );
   }
 
+  if (!started) {
+    return (
+      <div className="combo-guess-overlay">
+        <div className="combo-guess-scene combo-guess-scene--centered">
+          <div className="combo-guess-panda combo-guess-panda--excited" role="img" aria-label="Red Panda" />
+          <div className="combo-guess-speech">
+            <p className="combo-guess-reveal">Ready for Combo Alert?</p>
+            <p className="combo-guess-explain combo-guess-explain--my">
+              အစားအစာနှစ်မျိုးကို အတူတူစားလို့ ကောင်းမလား ခန့်မှန်းကြည့်ပါ!
+            </p>
+            <p className="combo-guess-explain">
+              I will show you two foods. Tap Yes if they are good together, No if they are not.
+            </p>
+          </div>
+          <div className="combo-guess-buttons">
+            <button
+              className="combo-guess-btn combo-guess-btn--continue"
+              onClick={() => setStarted(true)}
+            >
+              Let's Play
+            </button>
+            <button
+              className="combo-guess-btn combo-guess-btn--dismiss"
+              onClick={() => navigate('/home')}
+            >
+              Not Now
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (finished) {
     return (
       <div className="combo-guess-overlay">
-        <div className="combo-guess-scene combo-guess-scene--thanks">
+        <div className="combo-guess-scene combo-guess-scene--centered">
           <div className="combo-guess-panda combo-guess-panda--thanks" role="img" aria-label="Red Panda" />
           <div className="combo-guess-speech">
             <p className="combo-guess-reveal">Thank you for playing!</p>

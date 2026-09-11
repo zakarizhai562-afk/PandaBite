@@ -1894,22 +1894,22 @@ button {
   background-repeat: no-repeat;
 }
 
-.combo-guess-scene--thanks {
+.combo-guess-scene--centered {
   --combo-panda-w: min(420px, 30vw, 60vh);
   align-items: center;
 }
 
-.combo-guess-scene--thanks .combo-guess-panda {
+.combo-guess-scene--centered .combo-guess-panda {
   align-self: center;
   margin-right: 0;
 }
 
-.combo-guess-scene--thanks .combo-guess-speech::after {
+.combo-guess-scene--centered .combo-guess-speech::after {
   display: none;
 }
 
-.combo-guess-scene--thanks .combo-guess-speech,
-.combo-guess-scene--thanks .combo-guess-buttons {
+.combo-guess-scene--centered .combo-guess-speech,
+.combo-guess-scene--centered .combo-guess-buttons {
   width: min(100%, 680px);
 }
 
