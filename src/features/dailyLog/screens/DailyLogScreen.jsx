@@ -73,12 +73,24 @@ export default function DailyLogScreen() {
     const foodIds = plate.map((f) => f.id);
     const result = await calculateResult(foodIds);
     const today = new Date().toISOString().split('T')[0];
-    saveEntry({
-      date: today,
-      foodIds,
+    const entryId = `${today}-${Date.now()}`;
+    const entryResult = {
       ...result,
+      date: today,
+      entryId,
+    };
+    saveEntry({
+      id: entryId,
+      date: today,
+      foodIds: result.selectedFoodIds,
+      ...entryResult,
     });
-    navigate('/daily-log/result', { state: { result, foodIds } });
+    navigate('/daily-log/result', {
+      state: {
+        result: entryResult,
+        foodIds: result.selectedFoodIds,
+      },
+    });
   }, [plate, calculateResult, saveEntry, navigate]);
 
   if (loading) {
@@ -132,6 +144,7 @@ export default function DailyLogScreen() {
                 ))}
               </PlateDropTarget>
             </div>
+            <DailyLogDoneBar itemCount={plate.length} onDone={handleDone} />
           </div>
 
           <div className="daily-log-right">
@@ -158,7 +171,6 @@ export default function DailyLogScreen() {
           </div>
         </div>
 
-        <DailyLogDoneBar itemCount={plate.length} onDone={handleDone} />
       </div>
       <DragOverlay dropAnimation={null} zIndex={9999}>
         {activeDragFood ? (

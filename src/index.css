@@ -932,11 +932,11 @@ button {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: min(650px, 50vw);
-  padding: clamp(12px, 1.5vw, 20px) clamp(18px, 2.2vw, 30px);
-  border: 4px solid #efbd22;
-  border-radius: 34px 34px 40px 34px;
+  gap: 2px;
+  width: min(520px, 42vw);
+  padding: clamp(8px, 1vw, 14px) clamp(14px, 1.6vw, 22px);
+  border: 3px solid #efbd22;
+  border-radius: 26px 26px 32px 26px;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,248,205,0.94)),
     #fff7c8;
@@ -955,9 +955,9 @@ button {
 .daily-result-bubble::before {
   content: '';
   position: absolute;
-  inset: 8px;
+  inset: 6px;
   border: 2px dashed rgba(239, 189, 34, 0.42);
-  border-radius: 26px 26px 32px 26px;
+  border-radius: 20px 20px 26px 20px;
   pointer-events: none;
 }
 
@@ -971,11 +971,11 @@ button {
 }
 
 .daily-result-bubble-my {
-  font-size: clamp(13px, 1.15vw, 17px);
+  font-size: clamp(11px, 0.9vw, 14px);
 }
 
 .daily-result-bubble-en {
-  font-size: clamp(16px, 1.65vw, 25px);
+  font-size: clamp(13px, 1.25vw, 20px);
 }
 
 .daily-result-stage {
@@ -1025,8 +1025,9 @@ button {
   margin: 0;
   color: #244323;
   font-family: var(--font-heading);
-  font-size: clamp(26px, 3vw, 44px);
+  font-size: clamp(20px, 2.2vw, 32px);
   line-height: 1.05;
+  white-space: nowrap;
 }
 
 .daily-result-side-panel {
@@ -1034,19 +1035,28 @@ button {
   align-self: center;
   justify-self: center;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(10px, 1.8vw, 24px);
-  width: min(100%, 560px);
+  gap: clamp(12px, 2vh, 22px);
+  width: min(100%, 720px);
   min-height: 0;
+  transform: translateX(clamp(-80px, -6vw, -42px));
+}
+
+.daily-result-coach-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.2vw, 32px);
+  width: 100%;
 }
 
 .daily-result-panda {
   display: block;
   flex: 0 0 auto;
-  width: clamp(130px, 15vw, 220px);
-  height: clamp(130px, 15vw, 220px);
+  width: clamp(160px, 18vw, 260px);
+  height: clamp(160px, 18vw, 260px);
   object-fit: contain;
   filter: drop-shadow(0 12px 14px rgba(46, 61, 31, 0.24));
 }
@@ -1056,8 +1066,8 @@ button {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: min(390px, calc(100% - 150px));
-  padding: clamp(12px, 1.5vw, 18px) clamp(16px, 2vw, 24px);
+  width: min(560px, calc(100% - 180px));
+  padding: clamp(14px, 1.8vw, 22px) clamp(20px, 2.5vw, 32px);
   border: 4px solid #86ad38;
   border-radius: 24px;
   background:
@@ -1065,7 +1075,7 @@ button {
     #f0ffc6;
   color: #244323;
   font-family: var(--font-heading);
-  font-size: clamp(13px, 1.2vw, 18px);
+  font-size: clamp(15px, 1.45vw, 22px);
   font-weight: 900;
   line-height: 1.2;
   box-shadow:
@@ -1154,6 +1164,10 @@ button {
 }
 
 .daily-result-screen .stars-earned {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 8px 14px;
   border-radius: 14px;
   border: 3px solid #8f5426;
@@ -1189,8 +1203,8 @@ button {
   }
 
   .daily-result-bubble {
-    width: 100%;
-    padding: 10px 14px;
+    width: min(100%, 460px);
+    padding: 8px 12px;
   }
 
   .daily-result-dialogue-panda {
@@ -1209,15 +1223,19 @@ button {
   }
 
   .daily-result-note {
-    width: min(100%, calc(100% - 92px));
-    font-size: 11px;
-    padding: 8px 10px;
+    width: min(400px, calc(100% - 116px));
+    font-size: 13px;
+    padding: 10px 14px;
     border-width: 3px;
   }
 
   .daily-result-panda {
-    width: 82px;
-    height: 82px;
+    width: 104px;
+    height: 104px;
+  }
+
+  .daily-result-side-panel {
+    transform: translateX(-18px);
   }
 
   .daily-result-screen .balance-row {
@@ -1247,16 +1265,17 @@ button {
   }
 
   .daily-result-bubble {
-    width: 100%;
+    width: min(100%, 340px);
+    padding: 6px 10px;
     border-width: 3px;
   }
 
   .daily-result-bubble-my {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .daily-result-bubble-en {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .daily-result-stage {
@@ -1277,21 +1296,41 @@ button {
   }
 
   .daily-result-plate-inner h1 {
-    font-size: 22px;
+    font-size: clamp(16px, 5vw, 20px);
   }
 
   .daily-result-side-panel {
+    flex-direction: column;
+    gap: 6px;
+    transform: translateX(-8px);
+  }
+
+  .daily-result-coach-row {
     flex-direction: column;
     gap: 4px;
   }
 
   .daily-result-panda {
-    width: 64px;
-    height: 64px;
+    width: 78px;
+    height: 78px;
   }
 
   .daily-result-note {
+    width: min(100%, 178px);
+    padding: 7px 9px;
+    font-size: 10px;
+    line-height: 1.15;
+  }
+
+  .daily-result-note::after,
+  .daily-result-note::before {
     display: none;
+  }
+
+  .daily-result-screen .stars-earned {
+    padding: 5px 8px;
+    font-size: 11px;
+    border-width: 2px;
   }
 
   .daily-result-actions {
@@ -3086,13 +3125,14 @@ button {
   z-index: 5;
   display: flex;
   justify-content: center;
-  width: min(1120px, 100%);
+  width: min(100%, 370px);
   margin: 0 auto;
   flex-shrink: 0;
 }
 
 .daily-log-done-bar .btn-primary {
-  min-width: min(320px, 100%);
+  width: min(300px, 100%);
+  min-width: 0;
   min-height: 50px;
   padding: 10px 22px;
   font-size: clamp(15px, 1.7vw, 18px);
@@ -3697,5 +3737,82 @@ button {
     right: auto;
     transform: translateX(-50%);
     bottom: 10px;
+  }
+}
+
+/* Final Daily Log placement overrides */
+.daily-log-left .plate-platform,
+.daily-log-left .daily-log-done-bar {
+  width: min(100%, clamp(250px, 31vw, 370px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.daily-log-left .plate-area {
+  width: 100%;
+}
+
+.daily-log-left .daily-log-done-bar {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  justify-content: center;
+  margin-top: clamp(8px, 1.4vw, 12px);
+}
+
+.daily-log-left .daily-log-done-bar .btn-primary,
+.daily-result-actions .btn-primary,
+.daily-result-actions .btn-secondary {
+  width: min(300px, 100%);
+  min-width: 0;
+  min-height: clamp(46px, 6vh, 62px);
+  padding: 12px 24px;
+  border: 3px solid #E65100;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #FF8C42 0%, #FF6B1A 100%);
+  color: #fff;
+  font-size: clamp(15px, 1.7vw, 18px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.3),
+    inset 0 2px 4px rgba(255,255,255,0.3);
+}
+
+.daily-result-actions .btn-primary,
+.daily-result-actions .btn-secondary {
+  min-width: clamp(150px, 16vw, 240px);
+}
+
+.daily-log-left .daily-log-done-bar .btn-primary:disabled {
+  opacity: 0.55;
+  background: linear-gradient(135deg, #BDBDBD 0%, #9E9E9E 100%);
+  border-color: #757575;
+}
+
+@media (max-width: 560px) {
+  .daily-log-left .plate-platform,
+  .daily-log-left .daily-log-done-bar {
+    width: min(100%, 32vh, 200px);
+  }
+
+  .daily-log-left .daily-log-done-bar .btn-primary {
+    min-height: 42px;
+    padding: 8px 10px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+
+  .daily-result-actions .btn-primary,
+  .daily-result-actions .btn-secondary {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 10px 12px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
   }
 }

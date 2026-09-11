@@ -24,6 +24,9 @@ describe('dailyBalanceService', () => {
     expect(result.missingGroups).toEqual([]);
     expect(result.coveredGroups).toEqual(['carbs', 'protein', 'vitamins']);
     expect(result.whoaCount).toBe(0);
+    expect(result.score).toBe(3);
+    expect(result.starsEarned).toBe(3);
+    expect(result.tierCounts).toEqual({ go: 3, slow: 0, whoa: 0 });
   });
 
   it('returns missingGroups with exactly the missing group', async () => {
@@ -37,11 +40,13 @@ describe('dailyBalanceService', () => {
     expect(result.isBalanced).toBe(false);
     expect(result.missingGroups).toEqual(['vitamins']);
     expect(result.coveredGroups).toEqual(['carbs', 'protein']);
+    expect(result.score).toBe(2);
+    expect(result.starsEarned).toBe(2);
   });
 
   it('returns isBalanced: false when 2+ Whoa items on plate', async () => {
     runPrologQuery.mockResolvedValue({
-      Groups: ['carbs', 'protein', 'vitamins'],
+      Groups: ['carbs', 'protein'],
       WhoaCount: '2',
       IsBalanced: 'false',
     });
@@ -49,6 +54,8 @@ describe('dailyBalanceService', () => {
     const result = await calculateDailyBalance(['rice', 'egg', 'candy', 'soda']);
     expect(result.isBalanced).toBe(false);
     expect(result.whoaCount).toBe(2);
+    expect(result.score).toBe(1);
+    expect(result.starsEarned).toBe(1);
   });
 
   it('skips unknown/invalid food IDs without throwing', async () => {
@@ -59,6 +66,22 @@ describe('dailyBalanceService', () => {
     });
 
     await expect(calculateDailyBalance(['nonexistent_food', 'rice'])).resolves.toBeDefined();
+    const result = await calculateDailyBalance(['nonexistent_food', 'rice']);
+    expect(result.selectedFoodIds).toEqual(['rice']);
+    expect(result.invalidFoodIds).toEqual(['nonexistent_food']);
+  });
+
+  it('deduplicates repeated food IDs before scoring', async () => {
+    runPrologQuery.mockResolvedValue({
+      Groups: ['carbs'],
+      WhoaCount: '0',
+      IsBalanced: 'false',
+    });
+
+    const result = await calculateDailyBalance(['rice', 'rice', 'rice']);
+    expect(result.selectedFoodIds).toEqual(['rice']);
+    expect(result.duplicateFoodIds).toEqual(['rice', 'rice']);
+    expect(result.score).toBe(1);
   });
 
   it('returns empty groups on an empty plate', async () => {
@@ -73,6 +96,8 @@ describe('dailyBalanceService', () => {
     expect(result.missingGroups).toEqual(['carbs', 'protein', 'vitamins']);
     expect(result.isBalanced).toBe(false);
     expect(result.whoaCount).toBe(0);
+    expect(result.score).toBe(0);
+    expect(result.starsEarned).toBe(0);
   });
 
   it('falls back to plain-JS when Prolog engine throws', async () => {

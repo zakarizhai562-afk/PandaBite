@@ -1,17 +1,62 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BalanceSummaryCard from '../components/BalanceSummaryCard';
-import ComboGuessPopup from '../../comboAlert/components/ComboGuessPopup';
-import { useComboAlert } from '../../comboAlert/hooks/useComboAlert';
 import { selectBalanceFeedback } from '../services/feedbackLibrary';
 import { awardStars } from '../../../core/services/starAwardService';
 import { useStars } from '../../../core/context/StarsContext';
+import { getItem, setItem } from '../../../core/utils/storage';
+import { getTodayKey } from '../../../core/utils/dateUtils';
 
-function getResultPandaImage(coveredCount) {
-  if (coveredCount >= 3) return '/images/combobox/happy.png';
-  if (coveredCount === 2) return '/images/combobox/excited.png';
-  if (coveredCount === 1) return '/images/combobox/thinking.png';
+const DAILY_LOG_AWARD_KEY = 'nutripal_daily_log_star_awards';
+const FALLBACK_RESULT = {
+  selectedFoodIds: [],
+  coveredGroups: [],
+  missingGroups: ['carbs', 'protein', 'vitamins'],
+  whoaCount: 0,
+  tierCounts: { go: 0, slow: 0, whoa: 0 },
+  score: 0,
+  starsEarned: 0,
+  isBalanced: false,
+};
+
+function getResultPandaImage(score) {
+  if (score >= 3) return '/images/combobox/happy.png';
+  if (score === 2) return '/images/combobox/excited.png';
+  if (score === 1) return '/images/combobox/thinking.png';
   return '/images/combobox/wrong.png';
+}
+
+function normalizeResult(rawResult) {
+  const result = { ...FALLBACK_RESULT, ...(rawResult || {}) };
+  const score = rawResult?.score ?? Math.max(
+    0,
+    Math.min(3, (result.coveredGroups?.length || 0) - Math.max(0, (result.whoaCount || 0) - 1))
+  );
+
+  return {
+    ...result,
+    score,
+    starsEarned: rawResult?.starsEarned ?? score,
+  };
+}
+
+function awardDailyLogStarsOnce(result, setStars) {
+  const amount = result.starsEarned ?? result.score ?? 0;
+  if (amount <= 0) return false;
+
+  const awardKey = result.entryId || `${result.date || getTodayKey()}-${result.selectedFoodIds?.join('-') || 'fallback'}`;
+  const awards = getItem(DAILY_LOG_AWARD_KEY) || {};
+  if (awards[awardKey]) return false;
+
+  awardStars(amount, 'daily-log', setStars);
+  setItem(DAILY_LOG_AWARD_KEY, {
+    ...awards,
+    [awardKey]: {
+      amount,
+      awardedAt: new Date().toISOString(),
+    },
+  });
+  return true;
 }
 
 export default function DailyResultScreen() {
@@ -20,29 +65,19 @@ export default function DailyResultScreen() {
   const { setStars } = useStars();
   const [feedback, setFeedback] = useState(null);
   const [starsEarned, setStarsEarned] = useState(0);
-  const { checkForComboAlert, comboAlertData, clearComboAlert } = useComboAlert();
 
-  const result = location.state?.result || {
-    coveredGroups: [],
-    missingGroups: ['carbs', 'protein', 'vitamins'],
-    whoaCount: 0,
-    isBalanced: false,
-  };
-  const foodIds = location.state?.foodIds || [];
+  const result = useMemo(
+    () => normalizeResult(location.state?.result),
+    [location.state?.result]
+  );
 
   useEffect(() => {
     const fb = selectBalanceFeedback(result);
     setFeedback(fb);
 
-    if (result.isBalanced) {
-      awardStars(3, 'daily-log', setStars);
-      setStarsEarned(3);
-    }
-
-    if (foodIds.length >= 2) {
-      checkForComboAlert(foodIds);
-    }
-  }, [result, setStars, foodIds, checkForComboAlert]);
+    setStarsEarned(result.starsEarned ?? result.score ?? 0);
+    awardDailyLogStarsOnce(result, setStars);
+  }, [result, setStars]);
 
   const handleContinue = () => {
     navigate('/daily-log', { state: { skipLoading: true } });
@@ -50,7 +85,7 @@ export default function DailyResultScreen() {
 
   const resultTitle = result.isBalanced ? 'Balanced meal!' : 'Nice check-in!';
   const resultTitleMy = result.isBalanced ? 'မျှတတဲ့အစားအစာပါ။' : 'စစ်ကြည့်တာ ကောင်းပါတယ်။';
-  const resultPandaImage = getResultPandaImage(result.coveredGroups.length);
+  const resultPandaImage = getResultPandaImage(result.score ?? result.coveredGroups.length);
 
   return (
     <div className="daily-result-screen">
@@ -81,14 +116,16 @@ export default function DailyResultScreen() {
         </section>
 
         <aside className="daily-result-side-panel">
-          <img
-            src={resultPandaImage}
-            alt="Red Panda"
-            className="daily-result-panda"
-          />
-          <div className="daily-result-note">
-            <span>အာဟာရအုပ်စုတွေကို ကြည့်ပြီး နောက်တစ်ခါ ပိုကောင်းအောင် ရွေးကြမယ်။</span>
-            <span>Look at your groups and try another tasty balance.</span>
+          <div className="daily-result-coach-row">
+            <img
+              src={resultPandaImage}
+              alt="Red Panda"
+              className="daily-result-panda"
+            />
+            <div className="daily-result-note">
+              <span>အာဟာရအုပ်စုတွေကို ကြည့်ပြီး နောက်တစ်ခါ ပိုကောင်းအောင် ရွေးကြမယ်။</span>
+              <span>Look at your groups and try another tasty balance.</span>
+            </div>
           </div>
           {starsEarned > 0 && (
             <div className="stars-earned">
@@ -107,16 +144,6 @@ export default function DailyResultScreen() {
           Continue
         </button>
       </div>
-
-      {comboAlertData && (
-        <ComboGuessPopup
-          pair={comboAlertData.pair}
-          foodAData={comboAlertData.foodAData}
-          foodBData={comboAlertData.foodBData}
-          triggerId={comboAlertData.triggerId}
-          onDismiss={clearComboAlert}
-        />
-      )}
     </div>
   );
 }
