@@ -128,20 +128,38 @@ export default function GoalsScreen() {
     ? round.choices.filter((f) => round.results[f]?.resolved)
     : [];
 
+  const themedReactionPrefix = selectedGoal === 'grow-taller'
+    ? 'tall-reaction'
+    : selectedGoal === 'clear-skin'
+    ? 'skin-reaction'
+    : selectedGoal === 'more-energy'
+    ? 'energy-reaction'
+    : null;
+  const reactionState = completedGoalId === selectedGoal
+    ? 'complete'
+    : reaction?.isCorrect === true
+    ? 'correct'
+    : reaction?.isCorrect === false
+    ? 'wrong'
+    : 'idle';
+  const reactionWrapClass = themedReactionPrefix && reaction
+    ? ` ${themedReactionPrefix}--${reaction.isCorrect === true ? 'correct' : reaction.isCorrect === false ? 'wrong' : 'neutral'}`
+    : '';
+
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="goals-screen">
         <div className="page-container">
           <div className="goals-header">
             <button className="btn-secondary" onClick={() => (selectedGoal ? handleBack() : navigate('/home'))}>
-              {selectedGoal ? 'Back' : 'Home'}
+              {selectedGoal ? 'Back' : 'Back to World Map'}
             </button>
             <h2 className="goals-title">{selectedGoal ? goal?.name.en : 'Goals'}</h2>
             <div className="goals-header-spacer" />
           </div>
 
           {reaction && (
-            <div className="goals-reaction-wrap">
+            <div className={`goals-reaction-wrap${reactionWrapClass}`}>
               <MascotBubble text={reaction.text} />
             </div>
           )}
@@ -154,7 +172,7 @@ export default function GoalsScreen() {
             </div>
           ) : (
             <div className="goals-game">
-              <PandaFeedTarget isAnimating={animating} />
+              <PandaFeedTarget isAnimating={animating} goalId={selectedGoal} reactionState={reactionState} />
 
               {round && !completedGoalId && (
                 <HintButton
@@ -166,7 +184,14 @@ export default function GoalsScreen() {
                 />
               )}
 
-              {round && <FoodChoiceTray foodChoices={round.choices} resolvedFoods={resolvedFoods} />}
+              {round && (
+                <FoodChoiceTray
+                  foodChoices={round.choices}
+                  resolvedFoods={resolvedFoods}
+                  goalId={selectedGoal}
+                  results={round.results}
+                />
+              )}
 
               {completedGoalId && (
                 <div className="goals-actions">

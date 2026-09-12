@@ -2,7 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoadingScreen from '../../features/loading/screens/LoadingScreen';
 import LandingScreen from '../../features/landing/screens/LandingScreen';
 import OnboardingScreen from '../../features/onboarding/screens/OnboardingScreen';
-import HomeIslandsScreen from '../../features/homeIslands/screens/HomeIslandsScreen';
+import WorldMapScreen from '../../features/homeIslands/screens/WorldMapScreen';
+// Note: HomeIslandsScreen + IslandHotspot (the earlier World Map
+// implementation) are intentionally left in place, unused, as a fallback —
+// see src/features/homeIslands/screens/HomeIslandsScreen.jsx.
 import DailyLogScreen from '../../features/dailyLog/screens/DailyLogScreen';
 import DailyResultScreen from '../../features/dailyLog/screens/DailyResultScreen';
 import GoalsScreen from '../../features/goals/screens/GoalsScreen';
@@ -18,8 +21,8 @@ export default function AppRouter() {
         <Route path="/landing" element={<LandingScreen />} />
         <Route path="/onboarding" element={<OnboardingScreen />} />
 
-        {/* Home / Food Islands — route: /home */}
-        <Route path="/home" element={<HomeIslandsScreen />} />
+        {/* Home / World Map — route: /home */}
+        <Route path="/home" element={<WorldMapScreen />} />
 
         {/* Daily Log — route: /daily-log */}
         <Route path="/daily-log" element={<DailyLogScreen />} />

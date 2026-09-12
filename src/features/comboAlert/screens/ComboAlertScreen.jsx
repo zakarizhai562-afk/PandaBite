@@ -110,7 +110,7 @@ export default function ComboAlertScreen() {
               className="combo-guess-btn combo-guess-btn--dismiss"
               onClick={() => navigate('/home')}
             >
-              Home
+              Back to World Map
             </button>
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function ComboAlertScreen() {
               className="combo-guess-btn combo-guess-btn--dismiss"
               onClick={() => navigate('/home')}
             >
-              Back Home
+              Back to World Map
             </button>
           </div>
         </div>

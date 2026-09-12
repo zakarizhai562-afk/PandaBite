@@ -871,64 +871,378 @@ button {
   font-size: 11px;
 }
 
-/* ── Home Islands ── */
-.home-islands-screen {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #EAF4EE 0%, #d4edda 50%, #EAF4EE 100%);
+/* ── World Map (landing / game-selection screen) ── */
+.world-map-screen {
   position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #BEE3F5 0%, #DFF2E6 100%);
 }
 
-.home-cloud {
+.world-map-stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 1672 / 941));
+  height: min(100dvh, calc(100vw * 941 / 1672));
+}
+
+.world-map-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.world-map-brand {
   position: absolute;
-  background-color: rgba(255,255,255,0.6);
-  border-radius: 20px;
-  z-index: 0;
-}
-
-.home-cloud--1 { top: 5%; left: 10%; width: 80px; height: 40px; }
-.home-cloud--2 { top: 15%; right: 15%; width: 60px; height: 30px; background-color: rgba(255,255,255,0.5); border-radius: 15px; }
-.home-cloud--3 { top: 45%; left: 5%; width: 70px; height: 35px; background-color: rgba(255,255,255,0.4); border-radius: 18px; }
-
-.stars-counter {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  top: 1.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 12px 20px;
-  background-color: rgba(234, 244, 238, 0.9);
-  backdrop-filter: blur(8px);
-  border-bottom: 2px solid rgba(45, 106, 79, 0.2);
+  text-align: center;
+  pointer-events: none;
 }
 
-.stars-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--color-panda-light);
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.stars-pill-icon { font-size: 20px; }
-
-.stars-pill-value {
+.world-map-brand-title {
   font-family: var(--font-heading);
-  font-size: 18px;
   font-weight: bold;
-  color: var(--color-text);
+  font-size: clamp(14px, 2.2vw, 22px);
+  color: var(--color-dark);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.85), 0 2px 6px rgba(255,255,255,0.6);
 }
 
-.stars-replay-btn {
-  margin-left: 12px;
-  padding: 6px 12px;
-  font-size: 13px;
+.world-map-brand-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 1.2vw, 13px);
+  color: var(--color-primary);
+  text-shadow: 0 1px 3px rgba(255,255,255,0.8);
 }
 
-/* Shared tarot-style card deck — used by home islands and goals */
+.world-map-menu-btn,
+.world-map-help-btn {
+  position: absolute;
+  top: 2%;
+  z-index: 5;
+  width: clamp(28px, 3.6vw, 40px);
+  height: clamp(28px, 3.6vw, 40px);
+  border: 2px solid rgba(255,255,255,0.9);
+  border-radius: 50%;
+  background-color: rgba(45, 106, 79, 0.85);
+  color: #FFF8EC;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: clamp(12px, 1.6vw, 17px);
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.world-map-menu-btn { left: 2%; }
+.world-map-help-btn { right: 2%; }
+
+.world-map-menu-btn:hover,
+.world-map-menu-btn:focus-visible,
+.world-map-help-btn:hover,
+.world-map-help-btn:focus-visible {
+  transform: scale(1.08);
+  background-color: rgba(45, 106, 79, 1);
+}
+
+/* Island hotspots — the islands themselves are the buttons.
+   `.island-hotspot` is the positioned hit-area only. The idle float and the
+   hover "lift toward the player" both animate `transform`, so they live on
+   two separate nested layers instead of one element: a CSS `animation`
+   (even paused) always wins the cascade over a plain `transform`
+   declaration on the same element, which would silently swallow the hover
+   lift if both lived together. `.island-hotspot-idle` runs the constant
+   idle float; the nested `.island-hotspot-body` handles the hover
+   transition. Their transforms compose visually since one is nested inside
+   the other. */
+.island-hotspot {
+  position: absolute;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.island-hotspot:focus-visible {
+  outline: none;
+}
+
+.island-hotspot-idle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: island-idle-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.island-hotspot-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: translateY(0) scale(1);
+  transition: transform 0.4s ease-out, filter 0.4s ease-out;
+}
+
+.island-hotspot:hover .island-hotspot-idle,
+.island-hotspot:focus-visible .island-hotspot-idle {
+  animation-play-state: paused;
+}
+
+.island-hotspot:hover .island-hotspot-body,
+.island-hotspot:focus-visible .island-hotspot-body {
+  transform: translateY(-8px) scale(1.035);
+  filter:
+    brightness(1.07)
+    drop-shadow(0 14px 14px rgba(27, 43, 34, 0.22))
+    drop-shadow(0 0 18px rgba(255, 240, 180, 0.6));
+}
+
+/* Stagger the idle float so islands never bob in sync */
+.island-hotspot:nth-of-type(1) .island-hotspot-idle { animation-duration: 5.6s; animation-delay: 0s; }
+.island-hotspot:nth-of-type(2) .island-hotspot-idle { animation-duration: 6.4s; animation-delay: 1.1s; }
+.island-hotspot:nth-of-type(3) .island-hotspot-idle { animation-duration: 6.8s; animation-delay: 2.3s; }
+.island-hotspot:nth-of-type(4) .island-hotspot-idle { animation-duration: 6.1s; animation-delay: 0.6s; }
+
+@keyframes island-idle-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1); }
+}
+
+.island-hotspot-glow {
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.55) 0%, rgba(255,240,180,0.32) 42%, transparent 72%);
+  opacity: 0;
+  filter: blur(2px);
+  transition: opacity 0.4s ease-out;
+  pointer-events: none;
+}
+
+.island-hotspot:hover .island-hotspot-glow,
+.island-hotspot:focus-visible .island-hotspot-glow {
+  opacity: 1;
+}
+
+.island-hotspot-label {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translate(-50%, 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
+  white-space: nowrap;
+  z-index: 3;
+}
+
+.island-hotspot:hover .island-hotspot-label,
+.island-hotspot:focus-visible .island-hotspot-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.island-hotspot-name {
+  background-color: rgba(27, 43, 34, 0.82);
+  color: #FFF8EC;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: clamp(10px, 1.5vw, 15px);
+  padding: 4px 12px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  letter-spacing: 0.4px;
+}
+
+.island-hotspot-cta {
+  background-color: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: clamp(8px, 1.1vw, 12px);
+  font-weight: bold;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+
+/* Ambient "alive world" decorations — subtle overlays only; the original
+   background artwork is never touched or redrawn. */
+.world-map-cloud,
+.world-map-leaf,
+.world-map-bird,
+.world-map-sparkle,
+.world-map-water-shimmer,
+.world-map-water-ripple {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Clouds drift sideways very slowly, each at its own speed */
+.world-map-cloud {
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.45) 55%, rgba(255,255,255,0) 75%);
+  filter: blur(1.5px);
+}
+
+.world-map-cloud--1 {
+  top: 3%;
+  left: 5%;
+  width: clamp(70px, 8vw, 130px);
+  height: clamp(26px, 3vw, 48px);
+  animation: world-map-cloud-float 18s ease-in-out infinite;
+}
+
+.world-map-cloud--2 {
+  top: 10%;
+  right: 4%;
+  width: clamp(60px, 7vw, 110px);
+  height: clamp(22px, 2.6vw, 42px);
+  animation: world-map-cloud-float 24s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.world-map-cloud--3 {
+  top: 66%;
+  left: 3%;
+  width: clamp(54px, 6.4vw, 96px);
+  height: clamp(20px, 2.4vw, 36px);
+  animation: world-map-cloud-float 30s ease-in-out infinite;
+  animation-delay: 5s;
+}
+
+@keyframes world-map-cloud-float {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(22px); }
+}
+
+/* Leaves drift across the sky on the wind — sideways, a little vertical
+   drift, a gentle spin, fading in and back out */
+.world-map-leaf {
+  top: 0;
+  left: 0;
+  font-size: clamp(13px, 1.6vw, 20px);
+  opacity: 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  animation-name: world-map-leaf-wind;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.world-map-leaf--1 { top: 4%;  left: 40%; animation-duration: 12s; animation-delay: 0s; }
+.world-map-leaf--2 { top: 26%; left: 5%;  animation-duration: 9s;  animation-delay: 2s; }
+.world-map-leaf--3 { top: 34%; left: 90%; animation-duration: 14s; animation-delay: 4s; }
+.world-map-leaf--4 { top: 50%; left: 47%; animation-duration: 10s; animation-delay: 1s; }
+.world-map-leaf--5 { top: 66%; left: 8%;  animation-duration: 13s; animation-delay: 5.5s; }
+.world-map-leaf--6 { top: 74%; left: 91%; animation-duration: 11s; animation-delay: 3s; }
+
+@keyframes world-map-leaf-wind {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  15%  { opacity: 0.85; }
+  50%  { transform: translate(70px, -18px) rotate(120deg); opacity: 0.7; }
+  85%  { opacity: 0.4; }
+  100% { transform: translate(150px, 12px) rotate(240deg); opacity: 0; }
+}
+
+.world-map-bird {
+  font-size: clamp(12px, 1.6vw, 18px);
+  opacity: 0.75;
+  animation: world-map-bird-drift 14s ease-in-out infinite;
+}
+
+.world-map-bird--1 { top: 5%; left: 6%; animation-delay: 0s; }
+.world-map-bird--2 { top: 8%; left: 92%; animation-delay: 4s; }
+
+@keyframes world-map-bird-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(24px, -8px); }
+}
+
+.world-map-sparkle {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
+  animation: world-map-sparkle-twinkle 2.6s ease-in-out infinite;
+}
+
+.world-map-sparkle--1 { top: 20%; left: 48%; animation-delay: 0.2s; }
+.world-map-sparkle--2 { top: 50%; left: 45%; animation-delay: 1s; }
+.world-map-sparkle--3 { top: 66%; left: 49%; animation-delay: 1.8s; }
+
+@keyframes world-map-sparkle-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* Water — tiny sweeping highlights and soft ripple rings; the sea artwork
+   itself never moves or distorts */
+.world-map-water-shimmer {
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  filter: blur(1px);
+  opacity: 0;
+  animation: world-map-water-shimmer-sweep ease-in-out infinite;
+}
+
+.world-map-water-shimmer--1 { top: 30%; left: 44%; width: clamp(50px, 6vw, 100px); animation-duration: 11s; animation-delay: 0s; }
+.world-map-water-shimmer--2 { top: 80%; left: 14%; width: clamp(45px, 5.5vw, 90px); animation-duration: 15s; animation-delay: 3s; }
+
+@keyframes world-map-water-shimmer-sweep {
+  0%, 100% { opacity: 0; transform: translateX(-8px); }
+  50% { opacity: 0.75; transform: translateX(8px); }
+}
+
+.world-map-water-ripple {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.65);
+  opacity: 0;
+  animation: world-map-water-ripple-expand ease-out infinite;
+}
+
+.world-map-water-ripple--1 { top: 58%; left: 85%; animation-duration: 9s; animation-delay: 1s; }
+.world-map-water-ripple--2 { top: 90%; left: 35%; animation-duration: 10s; animation-delay: 4s; }
+
+@keyframes world-map-water-ripple-expand {
+  0% { transform: scale(0.3); opacity: 0; }
+  12% { opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world-map-cloud,
+  .world-map-leaf,
+  .world-map-bird,
+  .world-map-sparkle,
+  .world-map-water-shimmer,
+  .world-map-water-ripple,
+  .island-hotspot-idle {
+    animation: none;
+  }
+}
+
+/* Shared tarot-style card deck — used by the Goals feature */
 .tarot-row {
   display: flex;
   flex-wrap: wrap;
@@ -978,29 +1292,6 @@ button {
   object-fit: contain;
 }
 
-.home-path {
-  position: relative;
-  z-index: 1;
-  padding: 48px 20px 80px;
-  min-height: calc(100vh - 60px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.island-stop-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--color-panda-light);
-  text-align: center;
-  padding: 8px;
-}
-
 .goal-card-icon {
   display: flex;
   align-items: center;
@@ -1010,24 +1301,6 @@ button {
   border-radius: 50%;
   background-color: var(--color-primary);
   font-size: 34px;
-}
-
-.island-label {
-  margin-top: 12px;
-  text-align: center;
-}
-
-.island-label-my {
-  font-family: var(--font-heading);
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--color-text);
-}
-
-.island-label-en {
-  font-family: var(--font-body);
-  font-size: 12px;
-  color: var(--color-muted);
 }
 
 /* ── Onboarding ── */
@@ -1218,6 +1491,751 @@ button {
 .goals-btn-back {
   background: var(--color-primary);
   color: var(--color-panda-light);
+}
+
+/* ── Goal Bites: Grow Taller game (themed variant, "tall foods" round only) ── */
+.tall-panda-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.tall-panda-target--over {
+  transform: scale(1.06);
+}
+
+.tall-panda-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 200px;
+  height: 190px;
+}
+
+.tall-panda-ground {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(45, 106, 79, 0.22) 0%, rgba(45, 106, 79, 0) 72%);
+  z-index: 0;
+}
+
+.tall-panda-img {
+  position: relative;
+  z-index: 1;
+  width: 170px;
+  height: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
+  animation: tall-panda-pop 0.35s ease;
+}
+
+.tall-panda-img--bounce {
+  animation: tall-panda-bounce 0.5s ease;
+}
+
+.tall-panda-img--big {
+  width: 200px;
+  height: 200px;
+}
+
+.tall-growth-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #E9F7EF 0%, #D3F0DE 100%);
+  border: 2px solid #2D6A4F;
+  color: #1B4332;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.25);
+  animation: tall-growth-pop 0.4s ease;
+}
+
+.tall-growth-arrow {
+  color: #2D6A4F;
+  font-size: 11px;
+  animation: tall-growth-arrow-rise 1s ease-in-out infinite;
+}
+
+.tall-panda-speech {
+  margin-top: 4px;
+  background: #FFF8EC;
+  border: 2px solid var(--color-panda-light);
+  border-radius: 14px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.1);
+}
+
+@keyframes tall-panda-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes tall-panda-pop {
+  0% { transform: scale(0.85); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tall-growth-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tall-growth-arrow-rise {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-4px); opacity: 0.6; }
+}
+
+/* Reaction bubble tint (wraps the shared MascotBubble without editing it) */
+.tall-reaction--correct .mascot-speech {
+  background: #E9F7EF;
+  color: #1B4332;
+  border: 2px solid #2D6A4F;
+}
+
+.tall-reaction--correct .mascot-speech::before {
+  border-right-color: #2D6A4F;
+}
+
+.tall-reaction--correct .mascot-text-my {
+  opacity: 0.75;
+}
+
+.tall-reaction--wrong .mascot-speech {
+  background: #FDECEC;
+  color: #7A2E2E;
+  border: 2px solid #E0645F;
+}
+
+.tall-reaction--wrong .mascot-speech::before {
+  border-right-color: #E0645F;
+}
+
+.tall-reaction--wrong .mascot-text-my {
+  opacity: 0.75;
+}
+
+.tall-reaction--neutral .mascot-speech {
+  background: #FFF8EC;
+  color: var(--color-text);
+  border: 2px solid var(--color-panda-light);
+}
+
+.tall-reaction--neutral .mascot-speech::before {
+  border-right-color: var(--color-panda-light);
+}
+
+/* Wood-frame food tray */
+.tall-food-frame {
+  width: 100%;
+  background: linear-gradient(180deg, #F3E3C6 0%, #EAD3A8 100%);
+  border: 6px solid #9C6B3E;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35), 0 10px 24px rgba(45, 106, 79, 0.18);
+}
+
+.tall-food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.tall-food-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 3px solid #FFF3E0;
+  border-radius: 14px;
+  padding: 10px 8px 8px;
+  cursor: grab;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.12);
+}
+
+.tall-food-chip--dragging {
+  z-index: 100;
+  box-shadow: 0 10px 20px rgba(45, 106, 79, 0.28);
+}
+
+.tall-food-chip--disabled {
+  cursor: not-allowed;
+}
+
+.tall-food-chip--correct {
+  border-color: #2D6A4F;
+  background: #F2FAF5;
+}
+
+.tall-food-chip--wrong {
+  border-color: #E0645F;
+  background: #FDF2F2;
+  animation: tall-chip-shake 0.4s ease;
+}
+
+.tall-food-chip-art {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tall-food-chip-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tall-food-chip-fallback {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.tall-food-chip-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.tall-food-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  animation: tall-growth-pop 0.3s ease;
+}
+
+.tall-food-badge--correct {
+  background: #2D6A4F;
+}
+
+.tall-food-badge--wrong {
+  background: #E0645F;
+}
+
+@keyframes tall-chip-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ── Goal Bites: Clear Skin game (themed variant, "clear skin" round only) ── */
+.skin-panda-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.skin-panda-target--over {
+  transform: scale(1.06);
+}
+
+.skin-panda-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 200px;
+  height: 190px;
+}
+
+.skin-panda-ground {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(214, 51, 108, 0.18) 0%, rgba(214, 51, 108, 0) 72%);
+  z-index: 0;
+}
+
+.skin-panda-img {
+  position: relative;
+  z-index: 1;
+  width: 170px;
+  height: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
+  animation: skin-panda-pop 0.35s ease;
+}
+
+.skin-panda-img--bounce {
+  animation: tall-panda-bounce 0.5s ease;
+}
+
+.skin-panda-img--big {
+  width: 200px;
+  height: 200px;
+}
+
+.skin-glow-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #FDF0F5 0%, #FBDCE8 100%);
+  border: 2px solid #D6336C;
+  color: #8A1F49;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(214, 51, 108, 0.25);
+  animation: tall-growth-pop 0.4s ease;
+}
+
+.skin-glow-sparkle {
+  font-size: 12px;
+  animation: skin-glow-sparkle-twinkle 1s ease-in-out infinite;
+}
+
+.skin-panda-speech {
+  margin-top: 4px;
+  background: #FFF8EC;
+  border: 2px solid var(--color-panda-light);
+  border-radius: 14px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.1);
+}
+
+@keyframes skin-panda-pop {
+  0% { transform: scale(0.85); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes skin-glow-sparkle-twinkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.6; }
+}
+
+/* Reaction bubble tint (wraps the shared MascotBubble without editing it) */
+.skin-reaction--correct .mascot-speech {
+  background: #FDF0F5;
+  color: #8A1F49;
+  border: 2px solid #D6336C;
+}
+
+.skin-reaction--correct .mascot-speech::before {
+  border-right-color: #D6336C;
+}
+
+.skin-reaction--correct .mascot-text-my {
+  opacity: 0.75;
+}
+
+.skin-reaction--wrong .mascot-speech {
+  background: #FDECEC;
+  color: #7A2E2E;
+  border: 2px solid #E0645F;
+}
+
+.skin-reaction--wrong .mascot-speech::before {
+  border-right-color: #E0645F;
+}
+
+.skin-reaction--wrong .mascot-text-my {
+  opacity: 0.75;
+}
+
+.skin-reaction--neutral .mascot-speech {
+  background: #FFF8EC;
+  color: var(--color-text);
+  border: 2px solid var(--color-panda-light);
+}
+
+.skin-reaction--neutral .mascot-speech::before {
+  border-right-color: var(--color-panda-light);
+}
+
+/* Wood-frame food tray (pink accent) */
+.skin-food-frame {
+  width: 100%;
+  background: linear-gradient(180deg, #F3E3C6 0%, #EAD3A8 100%);
+  border: 6px solid #9C6B3E;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35), 0 10px 24px rgba(214, 51, 108, 0.15);
+}
+
+.skin-food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.skin-food-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 3px solid #FFF3E0;
+  border-radius: 14px;
+  padding: 10px 8px 8px;
+  cursor: grab;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 4px 10px rgba(214, 51, 108, 0.1);
+}
+
+.skin-food-chip--dragging {
+  z-index: 100;
+  box-shadow: 0 10px 20px rgba(214, 51, 108, 0.25);
+}
+
+.skin-food-chip--disabled {
+  cursor: not-allowed;
+}
+
+.skin-food-chip--correct {
+  border-color: #D6336C;
+  background: #FDF6F9;
+}
+
+.skin-food-chip--wrong {
+  border-color: #E0645F;
+  background: #FDF2F2;
+  animation: tall-chip-shake 0.4s ease;
+}
+
+.skin-food-chip-art {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skin-food-chip-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.skin-food-chip-fallback {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.skin-food-chip-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.skin-food-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  animation: tall-growth-pop 0.3s ease;
+}
+
+.skin-food-badge--correct {
+  background: #D6336C;
+}
+
+.skin-food-badge--wrong {
+  background: #E0645F;
+}
+
+/* ── Goal Bites: Have More Energy game (themed variant, "more energy" round only) ── */
+.energy-panda-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.energy-panda-target--over {
+  transform: scale(1.06);
+}
+
+.energy-panda-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 200px;
+  height: 190px;
+}
+
+.energy-panda-ground {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 140, 66, 0.22) 0%, rgba(255, 140, 66, 0) 72%);
+  z-index: 0;
+}
+
+.energy-panda-img {
+  position: relative;
+  z-index: 1;
+  width: 170px;
+  height: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
+  animation: skin-panda-pop 0.35s ease;
+}
+
+.energy-panda-img--bounce {
+  animation: tall-panda-bounce 0.5s ease;
+}
+
+.energy-panda-img--big {
+  width: 200px;
+  height: 200px;
+}
+
+.energy-boost-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #FFF1E4 0%, #FFDFBE 100%);
+  border: 2px solid #FF8C42;
+  color: #9A4A0C;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.3);
+  animation: tall-growth-pop 0.4s ease;
+}
+
+.energy-boost-bolt {
+  font-size: 12px;
+  animation: energy-bolt-flicker 1s ease-in-out infinite;
+}
+
+.energy-panda-speech {
+  margin-top: 4px;
+  background: #FFF8EC;
+  border: 2px solid var(--color-panda-light);
+  border-radius: 14px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(45, 106, 79, 0.1);
+}
+
+@keyframes energy-bolt-flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1.2) rotate(-8deg); opacity: 0.65; }
+}
+
+/* Reaction bubble tint (wraps the shared MascotBubble without editing it) */
+.energy-reaction--correct .mascot-speech {
+  background: #FFF1E4;
+  color: #9A4A0C;
+  border: 2px solid #FF8C42;
+}
+
+.energy-reaction--correct .mascot-speech::before {
+  border-right-color: #FF8C42;
+}
+
+.energy-reaction--correct .mascot-text-my {
+  opacity: 0.75;
+}
+
+.energy-reaction--wrong .mascot-speech {
+  background: #FDECEC;
+  color: #7A2E2E;
+  border: 2px solid #E0645F;
+}
+
+.energy-reaction--wrong .mascot-speech::before {
+  border-right-color: #E0645F;
+}
+
+.energy-reaction--wrong .mascot-text-my {
+  opacity: 0.75;
+}
+
+.energy-reaction--neutral .mascot-speech {
+  background: #FFF8EC;
+  color: var(--color-text);
+  border: 2px solid var(--color-panda-light);
+}
+
+.energy-reaction--neutral .mascot-speech::before {
+  border-right-color: var(--color-panda-light);
+}
+
+/* Wood-frame food tray (amber accent) */
+.energy-food-frame {
+  width: 100%;
+  background: linear-gradient(180deg, #F3E3C6 0%, #EAD3A8 100%);
+  border: 6px solid #9C6B3E;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35), 0 10px 24px rgba(255, 140, 66, 0.18);
+}
+
+.energy-food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.energy-food-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 3px solid #FFF3E0;
+  border-radius: 14px;
+  padding: 10px 8px 8px;
+  cursor: grab;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.12);
+}
+
+.energy-food-chip--dragging {
+  z-index: 100;
+  box-shadow: 0 10px 20px rgba(255, 140, 66, 0.3);
+}
+
+.energy-food-chip--disabled {
+  cursor: not-allowed;
+}
+
+.energy-food-chip--correct {
+  border-color: #FF8C42;
+  background: #FFF8F1;
+}
+
+.energy-food-chip--wrong {
+  border-color: #E0645F;
+  background: #FDF2F2;
+  animation: tall-chip-shake 0.4s ease;
+}
+
+.energy-food-chip-art {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energy-food-chip-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.energy-food-chip-fallback {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.energy-food-chip-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.energy-food-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  animation: tall-growth-pop 0.3s ease;
+}
+
+.energy-food-badge--correct {
+  background: #FF8C42;
+}
+
+.energy-food-badge--wrong {
+  background: #E0645F;
 }
 
 /* ── Combo Popup ── */
@@ -2345,5 +3363,446 @@ button {
 @media (max-width: 400px) {
   .tarot-card {
     width: 140px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   World Map v2 — layered interactive architecture (WorldMapScreen.jsx +
+   components/worldMap/*). All classes are prefixed `wm-` so they never
+   collide with the original `.world-map-*` / `.island-hotspot-*` rules
+   above, which remain fully intact for the preserved HomeIslandsScreen /
+   IslandHotspot fallback (see AppRouter.jsx).
+   ══════════════════════════════════════════════════════════════════════ */
+
+.wm-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #BEE3F5 0%, #DFF2E6 100%);
+}
+
+/* Aspect-ratio-locked stage: the background always renders at its native
+   1672:941 ratio, fully visible (never cropped) and centered, so every
+   island's percentage-based position stays pixel-aligned with the artwork
+   at any viewport size (1280x720 up through 1920x1080 and beyond). */
+.wm-stage {
+  position: relative;
+  width: min(100vw, calc(100dvh * 1672 / 941));
+  height: min(100dvh, calc(100vw * 941 / 1672));
+}
+
+.wm-background {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Soft vignette overlay — a CSS layer, not a change to the artwork itself.
+   Gently dims the far corners so the eye settles on the islands. Sits above
+   the raw background image but below every interactive layer. */
+.wm-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, transparent 58%, rgba(8, 28, 20, 0.13) 100%);
+}
+
+/* ── Top header — floating glass pill, not a bar ── */
+.wm-header {
+  position: absolute;
+  inset: 0 0 auto 0;
+  top: 1.8%;
+  z-index: 8;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 2.2%;
+  pointer-events: none;
+  animation: wm-header-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.wm-header > * {
+  pointer-events: auto;
+}
+
+@keyframes wm-header-enter {
+  0% { opacity: 0; transform: translateY(-14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.wm-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  pointer-events: none;
+  padding: 7px 22px 9px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.32) 100%);
+  backdrop-filter: blur(10px) saturate(160%);
+  border: 1.5px solid rgba(255,255,255,0.75);
+  box-shadow: 0 8px 20px rgba(20, 40, 30, 0.14), inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.wm-brand-title {
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: clamp(14px, 2.2vw, 22px);
+  color: var(--color-dark);
+  letter-spacing: 0.5px;
+}
+
+.wm-brand-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(9px, 1.2vw, 13px);
+  color: var(--color-primary);
+}
+
+.wm-icon-btn {
+  width: clamp(30px, 3.8vw, 42px);
+  height: clamp(30px, 3.8vw, 42px);
+  border: 1.5px solid rgba(255,255,255,0.75);
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
+  backdrop-filter: blur(10px) saturate(160%);
+  color: var(--color-dark);
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: clamp(13px, 1.7vw, 18px);
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(20, 40, 30, 0.16), inset 0 1px 0 rgba(255,255,255,0.75);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.wm-icon-btn:hover,
+.wm-icon-btn:focus-visible {
+  transform: scale(1.1);
+  background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.46) 100%);
+  box-shadow: 0 10px 22px rgba(20, 40, 30, 0.22), 0 0 0 4px rgba(255,255,255,0.4);
+}
+
+.wm-icon-btn:focus-visible {
+  outline: none;
+}
+
+/* ── Islands ──
+   `.wm-island` is the positioned hit-area only. The idle float and the
+   hover "lift toward the player" both animate `transform`, so — exactly as
+   in the v1 implementation — they live on two nested layers instead of one
+   element: a running CSS `animation` (even paused) always wins the cascade
+   over a plain `transform` declared on the same element, which would
+   silently swallow the hover lift if both lived together.
+   `.wm-island-idle` runs the constant idle float; the nested
+   `.wm-island-body` handles the hover transition. Nested transforms
+   compose visually, so both motions apply correctly at once. */
+.wm-island {
+  position: absolute;
+  z-index: 1;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  animation: wm-island-enter 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered "the world wakes up" entrance on first load — a one-shot
+   animation, not a loop, so it never interferes with the idle float. */
+.wm-island:nth-of-type(1) { animation-delay: 0.05s; }
+.wm-island:nth-of-type(2) { animation-delay: 0.2s; }
+.wm-island:nth-of-type(3) { animation-delay: 0.35s; }
+.wm-island:nth-of-type(4) { animation-delay: 0.5s; }
+
+@keyframes wm-island-enter {
+  0% { opacity: 0; transform: translateY(16px) scale(0.94); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wm-island:hover,
+.wm-island:focus-visible {
+  z-index: 6;
+}
+
+.wm-island:focus-visible {
+  outline: none;
+}
+
+.wm-island:focus-visible .wm-island-body {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.95), 0 0 0 6px rgba(45,106,79,0.55);
+}
+
+.wm-island-idle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation-name: wm-island-idle-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.wm-island-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: translateY(0) scale(1);
+  transition: transform 0.35s ease-out, filter 0.35s ease-out, box-shadow 0.35s ease-out;
+}
+
+/* Island "comes forward" on hover/focus — a gentle lift, not a zoom */
+.wm-island:hover .wm-island-idle,
+.wm-island:focus-visible .wm-island-idle {
+  animation-play-state: paused;
+}
+
+.wm-island:hover .wm-island-body,
+.wm-island:focus-visible .wm-island-body {
+  transform: translateY(-16px) scale(1.07);
+  filter:
+    brightness(1.1)
+    drop-shadow(0 22px 24px rgba(20, 40, 30, 0.26))
+    drop-shadow(0 0 30px rgba(255, 225, 150, 0.75));
+}
+
+/* Quick, satisfying press feedback before navigating away */
+.wm-island--clicking .wm-island-body {
+  transition: transform 0.15s ease-out, filter 0.15s ease-out;
+  transform: translateY(-6px) scale(0.97);
+}
+
+@keyframes wm-island-idle-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1); }
+}
+
+.wm-island-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Fallback halo used while no transparent island cutout image exists yet —
+   gives the "elevated" feeling via light + shadow since the underlying
+   artwork pixels can't literally move. */
+.wm-island-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,250,220,0.75) 0%, rgba(255,225,150,0.4) 45%, transparent 74%);
+  opacity: 0;
+  transform: scale(0.85);
+  filter: blur(3px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  pointer-events: none;
+}
+
+.wm-island:hover .wm-island-glow,
+.wm-island:focus-visible .wm-island-glow {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Island label — a speech-bubble that pops toward the player, not a
+   plain fade ── */
+.wm-island-label {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  transform: translate(-50%, 8px) scale(0.82);
+  transform-origin: 50% 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+  z-index: 3;
+}
+
+.wm-island:hover .wm-island-label,
+.wm-island:focus-visible .wm-island-label {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.wm-island-label-name {
+  position: relative;
+  background-color: #1B2B22;
+  color: #FFF8EC;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  font-size: clamp(10px, 1.5vw, 15px);
+  padding: 5px 14px;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.28);
+  letter-spacing: 0.4px;
+}
+
+.wm-island-label-name::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 9px;
+  height: 9px;
+  background-color: #1B2B22;
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: -1;
+}
+
+.wm-island-label-cta {
+  background-color: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: clamp(8px, 1.1vw, 12px);
+  font-weight: bold;
+  padding: 3px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(255, 140, 66, 0.4);
+}
+
+/* ── Ambient layers — subtle overlays only; the background artwork is
+   never redrawn, distorted, or animated as a whole. ── */
+.wm-leaf-layer,
+.wm-water-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  animation: wm-layer-fade-in 1.2s ease-out both;
+}
+
+.wm-water-layer { animation-delay: 0s; }
+.wm-leaf-layer { animation-delay: 0.3s; }
+
+@keyframes wm-layer-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Leaves drift across the sky on the wind — sideways, a little vertical
+   drift, a gentle spin, fading in and back out */
+.wm-leaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: clamp(13px, 1.6vw, 20px);
+  opacity: 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  animation-name: wm-leaf-wind;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.wm-leaf--1 { top: 4%;  left: 40%; animation-duration: 12s; animation-delay: 0s; }
+.wm-leaf--2 { top: 26%; left: 5%;  animation-duration: 9s;  animation-delay: 2s; }
+.wm-leaf--3 { top: 34%; left: 90%; animation-duration: 14s; animation-delay: 4s; }
+.wm-leaf--4 { top: 50%; left: 47%; animation-duration: 10s; animation-delay: 1s; }
+.wm-leaf--5 { top: 66%; left: 8%;  animation-duration: 13s; animation-delay: 5.5s; }
+.wm-leaf--6 { top: 74%; left: 91%; animation-duration: 11s; animation-delay: 3s; }
+
+@keyframes wm-leaf-wind {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  15%  { opacity: 0.85; }
+  50%  { transform: translate(70px, -18px) rotate(120deg); opacity: 0.7; }
+  85%  { opacity: 0.4; }
+  100% { transform: translate(150px, 12px) rotate(240deg); opacity: 0; }
+}
+
+/* Water — tiny sweeping highlights, soft ripple rings, and faint sparkles */
+.wm-water-shimmer {
+  position: absolute;
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  filter: blur(1px);
+  opacity: 0;
+  animation: wm-water-shimmer-sweep ease-in-out infinite;
+}
+
+.wm-water-shimmer--1 { top: 30%; left: 44%; width: clamp(50px, 6vw, 100px); animation-duration: 11s; animation-delay: 0s; }
+.wm-water-shimmer--2 { top: 80%; left: 14%; width: clamp(45px, 5.5vw, 90px); animation-duration: 15s; animation-delay: 3s; }
+
+@keyframes wm-water-shimmer-sweep {
+  0%, 100% { opacity: 0; transform: translateX(-8px); }
+  50% { opacity: 0.75; transform: translateX(8px); }
+}
+
+.wm-water-ripple {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.65);
+  opacity: 0;
+  animation: wm-water-ripple-expand ease-out infinite;
+}
+
+.wm-water-ripple--1 { top: 58%; left: 85%; animation-duration: 9s; animation-delay: 1s; }
+.wm-water-ripple--2 { top: 90%; left: 35%; animation-duration: 10s; animation-delay: 4s; }
+
+@keyframes wm-water-ripple-expand {
+  0% { transform: scale(0.3); opacity: 0; }
+  12% { opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.wm-water-sparkle {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
+  animation: wm-water-sparkle-twinkle 2.6s ease-in-out infinite;
+}
+
+.wm-water-sparkle--1 { top: 20%; left: 48%; animation-delay: 0.2s; }
+.wm-water-sparkle--2 { top: 50%; left: 45%; animation-delay: 1s; }
+.wm-water-sparkle--3 { top: 66%; left: 49%; animation-delay: 1.8s; }
+
+@keyframes wm-water-sparkle-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-leaf,
+  .wm-water-shimmer,
+  .wm-water-ripple,
+  .wm-water-sparkle,
+  .wm-island-idle {
+    animation: none;
+  }
+
+  .wm-island--clicking .wm-island-body {
+    transition: none;
+  }
+
+  /* Keep the one-shot entrance animations from being a source of motion —
+     drop them and just show the settled end state immediately. */
+  .wm-header,
+  .wm-island,
+  .wm-leaf-layer,
+  .wm-water-layer {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

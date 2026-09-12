@@ -83,7 +83,7 @@ export default function DailyLogScreen() {
         <button
           className="daily-log-back-btn"
           onClick={() => navigate('/home')}
-          aria-label="Back"
+          aria-label="Back to World Map"
         />
 
         <div className="daily-log-bubble">

@@ -441,7 +441,7 @@ export default function PuzzleScreen() {
 
         <div className="puzzle-controls">
           <button className="btn-ghost" onClick={() => navigate('/home')}>
-            Home
+            Back to World Map
           </button>
           <button className="btn-ghost" onClick={handleTogglePause}>
             {gameState.state === PAUSED ? 'Resume' : 'Pause'}

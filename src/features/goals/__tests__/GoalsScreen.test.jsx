@@ -35,7 +35,7 @@ describe('GoalsScreen', () => {
     await screen.findByText('Goals', {}, { timeout: 2000 });
     const growCard = screen.getByText('Grow Taller').closest('.goal-card');
     fireEvent.click(growCard);
-    expect(await screen.findByText('Drag food to the panda!')).toBeInTheDocument();
+    expect(await screen.findByText('Drag the food to me!')).toBeInTheDocument();
     expect(screen.getByText('Back')).toBeInTheDocument();
   });
 
@@ -44,7 +44,7 @@ describe('GoalsScreen', () => {
     renderGoals();
     await screen.findByText('Goals', {}, { timeout: 2000 });
     fireEvent.click(screen.getByText('Grow Taller').closest('.goal-card'));
-    await screen.findByText('Drag food to the panda!');
+    await screen.findByText('Drag the food to me!');
     const hintBtn = screen.getByText('Hint');
     fireEvent.click(hintBtn);
     expect(screen.getByText(/Clue/)).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe('GoalsScreen', () => {
     renderGoals();
     await screen.findByText('Goals', {}, { timeout: 2000 });
     fireEvent.click(screen.getByText('Clear Skin').closest('.goal-card'));
-    await screen.findByText('Drag food to the panda!');
+    await screen.findByText('Drag the food to me!');
     fireEvent.click(screen.getByText('Hint'));
     const revealBtn = screen.getByText(/Reveal/);
     fireEvent.click(revealBtn);
@@ -77,7 +77,7 @@ describe('GoalsScreen', () => {
     renderGoals();
     await screen.findByText('Goals', {}, { timeout: 2000 });
     fireEvent.click(screen.getByText('Grow Taller').closest('.goal-card'));
-    await screen.findByText('Drag food to the panda!');
+    await screen.findByText('Drag the food to me!');
     fireEvent.click(screen.getByText('Hint'));
     const clueBtn = screen.getByText(/Clue/);
     expect(clueBtn.disabled).toBe(true);

@@ -1,26 +1,30 @@
 import { useNavigate } from 'react-router-dom';
-import IslandStop from '../components/IslandStop';
+import IslandHotspot from '../components/IslandHotspot';
 
 const islands = [
   {
-    image: '/world_art/island_daily_log.png',
-    label: { my: 'နေ့စဉ်မှတ်တမ်း', en: 'Daily Log' },
+    id: 'daily-balance',
+    name: 'Daily Balance',
     route: '/daily-log',
+    area: { left: '23%', top: '7%', width: '25%', height: '46%' },
   },
   {
-    image: '/world_art/island_puzzle.png',
-    label: { my: 'ဇာတ်ကောင်ဂိမ်း', en: 'Puzzle Game' },
-    route: '/puzzle',
-  },
-  {
-    image: '/world_art/island_goals.png',
-    label: { my: 'ရည်မှန်းချက်များ', en: 'Goals' },
+    id: 'goal-bites',
+    name: 'Goal Bites',
     route: '/goals',
+    area: { left: '51%', top: '7%', width: '30%', height: '40%' },
   },
   {
-    image: '/world_art/island_combo.png',
-    label: { my: 'အစားအစာ တွဲဖက်', en: 'Combo Alert' },
+    id: 'food-rain',
+    name: 'Food Rain',
+    route: '/puzzle',
+    area: { left: '23%', top: '53%', width: '24%', height: '43%' },
+  },
+  {
+    id: 'yum-or-yuck',
+    name: 'Yum or Yuck?',
     route: '/combo',
+    area: { left: '51%', top: '53%', width: '30%', height: '43%' },
   },
 ];
 
@@ -28,31 +32,68 @@ export default function HomeIslandsScreen() {
   const navigate = useNavigate();
 
   return (
-    <div className="home-islands-screen">
-      <div className="home-cloud home-cloud--1" />
-      <div className="home-cloud home-cloud--2" />
-      <div className="home-cloud home-cloud--3" />
+    <div className="world-map-screen">
+      <div className="world-map-stage">
+        <img
+          src="/world_art/world_map.png"
+          alt="PandaBite World Map — four islands with red panda characters, connected by bridges over a sunny sea"
+          className="world-map-bg"
+        />
 
-      <div className="stars-counter">
-        <button className="btn-ghost" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <button className="btn-ghost stars-replay-btn" onClick={() => navigate('/onboarding')}>
-          ?
-        </button>
-      </div>
+        <div className="world-map-cloud world-map-cloud--1" aria-hidden="true" />
+        <div className="world-map-cloud world-map-cloud--2" aria-hidden="true" />
+        <div className="world-map-cloud world-map-cloud--3" aria-hidden="true" />
 
-      <div className="home-path">
-        <div className="tarot-row">
+        <div className="world-map-bird world-map-bird--1" aria-hidden="true">🕊️</div>
+        <div className="world-map-bird world-map-bird--2" aria-hidden="true">🕊️</div>
+
+        <div className="world-map-leaf world-map-leaf--1" aria-hidden="true">🍃</div>
+        <div className="world-map-leaf world-map-leaf--2" aria-hidden="true">🍃</div>
+        <div className="world-map-leaf world-map-leaf--3" aria-hidden="true">🍃</div>
+        <div className="world-map-leaf world-map-leaf--4" aria-hidden="true">🍃</div>
+        <div className="world-map-leaf world-map-leaf--5" aria-hidden="true">🍃</div>
+        <div className="world-map-leaf world-map-leaf--6" aria-hidden="true">🍃</div>
+
+        <div className="world-map-sparkle world-map-sparkle--1" aria-hidden="true" />
+        <div className="world-map-sparkle world-map-sparkle--2" aria-hidden="true" />
+        <div className="world-map-sparkle world-map-sparkle--3" aria-hidden="true" />
+
+        <div className="world-map-water-shimmer world-map-water-shimmer--1" aria-hidden="true" />
+        <div className="world-map-water-shimmer world-map-water-shimmer--2" aria-hidden="true" />
+        <div className="world-map-water-ripple world-map-water-ripple--1" aria-hidden="true" />
+        <div className="world-map-water-ripple world-map-water-ripple--2" aria-hidden="true" />
+
         {islands.map((island) => (
-          <IslandStop
-            key={island.route}
-            image={island.image}
-            label={island.label}
-            route={island.route}
+          <IslandHotspot
+            key={island.id}
+            name={island.name}
+            area={island.area}
+            onActivate={() => navigate(island.route)}
           />
         ))}
+
+        <div className="world-map-brand" aria-hidden="true">
+          <span className="world-map-brand-title">PandaBite</span>
+          <span className="world-map-brand-tagline">Choose Your Adventure!</span>
         </div>
+
+        <button
+          type="button"
+          className="world-map-menu-btn"
+          onClick={() => navigate('/')}
+          aria-label="Back to menu"
+        >
+          ←
+        </button>
+
+        <button
+          type="button"
+          className="world-map-help-btn"
+          onClick={() => navigate('/onboarding')}
+          aria-label="Replay tutorial"
+        >
+          ?
+        </button>
       </div>
     </div>
   );
