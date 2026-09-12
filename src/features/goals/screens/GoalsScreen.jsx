@@ -151,10 +151,18 @@ export default function GoalsScreen() {
       <div className="goals-screen">
         <div className="page-container">
           <div className="goals-header">
-            <button className="btn-secondary" onClick={() => (selectedGoal ? handleBack() : navigate('/home'))}>
-              {selectedGoal ? 'Back' : 'Back to World Map'}
+            <button
+              className="daily-log-back-btn goals-back-btn"
+              onClick={() => (selectedGoal ? handleBack() : navigate('/home'))}
+              aria-label={selectedGoal ? 'Back to goals' : 'Back to World Map'}
+            >
+              <span className="visually-hidden">Back</span>
             </button>
-            <h2 className="goals-title">{selectedGoal ? goal?.name.en : 'Goals'}</h2>
+            {selectedGoal ? (
+              <h2 className="goals-title">{goal?.name.en}</h2>
+            ) : (
+              <h2 className="visually-hidden">Goals</h2>
+            )}
             <div className="goals-header-spacer" />
           </div>
 
@@ -165,7 +173,7 @@ export default function GoalsScreen() {
           )}
 
           {!selectedGoal ? (
-            <div className="goals-grid tarot-row">
+            <div className="goals-grid">
               {goals.map((g) => (
                 <GoalCard key={g.id} goal={g} onSelect={handleSelectGoal} />
               ))}

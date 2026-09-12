@@ -3,6 +3,8 @@ import { useDraggable } from '@dnd-kit/core';
 
 export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
   const [imgError, setImgError] = useState(false);
+  const tierLabel = food.tier || 'Go';
+  const tierClass = `tier-${tierLabel.toLowerCase()}`;
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `food-${food.id}-${isOnPlate ? 'plate' : 'box'}`,
     data: { food, isOnPlate },
@@ -48,7 +50,7 @@ export default function FoodEntryCard({ food, onRemove, isOnPlate = false }) {
         fallback
       )}
       <span className="food-name">{food.name.en}</span>
-      <span className="food-go-btn">Go</span>
+      <span className={`food-go-btn food-tier ${tierClass}`}>{tierLabel}</span>
     </div>
   );
 }
