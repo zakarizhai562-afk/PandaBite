@@ -22,6 +22,41 @@
       "image": "/images/food/bread.png"
     },
     {
+      "id": "corn",
+      "name": { "my": "ပြောင်း", "en": "Corn" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/corn.png"
+    },
+    {
+      "id": "potato",
+      "name": { "my": "အာလူး", "en": "Potato" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/potato.png"
+    },
+    {
+      "id": "sweet_potato",
+      "name": { "my": "ကန်စွန်းဥ", "en": "Sweet Potato" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/sweet_potato.png"
+    },
+    {
+      "id": "cereals",
+      "name": { "my": "စီရီရယ်", "en": "Cereals" },
+      "groups": ["carbs"],
+      "tier": "Go",
+      "image": "/images/food/cereals.png"
+    },
+    {
+      "id": "pancakes",
+      "name": { "my": "ပန်ကိတ်", "en": "Pancakes" },
+      "groups": ["carbs"],
+      "tier": "Slow",
+      "image": "/images/food/pancakes.png"
+    },
+    {
       "id": "egg",
       "name": { "my": "ကြက်ဥ", "en": "Egg" },
       "groups": ["protein"],
@@ -50,6 +85,27 @@
       "image": "/images/food/beans.png"
     },
     {
+      "id": "milk",
+      "name": { "my": "နို့", "en": "Milk" },
+      "groups": ["protein", "calcium"],
+      "tier": "Go",
+      "image": "/images/food/milk.png"
+    },
+    {
+      "id": "soybeans",
+      "name": { "my": "ပဲပုပ်", "en": "Soybeans" },
+      "groups": ["protein"],
+      "tier": "Go",
+      "image": "/images/food/soybeans.png"
+    },
+    {
+      "id": "peanut",
+      "name": { "my": "မြေပဲ", "en": "Peanut" },
+      "groups": ["protein"],
+      "tier": "Slow",
+      "image": "/images/food/peanut.png"
+    },
+    {
       "id": "mango",
       "name": { "my": "သရက်သီး", "en": "Mango" },
       "groups": ["vitamins"],
@@ -76,6 +132,48 @@
       "groups": ["vitamins"],
       "tier": "Go",
       "image": "/images/food/carrot.png"
+    },
+    {
+      "id": "apple",
+      "name": { "my": "ပန်းသီး", "en": "Apple" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/apple.png"
+    },
+    {
+      "id": "orange",
+      "name": { "my": "လိမ္မော်သီး", "en": "Orange" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/orange.png"
+    },
+    {
+      "id": "cucumber",
+      "name": { "my": "သခွားသီး", "en": "Cucumber" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/cucumber.png"
+    },
+    {
+      "id": "tomato",
+      "name": { "my": "ခရမ်းချဉ်သီး", "en": "Tomato" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/tomato.png"
+    },
+    {
+      "id": "watermelon",
+      "name": { "my": "ဖရဲသီး", "en": "Watermelon" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/watermelon.png"
+    },
+    {
+      "id": "broccoli",
+      "name": { "my": "ဘရိုကိုလီ", "en": "Broccoli" },
+      "groups": ["vitamins"],
+      "tier": "Go",
+      "image": "/images/food/broccoli.png"
     },
     {
       "id": "fried_chicken",

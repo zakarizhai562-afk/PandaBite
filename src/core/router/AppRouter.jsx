@@ -32,6 +32,7 @@ export default function AppRouter() {
 
         {/* Goals — route: /goals */}
         <Route path="/goals" element={<GoalsScreen />} />
+        <Route path="/goals/:goalId" element={<GoalsScreen />} />
         <Route path="/goals/tips" element={<GoalTipsScreen />} />
         <Route path="/puzzle" element={<PuzzleScreen />} />
 

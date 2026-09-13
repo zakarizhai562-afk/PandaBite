@@ -38,7 +38,7 @@ export default function WorldMapScreen() {
         <header className="wm-header">
           <button
             type="button"
-            className="wm-icon-btn wm-icon-btn--left"
+            className="daily-log-back-btn wm-icon-btn wm-icon-btn--left"
             onClick={() => navigate('/')}
             aria-label="Back to menu"
           >

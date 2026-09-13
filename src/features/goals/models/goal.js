@@ -3,8 +3,8 @@ export const goals = [
     id: 'grow-taller',
     name: { my: 'ပိုမြင့်စွာ ကြီးထွားဖို့', en: 'Grow Taller' },
     description: { my: 'အရိုးနှင့်ကြွက်သားများ ကြီးထွားဖို့ အစားအစာများ', en: 'Foods for strong bones and muscles' },
-    matchingFoods: ['egg', 'rice', 'fish'],
-    nonMatchingFoods: ['candy'],
+    matchingFoods: ['milk', 'egg', 'fish', 'chicken', 'beans', 'soybeans', 'peanut'],
+    nonMatchingFoods: ['candy', 'soda', 'cake', 'fries'],
     reactions: {
       correct: { my: 'ဟုတ်ကဲ့! ဒါက ပိုမြင့်စွာ ကြီးထွားဖို့ ကူညီပါတယ်!', en: 'Yes! This helps you grow taller!' },
       wrong: { my: 'ဒါက ဒီရည်မှန်းချက်အတွက် သိပ်မသင့်တောင်းဘူးနော်!', en: "This one doesn't quite fit this goal!" },
@@ -19,8 +19,8 @@ export const goals = [
     id: 'more-energy',
     name: { my: 'ပိုများသော အင်အားရဖို့', en: 'Have More Energy' },
     description: { my: 'နေ့စဉ်ကစားဖို့ အင်အားပေးသော အစားအစာများ', en: 'Foods that give you energy to play all day' },
-    matchingFoods: ['rice', 'banana', 'egg'],
-    nonMatchingFoods: ['candy'],
+    matchingFoods: ['rice', 'bread', 'corn', 'potato', 'sweet_potato', 'cereals', 'noodles', 'pancakes'],
+    nonMatchingFoods: ['candy', 'soda', 'cake', 'ice_cream'],
     reactions: {
       correct: { my: 'ကောင်းပါတယ်! ဒါက အင်အားပေးပါတယ်!', en: 'Great! This gives you energy!' },
       wrong: { my: 'ဒါက အင်အားသိပ်မပေးနိုင်ဘူးနော်!', en: "This one doesn't give much energy!" },
@@ -35,8 +35,8 @@ export const goals = [
     id: 'clear-skin',
     name: { my: 'သန့်ရှင်းသော အရေပြားရဖို့', en: 'Clear Skin' },
     description: { my: 'အရေပြားကျန်းမာဖို့ အစားအစာများ', en: 'Foods for healthy skin' },
-    matchingFoods: ['banana', 'egg', 'rice'],
-    nonMatchingFoods: ['candy'],
+    matchingFoods: ['carrot', 'mango', 'apple', 'orange', 'cucumber', 'tomato', 'watermelon', 'broccoli'],
+    nonMatchingFoods: ['candy', 'soda', 'cake', 'fries'],
     reactions: {
       correct: { my: 'ကောင်းပါတယ်! ဒါက အရေပြားကို ကျန်းမာစေပါတယ်!', en: 'Great! This keeps your skin healthy!' },
       wrong: { my: 'ဒါက အရေပြားအတွက် သိပ်မကောင်းဘူးနော်!', en: "This one isn't the best for skin!" },
@@ -79,6 +79,14 @@ export function getGoalFoodChoices(goalId) {
   const goal = getGoalById(goalId);
   if (!goal) return [];
 
-  const choices = [...goal.matchingFoods, ...goal.nonMatchingFoods];
-  return choices.sort(() => Math.random() - 0.5);
+  const matchingChoices = goal.matchingFoods
+    .slice()
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 4);
+  const nonMatchingChoices = goal.nonMatchingFoods
+    .slice()
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 2);
+
+  return [...matchingChoices, ...nonMatchingChoices].sort(() => Math.random() - 0.5);
 }

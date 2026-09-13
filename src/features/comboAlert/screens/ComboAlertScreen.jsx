@@ -107,10 +107,11 @@ export default function ComboAlertScreen() {
               Play Again
             </button>
             <button
-              className="combo-guess-btn combo-guess-btn--dismiss"
+              className="daily-log-back-btn combo-screen-back-btn"
               onClick={() => navigate('/home')}
+              aria-label="Back to World Map"
             >
-              Back to World Map
+              <span className="visually-hidden">Back to World Map</span>
             </button>
           </div>
         </div>
@@ -127,10 +128,11 @@ export default function ComboAlertScreen() {
           </div>
           <div className="combo-guess-buttons">
             <button
-              className="combo-guess-btn combo-guess-btn--dismiss"
+              className="daily-log-back-btn combo-screen-back-btn"
               onClick={() => navigate('/home')}
+              aria-label="Back to World Map"
             >
-              Back to World Map
+              <span className="visually-hidden">Back to World Map</span>
             </button>
           </div>
         </div>

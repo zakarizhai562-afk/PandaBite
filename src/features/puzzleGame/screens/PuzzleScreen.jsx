@@ -440,8 +440,12 @@ export default function PuzzleScreen() {
         </div>
 
         <div className="puzzle-controls">
-          <button className="btn-ghost" onClick={() => navigate('/home')}>
-            Back to World Map
+          <button
+            className="daily-log-back-btn puzzle-back-btn"
+            onClick={() => navigate('/home')}
+            aria-label="Back to World Map"
+          >
+            <span className="visually-hidden">Back to World Map</span>
           </button>
           <button className="btn-ghost" onClick={handleTogglePause}>
             {gameState.state === PAUSED ? 'Resume' : 'Pause'}

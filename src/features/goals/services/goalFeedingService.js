@@ -1,5 +1,13 @@
 import { doesFoodMatchGoal, getGoalById } from '../models/goal';
 
+function areGoalFoodsResolved(goalId, choices, results) {
+  const goal = getGoalById(goalId);
+  if (!goal) return false;
+
+  const requiredFoods = choices.filter((foodId) => goal.matchingFoods.includes(foodId));
+  return requiredFoods.length > 0 && requiredFoods.every((foodId) => results[foodId]?.resolved);
+}
+
 /**
  * Create a new feeding round state for a goal.
  * @param {string} goalId
@@ -50,7 +58,7 @@ export function feedFood(round, foodId) {
     };
   }
 
-  const allResolved = round.choices.every((f) => newResults[f]?.resolved);
+  const allResolved = areGoalFoodsResolved(round.goalId, round.choices, newResults);
 
   return {
     isCorrect: isMatch,
@@ -73,14 +81,13 @@ export function useHint(round, foodId, tier) {
   }
 
   if (tier === 'reveal') {
-    const isMatch = doesFoodMatchGoal(round.goalId, foodId);
     const newResults = { ...round.results };
     newResults[foodId] = {
       resolved: true,
       firstAttempt: false,
       hintedReveal: true,
     };
-    const allResolved = round.choices.every((f) => newResults[f]?.resolved);
+    const allResolved = areGoalFoodsResolved(round.goalId, round.choices, newResults);
     return {
       canAfford: true,
       isReveal: true,

@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
 import MascotBubble from '../../../core/components/MascotBubble';
@@ -24,9 +24,11 @@ const GOAL_HINT_NOT_ENOUGH = {
 
 export default function GoalsScreen() {
   const navigate = useNavigate();
+  const { goalId: routeGoalId } = useParams();
+  const routeSelectedGoal = useMemo(() => goals.some((goal) => goal.id === routeGoalId) ? routeGoalId : null, [routeGoalId]);
   const { setStars } = useStars();
   const [loading, setLoading] = useState(true);
-  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [selectedGoal, setSelectedGoal] = useState(routeSelectedGoal);
   const [round, setRound] = useState(null);
   const [reaction, setReaction] = useState(null);
   const [animating, setAnimating] = useState(false);
@@ -40,13 +42,33 @@ export default function GoalsScreen() {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (!routeSelectedGoal) {
+      setSelectedGoal(null);
+      setRound(null);
+      setReaction(null);
+      setAnimating(false);
+      setCompletedGoalId(null);
+      return;
+    }
+
+    const choices = getGoalFoodChoices(routeSelectedGoal);
+    setSelectedGoal(routeSelectedGoal);
+    setRound(createFeedingRound(routeSelectedGoal, choices));
+    setReaction(null);
+    setAnimating(false);
+    setCompletedGoalId(null);
+  }, [routeSelectedGoal]);
+
   const handleSelectGoal = useCallback((goalId) => {
-    setSelectedGoal(goalId);
+    navigate('/goals/' + goalId);
     const choices = getGoalFoodChoices(goalId);
+    setSelectedGoal(goalId);
     setRound(createFeedingRound(goalId, choices));
     setReaction(null);
+    setAnimating(false);
     setCompletedGoalId(null);
-  }, []);
+  }, [navigate]);
 
   const handleDragEnd = useCallback((event) => {
     const { over, active } = event;
@@ -103,11 +125,12 @@ export default function GoalsScreen() {
   }, [round]);
 
   const handleBack = useCallback(() => {
+    navigate('/goals');
     setSelectedGoal(null);
     setRound(null);
     setReaction(null);
     setCompletedGoalId(null);
-  }, []);
+  }, [navigate]);
 
   const handleSeeTips = useCallback(() => {
     navigate('/goals/tips', { state: { goalId: completedGoalId } });
@@ -148,7 +171,7 @@ export default function GoalsScreen() {
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="goals-screen">
+      <div className={`goals-screen${selectedGoal ? ' goals-screen--detail' : ''}`}>
         <div className="page-container">
           <div className="goals-header">
             <button
@@ -158,11 +181,7 @@ export default function GoalsScreen() {
             >
               <span className="visually-hidden">Back</span>
             </button>
-            {selectedGoal ? (
-              <h2 className="goals-title">{goal?.name.en}</h2>
-            ) : (
-              <h2 className="visually-hidden">Goals</h2>
-            )}
+            <h2 className="visually-hidden">{selectedGoal ? goal?.name.en : 'Goals'}</h2>
             <div className="goals-header-spacer" />
           </div>
 
@@ -206,8 +225,12 @@ export default function GoalsScreen() {
                   <button className="btn-primary goals-btn-tips" onClick={handleSeeTips}>
                     See Tips
                   </button>
-                  <button className="btn-secondary goals-btn-back" onClick={handleBack}>
-                    Back to Goals
+                  <button
+                    className="daily-log-back-btn goals-btn-back"
+                    onClick={handleBack}
+                    aria-label="Back to Goals"
+                  >
+                    <span className="visually-hidden">Back to Goals</span>
                   </button>
                 </div>
               )}

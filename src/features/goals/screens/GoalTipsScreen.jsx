@@ -12,7 +12,11 @@ export default function GoalTipsScreen() {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <p>Goal not found.</p>
-        <button onClick={() => navigate('/goals')}>Back to Goals</button>
+        <button
+          className="daily-log-back-btn goal-tips-back-btn"
+          onClick={() => navigate('/goals')}
+          aria-label="Back to Goals"
+        />
       </div>
     );
   }
@@ -42,20 +46,9 @@ export default function GoalTipsScreen() {
       >
         <button
           onClick={() => navigate('/goals')}
-          style={{
-            padding: '8px 16px',
-            borderRadius: '12px',
-            border: 'none',
-            backgroundColor: '#2D6A4F',
-            color: '#FFF3E0',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            minHeight: '44px',
-          }}
-        >
-          Back
-        </button>
+          className="daily-log-back-btn goal-tips-back-btn"
+          aria-label="Back to Goals"
+        />
         <h2
           style={{
             fontFamily: 'Cambria, Georgia, serif',
@@ -150,21 +143,9 @@ export default function GoalTipsScreen() {
       {/* Back button */}
       <button
         onClick={() => navigate('/goals')}
-        style={{
-          marginTop: '24px',
-          padding: '12px 32px',
-          borderRadius: '12px',
-          border: 'none',
-          backgroundColor: '#2D6A4F',
-          color: '#FFF3E0',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          minHeight: '44px',
-        }}
-      >
-        Back to Goals
-      </button>
+        className="daily-log-back-btn goal-tips-back-btn goal-tips-back-btn--bottom"
+        aria-label="Back to Goals"
+      />
     </div>
   );
 }

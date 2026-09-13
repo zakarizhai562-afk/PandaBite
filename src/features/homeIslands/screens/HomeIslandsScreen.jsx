@@ -79,7 +79,7 @@ export default function HomeIslandsScreen() {
 
         <button
           type="button"
-          className="world-map-menu-btn"
+          className="daily-log-back-btn world-map-menu-btn"
           onClick={() => navigate('/')}
           aria-label="Back to menu"
         >

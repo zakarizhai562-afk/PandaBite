@@ -86,6 +86,13 @@ export default function DailyResultScreen() {
   const resultTitle = result.isBalanced ? 'Balanced meal!' : 'Nice check-in!';
   const resultTitleMy = result.isBalanced ? 'မျှတတဲ့အစားအစာပါ။' : 'စစ်ကြည့်တာ ကောင်းပါတယ်။';
   const resultPandaImage = getResultPandaImage(result.score ?? result.coveredGroups.length);
+  const isOnlyWhoaMeal = result.whoaCount > 0 && result.coveredGroups.length === 0;
+  const noteText = isOnlyWhoaMeal
+    ? {
+        my: 'Whoa food ပဲ ရွေးထားတာမို့ သကြားနဲ့ အဆီများနိုင်ပါတယ်။ နောက်တစ်ခါ Go food လေးတွေ ထပ်ရွေးကြည့်ရအောင်။',
+        en: 'You chose only a Whoa food. Treats are okay sometimes, but too much sugar or fat can cause tummy aches or an energy crash.',
+      }
+    : feedback?.text;
 
   return (
     <div className="daily-result-screen">
@@ -94,17 +101,6 @@ export default function DailyResultScreen() {
         onClick={() => navigate('/daily-log', { state: { skipLoading: true } })}
         aria-label="Back to Daily Log"
       />
-
-      <div className="daily-result-dialogue">
-        <div className="daily-result-bubble">
-          <span className="daily-result-bubble-my">
-            {feedback?.text?.my || 'ဒီနေ့ စစ်ကြည့်တာ ကောင်းပါတယ်။'}
-          </span>
-          <span className="daily-result-bubble-en">
-            {feedback?.text?.en || 'Great job checking in today!'}
-          </span>
-        </div>
-      </div>
 
       <div className="daily-result-stage">
         <section className="daily-result-plate-panel" aria-label="Daily meal result">
@@ -123,8 +119,13 @@ export default function DailyResultScreen() {
               className="daily-result-panda"
             />
             <div className="daily-result-note">
-              <span>အာဟာရအုပ်စုတွေကို ကြည့်ပြီး နောက်တစ်ခါ ပိုကောင်းအောင် ရွေးကြမယ်။</span>
-              <span>Look at your groups and try another tasty balance.</span>
+              <span>{noteText?.my || 'ဒီနေ့ စစ်ကြည့်တာ ကောင်းပါတယ်။'}</span>
+              <span>{noteText?.en || 'Great job checking in today!'}</span>
+              {result.whoaCount > 0 && !isOnlyWhoaMeal && (
+                <span className="daily-result-note-warning">
+                  Whoa food warning: keep treats small. Too much sugar or fat can cause tummy aches, extra thirst, or an energy crash.
+                </span>
+              )}
             </div>
           </div>
           {starsEarned > 0 && (
