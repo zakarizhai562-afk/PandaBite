@@ -298,15 +298,6 @@ button {
   pointer-events: none;
 }
 
-.landing-start-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 0 #BF360C,
-    0 14px 32px rgba(0, 0, 0, 0.45),
-    inset 0 2px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
-}
-
 .landing-start-btn:active {
   transform: translateY(3px);
   box-shadow:
@@ -4096,14 +4087,21 @@ button {
   background: linear-gradient(180deg, #BEE3F5 0%, #DFF2E6 100%);
 }
 
-/* Aspect-ratio-locked stage: the background always renders at its native
-   1672:941 ratio, fully visible (never cropped) and centered, so every
-   island's percentage-based position stays pixel-aligned with the artwork
-   at any viewport size (1280x720 up through 1920x1080 and beyond). */
+/* Aspect-ratio-locked stage, sized to fully COVER the viewport (edge to
+   edge, no letterbox bars) exactly like CSS `background-size: cover` —
+   the same `max()` logic that `min()` used for the old letterboxed
+   "contain" behavior. The stage keeps its native 1672:941 proportions
+   internally and is just scaled up + centered, then cropped by
+   `.wm-screen`'s `overflow: hidden`, so every island's percentage-based
+   position stays pixel-aligned with the artwork at any viewport size —
+   only the amount cropped off the edges changes. */
 .wm-stage {
-  position: relative;
-  width: min(100vw, calc(100dvh * 1672 / 941));
-  height: min(100dvh, calc(100vw * 941 / 1672));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100dvh * 1672 / 941));
+  height: max(100dvh, calc(100vw * 941 / 1672));
+  transform: translate(-50%, -50%);
 }
 
 .wm-background {
@@ -4281,10 +4279,13 @@ button {
   inset: 0;
   border-radius: 50%;
   transform: translateY(0) scale(1);
-  transition: transform 0.35s ease-out, filter 0.35s ease-out, box-shadow 0.35s ease-out;
+  transition: transform 0.4s ease-out, filter 0.4s ease-out, box-shadow 0.4s ease-out;
 }
 
-/* Island "comes forward" on hover/focus — a gentle lift, not a zoom */
+/* Island "comes forward" on hover/focus — a small, gentle lift toward the
+   player (2.5D depth), never a jump/zoom/shake/rotation. Keep these values
+   subtle: a few px of lift and a hair of scale is enough to read as "this
+   one island is now closer to me". */
 .wm-island:hover .wm-island-idle,
 .wm-island:focus-visible .wm-island-idle {
   animation-play-state: paused;
@@ -4292,11 +4293,11 @@ button {
 
 .wm-island:hover .wm-island-body,
 .wm-island:focus-visible .wm-island-body {
-  transform: translateY(-16px) scale(1.07);
+  transform: translateY(-8px) scale(1.03);
   filter:
-    brightness(1.1)
-    drop-shadow(0 22px 24px rgba(20, 40, 30, 0.26))
-    drop-shadow(0 0 30px rgba(255, 225, 150, 0.75));
+    brightness(1.04)
+    drop-shadow(0 10px 14px rgba(20, 40, 30, 0.22))
+    drop-shadow(0 0 14px rgba(255, 225, 150, 0.4));
 }
 
 /* Quick, satisfying press feedback before navigating away */
@@ -4324,19 +4325,19 @@ button {
    artwork pixels can't literally move. */
 .wm-island-glow {
   position: absolute;
-  inset: -18%;
+  inset: -12%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,250,220,0.75) 0%, rgba(255,225,150,0.4) 45%, transparent 74%);
+  background: radial-gradient(circle, rgba(255,250,220,0.55) 0%, rgba(255,225,150,0.28) 45%, transparent 72%);
   opacity: 0;
-  transform: scale(0.85);
-  filter: blur(3px);
+  transform: scale(0.92);
+  filter: blur(4px);
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
   pointer-events: none;
 }
 
 .wm-island:hover .wm-island-glow,
 .wm-island:focus-visible .wm-island-glow {
-  opacity: 1;
+  opacity: 0.85;
   transform: scale(1);
 }
 
@@ -4354,15 +4355,18 @@ button {
   gap: 4px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease-out, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.3s ease-out, transform 0.4s ease-out;
   white-space: nowrap;
   z-index: 3;
 }
 
+/* Rides up with the island body's hover lift (a smaller fraction of it) so
+   the label/PLAY button reads as attached to the island, not floating
+   separately above the map. */
 .wm-island:hover .wm-island-label,
 .wm-island:focus-visible .wm-island-label {
   opacity: 1;
-  transform: translate(-50%, 0) scale(1);
+  transform: translate(-50%, -6px) scale(1);
 }
 
 .wm-island-label-name {
