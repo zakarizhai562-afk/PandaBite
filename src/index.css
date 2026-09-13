@@ -3367,26 +3367,71 @@ button {
   height: 100vh;
   height: 100dvh;
   width: 100%;
-  background: url('/images/combobox/background.png') center bottom / cover no-repeat, #EAF4EE;
+  /* A faint top/bottom lightening over the forest art -- keeps the artwork
+     fully visible while quietly turning down its contrast behind the HUD
+     and the baskets/controls row, so those UI layers read clearly without
+     a busy background competing for attention right behind them. The food
+     area in the middle is left untouched, at full background vividness. */
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0) 78%, rgba(255,255,255,0.26) 100%),
+    url('/images/combobox/background.png') center bottom / cover no-repeat, #EAF4EE;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   overflow: hidden;
   position: relative;
   padding: clamp(10px, 1.8vh, 22px) clamp(16px, 4vw, 72px);
-  gap: clamp(6px, 1.4vh, 16px);
+  gap: clamp(4px, 0.9vh, 10px);
   box-sizing: border-box;
+}
+
+.puzzle-header-row {
+  width: 100%;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 16px);
+  position: relative;
+  min-height: clamp(52px, 6vw, 84px);
+}
+
+.puzzle-back-btn {
+  /* Pinned to the top-left corner of the game screen (like a floating badge)
+     instead of sitting in-flow next to the HUD, sized to feel like a clear,
+     easy-to-hit corner button without dominating the now-shorter HUD row. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(52px, 6vw, 84px);
+  height: clamp(52px, 6vw, 84px);
+  border: none;
+  background: url('/world_art/daily_log_back_btn.png') center/cover no-repeat;
+  cursor: pointer;
+  font-size: 0;
+  transition: transform 0.2s ease;
+  z-index: 10;
+}
+
+.puzzle-back-btn:hover {
+  transform: scale(1.1);
+}
+
+.puzzle-back-btn:active {
+  transform: scale(0.95);
 }
 
 .puzzle-hud {
   width: 100%;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Clears the absolutely-positioned corner back button. */
+  margin-left: clamp(60px, 6.8vw, 96px);
 }
 
 .puzzle-hud__panel {
   background: rgba(255, 255, 255, 0.92);
-  border-radius: 24px;
-  padding: clamp(10px, 1.4vh, 18px) clamp(16px, 2.2vw, 28px);
+  border-radius: 18px;
+  padding: clamp(8px, 1.1vh, 14px) clamp(14px, 2vw, 24px);
   display: flex;
   align-items: center;
   gap: clamp(8px, 1vw, 16px);
@@ -3453,10 +3498,15 @@ button {
 }
 
 .puzzle-hud__level {
-  font-size: clamp(11px, 1vw, 15px);
+  font-size: clamp(12px, 1.05vw, 16px);
   font-weight: 800;
-  color: var(--color-text);
+  color: #F08C28;
   white-space: nowrap;
+  background: #FFF3E0;
+  border: 2px solid #FFD9A8;
+  border-radius: 999px;
+  padding: clamp(4px, 0.6vh, 7px) clamp(10px, 1.3vw, 16px);
+  flex-shrink: 0;
 }
 
 .puzzle-top-row {
@@ -3469,8 +3519,8 @@ button {
 
 .puzzle-panda-wrap {
   flex-shrink: 0;
-  width: clamp(80px, 8vw, 140px);
-  height: clamp(86px, 8.6vw, 150px);
+  width: clamp(58px, 5.6vw, 100px);
+  height: clamp(64px, 6.2vw, 110px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -3495,17 +3545,24 @@ button {
 .puzzle-message-box {
   /* Sized to sit close behind the panda's height (the panda intentionally
      pokes up a bit above it, mascot-style) rather than a much taller box
-     with a lot of dead space around a single line of text. */
+     with a lot of dead space around a single line of text. Styled to match
+     the Daily Balance mascot bubble (gold border, cream gradient fill). */
   flex: 1;
-  background: #fff;
-  border: 3px solid #FFC8BE;
-  border-radius: 28px;
-  padding: clamp(10px, 1.3vh, 14px) clamp(16px, 2vw, 24px);
-  min-height: clamp(68px, 11.5vh, 96px);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,248,205,0.92)),
+    #fff7c8;
+  border: 3px solid #efbd22;
+  border-radius: 24px 24px 24px 30px;
+  padding: clamp(10px, 1.2vh, 16px) clamp(16px, 1.9vw, 24px);
+  min-height: clamp(64px, 9.5vh, 96px);
   display: flex;
   align-items: center;
   position: relative;
-  box-shadow: 0 4px 16px rgba(60,30,20,0.08);
+  box-shadow:
+    0 3px 0 #d89b08,
+    0 8px 18px rgba(68, 80, 35, 0.16),
+    inset 0 0 0 2px rgba(255,255,255,0.85),
+    inset 0 0 0 6px rgba(255, 226, 103, 0.24);
 }
 
 .puzzle-message-box::before {
@@ -3513,14 +3570,22 @@ button {
   position: absolute;
   left: -12px;
   top: 50%;
-  transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  background: #fff;
-  border-left: 3px solid #FFC8BE;
-  border-bottom: 3px solid #FFC8BE;
+  background: #fff7c8;
+  border-left: 3px solid #efbd22;
+  border-bottom: 3px solid #efbd22;
   border-radius: 0 0 0 4px;
   transform: translateY(-50%) rotate(45deg);
+}
+
+.puzzle-message-box::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed rgba(239, 189, 34, 0.45);
+  border-radius: 22px 22px 22px 28px;
+  pointer-events: none;
 }
 
 .puzzle-idle-text {
@@ -3530,32 +3595,42 @@ button {
 }
 
 .puzzle-idle-text__en {
-  font-size: clamp(14px, 1.15vw, 18px);
+  font-family: var(--font-heading);
+  font-size: clamp(13px, 1.05vw, 17px);
+  font-weight: 700;
+  color: #173c23;
+  line-height: 1.3;
+}
+
+/* Burmese caption under the English line -- smaller/secondary, same
+   convention as the Daily Balance mascot bubble's .daily-log-bubble-my. */
+.puzzle-idle-text__my {
+  font-size: clamp(11px, 0.85vw, 14px);
   font-weight: 600;
-  color: #3C2D23;
-  line-height: 1.35;
+  color: #5B6B61;
+  line-height: 1.4;
 }
 
 .puzzle-feedback {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 6px 0;
+  padding: 2px 0;
   animation: feedback-pop 0.28s ease;
 }
 
 .puzzle-feedback--correct { color: #2D6A4F; }
 .puzzle-feedback--wrong { color: #C0392B; }
 .puzzle-feedback__icon {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 18px;
+  font-size: 16px;
   flex-shrink: 0;
 }
 
@@ -3565,13 +3640,23 @@ button {
 .puzzle-feedback__text {
   display: flex;
   flex-direction: row;
-  gap: 8px;
-  align-items: baseline;
+  gap: 6px 12px;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.puzzle-feedback__title { font-weight: 800; font-size: clamp(15px, 1.2vw, 19px); }
-.puzzle-feedback__detail { font-size: clamp(13px, 1vw, 16px); font-weight: 600; opacity: 0.9; }
+.puzzle-feedback__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* "Try Again!" reads as the headline; the Burmese line underneath it is a
+   smaller caption (same convention as the idle text), and the food ->
+   category explanation is a clearly secondary detail beside them. */
+.puzzle-feedback__title { font-weight: 900; font-size: clamp(15px, 1.25vw, 19px); line-height: 1.15; }
+.puzzle-feedback__title-my { font-size: clamp(10px, 0.8vw, 13px); font-weight: 600; opacity: 0.8; line-height: 1.25; }
+.puzzle-feedback__detail { font-size: clamp(11px, 0.85vw, 14px); font-weight: 600; opacity: 0.82; }
 
 .puzzle-food-area {
   /* No backdrop panel here on purpose -- the food falls straight against the
@@ -3580,10 +3665,28 @@ button {
      viewport in practice), same as the Python reference's large play area. */
   width: 100%;
   flex: 1 1 auto;
-  min-height: 0;
+  /* A real floor (not 0) so this never gets squeezed into a sliver on short
+     or ultra-wide viewports -- it's the main gameplay zone and should win
+     the fight for vertical space over the message box/baskets around it.
+     Raised again after shrinking the baskets and growing the (now
+     bilingual) message box, so the falling area still ends up bigger
+     overall rather than just breaking even. */
+  min-height: clamp(260px, 34vh, 460px);
   position: relative;
   overflow: hidden;
   padding: clamp(10px, 1.6vh, 20px);
+}
+
+.puzzle-food-area::before {
+  /* A quiet, static spotlight behind the falling food's spawn zone (upper-
+     center) -- gives the eye a clear place to land and makes the middle of
+     the screen feel intentional/occupied rather than empty, without
+     touching the background artwork itself. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 46% 40% at 50% 30%, rgba(255,255,255,0.4), rgba(255,255,255,0) 70%);
+  pointer-events: none;
 }
 
 .puzzle-food-area__decor {
@@ -3618,7 +3721,7 @@ button {
 }
 
 .puzzle-food {
-  width: clamp(58px, 5.6vw, 100px);
+  width: clamp(72px, 7vw, 128px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3660,8 +3763,8 @@ button {
 }
 
 .puzzle-food__image-wrap {
-  width: clamp(58px, 5.6vw, 100px);
-  height: clamp(58px, 5.6vw, 100px);
+  width: clamp(72px, 7vw, 128px);
+  height: clamp(72px, 7vw, 128px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3690,8 +3793,8 @@ button {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  width: clamp(58px, 5.6vw, 100px);
-  height: clamp(58px, 5.6vw, 100px);
+  width: clamp(72px, 7vw, 128px);
+  height: clamp(72px, 7vw, 128px);
   z-index: 2;
   pointer-events: none;
   animation: food-disappear 0.3s ease forwards;
@@ -3764,17 +3867,30 @@ button {
 }
 
 .puzzle-basket {
-  background: transparent;
-  border-radius: 18px;
+  /* A soft unified card behind the basket art + label so the pair reads as
+     one big clickable target (drop target, in this game) rather than two
+     separate floating pieces -- same kawaii palette, just a quiet backing. */
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
   border: 3px solid transparent;
-  padding: 8px 8px 6px;
+  padding: clamp(8px, 1vh, 12px) 8px clamp(6px, 0.8vh, 10px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   position: relative;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-  min-height: clamp(140px, 19vh, 210px);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  min-height: clamp(78px, 10.5vh, 132px);
+  box-shadow: 0 4px 14px rgba(60, 90, 40, 0.07);
+}
+
+/* Plain mouse hover (not an active drag) -- a gentle lift so each basket
+   reads as an inviting, clickable-feeling target even before you start
+   dragging, without touching the art itself. */
+.puzzle-basket:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 8px 20px rgba(60, 90, 40, 0.12);
 }
 
 .puzzle-basket--over {
@@ -3809,8 +3925,8 @@ button {
 }
 
 .puzzle-basket__image-wrap {
-  width: clamp(96px, 9vw, 170px);
-  height: clamp(96px, 9vw, 170px);
+  width: clamp(70px, 6.6vw, 126px);
+  height: clamp(70px, 6.6vw, 126px);
   position: relative;
   display: flex;
   align-items: center;
@@ -3826,8 +3942,8 @@ button {
 }
 
 .puzzle-basket__fallback {
-  width: clamp(96px, 9vw, 170px);
-  height: clamp(96px, 9vw, 170px);
+  width: clamp(70px, 6.6vw, 126px);
+  height: clamp(70px, 6.6vw, 126px);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -3853,10 +3969,11 @@ button {
 .puzzle-basket__label {
   background: #fff;
   border: 2px solid #2D6A4F;
-  border-radius: 14px;
-  padding: clamp(5px, 0.8vh, 8px) clamp(10px, 1.2vw, 16px);
+  border-radius: 12px;
+  padding: clamp(4px, 0.6vh, 7px) clamp(10px, 1.2vw, 14px);
   text-align: center;
-  min-width: 90px;
+  min-width: 84px;
+  width: 100%;
   transition: background 0.15s;
 }
 
@@ -3864,14 +3981,14 @@ button {
 .puzzle-basket__label--correct { background: #E1FAE1; }
 
 .puzzle-basket__label-title {
-  font-size: clamp(12px, 1vw, 15px);
+  font-size: clamp(12px, 1.05vw, 16px);
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   line-height: 1;
 }
 
 .puzzle-basket__label-sub {
-  font-size: clamp(10px, 0.85vw, 13px);
+  font-size: clamp(10px, 0.8vw, 12px);
   font-weight: 600;
   opacity: 0.85;
   margin-top: 2px;
@@ -3881,53 +3998,19 @@ button {
   width: 100%;
   flex: 0 0 auto;
   display: flex;
-  gap: clamp(10px, 1.5vw, 20px);
-  justify-content: center;
+  gap: clamp(8px, 1vw, 14px);
+  /* Tucked to the bottom-right, out of the way of the baskets above --
+     Pause/Hint are secondary utilities, not the main choices. */
+  justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .puzzle-controls .btn-ghost,
 .puzzle-controls .btn-secondary {
-  font-size: clamp(14px, 1.1vw, 17px);
-  padding: clamp(10px, 1.4vh, 15px) clamp(18px, 2vw, 28px);
+  font-size: clamp(12px, 0.95vw, 14px);
+  padding: clamp(7px, 1vh, 10px) clamp(14px, 1.6vw, 20px);
 }
-
-.puzzle-hint-wrap { position: relative; }
-
-.puzzle-hint-btn {
-  min-width: 90px;
-}
-
-.puzzle-hint-picker {
-  position: absolute;
-  bottom: 48px;
-  right: 0;
-  background: #FFF3E0;
-  border-radius: 16px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  z-index: 10;
-  min-width: 160px;
-}
-
-.puzzle-hint-option {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 800;
-  font-size: 13px;
-  cursor: pointer;
-  text-align: left;
-  min-height: 44px;
-}
-
-.puzzle-hint-option--clue { background: #2D6A4F; color: #FFF3E0; }
-.puzzle-hint-option--reveal { background: #FF8C42; color: #fff; }
-.puzzle-hint-option--cancel { background: transparent; color: #5B6B61; text-align: center; font-weight: 600; }
 
 .puzzle-result-screen {
   min-height: 100vh;

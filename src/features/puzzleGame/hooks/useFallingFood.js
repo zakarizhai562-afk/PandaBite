@@ -6,8 +6,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 // (not overly generous) because the food area itself is only ~250-350px
 // tall at common resolutions -- oversized margins here eat most of the
 // travel distance and make any fall speed feel much faster than intended.
-export const FOOD_SIZE_PX = 90;
+export const FOOD_SIZE_PX = 110;
 const SPAWN_MARGIN_PX = 10;
+// How much of the safe horizontal range spawn X is drawn from, centered on
+// the middle -- 1 would be the old edge-to-edge behavior (food could spawn
+// hugging the far left/right of the play area), 0 would always be dead
+// center. 0.5 keeps some left/right variety across catches (so dragging to
+// different baskets still feels natural) while keeping the food reliably
+// in the upper-center of the gameplay area instead of drifting to the edges.
+const SPAWN_CENTER_BIAS = 0.5;
 // Small enough that the food travels almost the full height of its
 // container -- right up near the food area's own bottom edge, which sits
 // just above the baskets row (separated only by the screen's own small
@@ -52,7 +59,9 @@ export function useFallingFood({ areaEl, active, fallSpeedPxPerSec, foodKey, onR
     const { width } = dimsRef.current;
     const minX = SPAWN_MARGIN_PX;
     const maxX = Math.max(minX, width - FOOD_SIZE_PX - SPAWN_MARGIN_PX);
-    return minX + Math.random() * (maxX - minX);
+    const center = (minX + maxX) / 2;
+    const band = (maxX - minX) * SPAWN_CENTER_BIAS;
+    return center - band / 2 + Math.random() * band;
   }, []);
 
   // A new food spawned, or the food area just became available: measure it

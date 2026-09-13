@@ -393,7 +393,14 @@ export default function PuzzleScreen() {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragCancel={handleDragCancel}>
       <div className="puzzle-screen" onPointerDown={handleFirstInteraction}>
-        <PuzzleHUD gameState={gameState} />
+        <div className="puzzle-header-row">
+          <button
+            className="puzzle-back-btn"
+            onClick={() => navigate('/home')}
+            aria-label="Back to World Map"
+          />
+          <PuzzleHUD gameState={gameState} />
+        </div>
 
         <PandaMessage mood={pandaMood} message={pandaMessage} feedback={feedback} />
 
@@ -440,14 +447,7 @@ export default function PuzzleScreen() {
         </div>
 
         <div className="puzzle-controls">
-          <button
-            className="daily-log-back-btn puzzle-back-btn"
-            onClick={() => navigate('/home')}
-            aria-label="Back to World Map"
-          >
-            <span className="visually-hidden">Back to World Map</span>
-          </button>
-          <button className="btn-ghost" onClick={handleTogglePause}>
+          <button className="btn-ghost puzzle-pause-btn" onClick={handleTogglePause}>
             {gameState.state === PAUSED ? 'Resume' : 'Pause'}
           </button>
           <div className="puzzle-hint-wrap">

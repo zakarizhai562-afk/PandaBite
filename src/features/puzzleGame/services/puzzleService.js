@@ -95,13 +95,20 @@ export function checkAnswer(foodGroup, basketId) {
 }
 
 export function getFeedbackForCorrect() {
-  return { title: 'Great Job!', detail: `+${POINTS_PER_CORRECT} Points`, isCorrect: true };
+  return {
+    title: 'Great Job!',
+    titleMy: 'အရမ်းကောင်းတယ်!',
+    detail: `+${POINTS_PER_CORRECT} Points`,
+    isCorrect: true,
+  };
 }
 
 // Same message shape for a wrong-basket drop AND a food that fell past the
 // baskets uncaught -- the Python reference's handle_wrong_sort() is the one
-// function used for both cases, so both read identically here too.
+// function used for both cases, so both read identically here too. The food
+// name -> basket category detail stays English-only (no Burmese food-name
+// dictionary in this dataset yet); only the fixed title is bilingual.
 export function getFeedbackForWrong(food, correctBasket) {
   const detail = correctBasket ? `${food.name} → ${correctBasket.name}` : food.name;
-  return { title: 'Try Again!', detail, isCorrect: false };
+  return { title: 'Try Again!', titleMy: 'ထပ်ကြိုးစားပါ!', detail, isCorrect: false };
 }

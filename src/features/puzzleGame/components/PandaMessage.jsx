@@ -20,13 +20,17 @@ export default function PandaMessage({ mood, message, feedback }) {
           <div className={`puzzle-feedback ${feedback.isCorrect ? 'puzzle-feedback--correct' : 'puzzle-feedback--wrong'}`}>
             <span className="puzzle-feedback__icon">{feedback.isCorrect ? '★' : '✕'}</span>
             <div className="puzzle-feedback__text">
-              <span className="puzzle-feedback__title">{feedback.title}</span>
+              <div className="puzzle-feedback__title-group">
+                <span className="puzzle-feedback__title">{feedback.title}</span>
+                {feedback.titleMy && <span className="puzzle-feedback__title-my">{feedback.titleMy}</span>}
+              </div>
               <span className="puzzle-feedback__detail">{feedback.detail}</span>
             </div>
           </div>
         ) : (
           <div className="puzzle-idle-text">
-            <span className="puzzle-idle-text__en">{message}</span>
+            <span className="puzzle-idle-text__en">{message?.en ?? message}</span>
+            {message?.my && <span className="puzzle-idle-text__my">{message.my}</span>}
           </div>
         )}
       </div>
