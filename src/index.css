@@ -973,7 +973,7 @@ button {
   position: absolute;
   inset: clamp(86px, 12vh, 128px) clamp(22px, 4vw, 64px) clamp(76px, 10vh, 96px) clamp(92px, 9vw, 150px);
   display: grid;
-  grid-template-columns: minmax(340px, 0.9fr) minmax(420px, 1fr);
+  grid-template-columns: minmax(320px, 0.8fr) minmax(620px, 1.2fr);
   gap: clamp(18px, 3vw, 42px);
   align-items: stretch;
   z-index: 2;
@@ -1030,7 +1030,7 @@ button {
   align-items: center;
   justify-content: center;
   gap: clamp(12px, 2vh, 22px);
-  width: min(100%, 720px);
+  width: min(100%, 960px);
   min-height: 0;
   transform: translateX(clamp(-80px, -6vw, -42px));
 }
@@ -1057,7 +1057,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: min(560px, calc(100% - 180px));
+  width: min(820px, calc(100% - 180px));
   padding: clamp(14px, 1.8vw, 22px) clamp(20px, 2.5vw, 32px);
   border: 4px solid #86ad38;
   border-radius: 24px;
@@ -1223,7 +1223,7 @@ button {
   }
 
   .daily-result-note {
-    width: min(400px, calc(100% - 116px));
+    width: min(560px, calc(100% - 116px));
     font-size: 13px;
     padding: 10px 14px;
     border-width: 3px;
@@ -1316,7 +1316,7 @@ button {
   }
 
   .daily-result-note {
-    width: min(100%, 178px);
+    width: min(100%, 260px);
     padding: 7px 9px;
     font-size: 10px;
     line-height: 1.15;
@@ -5506,4 +5506,4 @@ button {
     height: 62px;
   }
 }
-.goals-screen .page-container{padding-top:clamp(58px,8vh,86px);justify-content:center}.goals-grid{flex:0 1 auto;align-self:center}.goals-game{flex:0 1 auto;align-items:center;align-self:center}.goals-game>.tall-panda-target,.goals-game>.skin-panda-target,.goals-game>.energy-panda-target,.goals-game>.panda-feed-target,.goals-game>.tall-food-frame,.goals-game>.skin-food-frame,.goals-game>.energy-food-frame,.goals-game>.food-choice-tray{align-self:center}.goals-reaction-wrap{align-self:center}@media (max-width:860px){.goals-screen .page-container{justify-content:center}}.daily-result-screen{overflow-x:hidden;overflow-y:auto;padding:clamp(70px,9vh,96px) clamp(10px,2vw,20px) clamp(14px,2vh,24px)}.daily-result-stage{position:relative;inset:auto;width:min(1120px,100%);min-height:min(620px,calc(100dvh - 180px));margin:0 auto clamp(12px,2vh,20px)}.daily-result-actions{position:relative;left:auto;bottom:auto;transform:none;margin:0 auto}@media (max-width:780px){.daily-result-screen{padding-top:76px}.daily-result-stage{inset:auto;min-height:min(520px,calc(100dvh - 170px))}}@media (max-width:520px){.daily-result-screen{padding-top:66px}.daily-result-stage{inset:auto;min-height:min(460px,calc(100dvh - 150px));overflow:visible}}
+.goals-screen .page-container{padding-top:clamp(58px,8vh,86px);justify-content:center}.goals-grid{flex:0 1 auto;align-self:center}.goals-game{flex:0 1 auto;align-items:center;align-self:center}.goals-game>.tall-panda-target,.goals-game>.skin-panda-target,.goals-game>.energy-panda-target,.goals-game>.panda-feed-target,.goals-game>.tall-food-frame,.goals-game>.skin-food-frame,.goals-game>.energy-food-frame,.goals-game>.food-choice-tray{align-self:center}.goals-reaction-wrap{align-self:center}@media (max-width:860px){.goals-screen .page-container{justify-content:center}}.daily-result-screen{overflow-x:hidden;overflow-y:auto;padding:clamp(70px,9vh,96px) clamp(10px,2vw,20px) clamp(14px,2vh,24px)}.daily-result-stage{position:relative;inset:auto;width:min(1240px,100%);min-height:min(620px,calc(100dvh - 180px));margin:0 auto clamp(12px,2vh,20px)}.daily-result-actions{position:relative;left:auto;bottom:auto;transform:none;margin:0 auto}@media (max-width:780px){.daily-result-screen{padding-top:76px}.daily-result-stage{inset:auto;min-height:min(520px,calc(100dvh - 170px))}}@media (max-width:520px){.daily-result-screen{padding-top:66px}.daily-result-stage{inset:auto;min-height:min(460px,calc(100dvh - 150px));overflow:visible}}

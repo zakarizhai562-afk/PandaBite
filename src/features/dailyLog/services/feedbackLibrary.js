@@ -93,6 +93,40 @@ export function getPerItemReaction(foodId) {
   return DL_ITEM_REACTIONS[foodId] || DL_ITEM_DEFAULT;
 }
 
+const DRAG_TIER_FEEDBACK = {
+  go: {
+    label: 'Good choice',
+    defaultEn: 'This is a good everyday food that helps your body.',
+    image: '/images/combobox/happy.png',
+  },
+  slow: {
+    label: 'Sometimes choice',
+    defaultEn: 'This food is okay sometimes, but keep the portion small.',
+    image: '/images/combobox/thinking.png',
+  },
+  whoa: {
+    label: 'Bad everyday choice',
+    defaultEn: 'This is not a good everyday food. Keep treats small and choose Go foods more often.',
+    image: '/images/combobox/wrong.png',
+  },
+};
+
+export function getDragFoodReaction(food) {
+  const tierKey = food?.tier?.toLowerCase() || 'go';
+  const tierFeedback = DRAG_TIER_FEEDBACK[tierKey] || DRAG_TIER_FEEDBACK.go;
+  const customReaction = DL_ITEM_REACTIONS[food?.id];
+
+  return {
+    tier: tierKey,
+    label: tierFeedback.label,
+    image: tierFeedback.image,
+    text: {
+      my: customReaction?.my || DL_ITEM_DEFAULT.my,
+      en: `${tierFeedback.label}: ${customReaction?.en || tierFeedback.defaultEn}`,
+    },
+  };
+}
+
 // Daily Balance result feedback library
 export const BALANCE_FEEDBACK = {
   // Group 1 — Balanced (all 3 groups present)

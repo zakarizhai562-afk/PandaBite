@@ -14,14 +14,21 @@ import PlateDropTarget from '../components/PlateDropTarget';
 import DailyLogDoneBar from '../components/DailyLogDoneBar';
 import DailyLogGoalPoints from '../components/DailyLogGoalPoints';
 import { useDailyLog } from '../hooks/useDailyLog';
-import { getPerItemReaction } from '../services/feedbackLibrary';
+import { getDragFoodReaction } from '../services/feedbackLibrary';
 import foodDatabase from '../../../data/foodDatabase.json';
+
+const DEFAULT_MASCOT_TEXT = {
+  my: 'á€¡á€„á€ºá€¡á€¬á€¸áŠ á€€á€¼á€®á€¸á€‘á€½á€¬á€¸á€™á€¾á€¯á€”á€²á€· á€€á€»á€”á€ºá€¸á€™á€¬á€›á€±á€¸á€¡á€á€½á€€á€º á€€á€±á€¬á€„á€ºá€¸á€á€²á€·á€¡á€…á€¬á€¸á€¡á€…á€¬á€á€½á€±á€€á€­á€¯ á€›á€½á€±á€¸á€•á€«á‹',
+  en: 'Choose foods that give you energy, help you grow, and keep you healthy!',
+};
+const DEFAULT_PANDA_IMAGE = '/images/combobox/excited.png';
 
 export default function DailyLogScreen() {
   const location = useLocation();
   const [loading, setLoading] = useState(() => !location.state?.skipLoading);
   const [plate, setPlate] = useState([]);
-  const [mascotText, setMascotText] = useState(null);
+  const [mascotText, setMascotText] = useState(DEFAULT_MASCOT_TEXT);
+  const [mascotImage, setMascotImage] = useState(DEFAULT_PANDA_IMAGE);
   const [activeDragFood, setActiveDragFood] = useState(null);
   const { calculateResult, saveEntry } = useDailyLog();
   const navigate = useNavigate();
@@ -39,7 +46,13 @@ export default function DailyLogScreen() {
   );
 
   const handleDragStart = useCallback((event) => {
-    setActiveDragFood(event.active?.data.current?.food || null);
+    const food = event.active?.data.current?.food || null;
+    setActiveDragFood(food);
+    if (food) {
+      const reaction = getDragFoodReaction(food);
+      setMascotText(reaction.text);
+      setMascotImage(reaction.image);
+    }
   }, []);
 
   const handleDragCancel = useCallback(() => {
@@ -57,8 +70,9 @@ export default function DailyLogScreen() {
     if (over.id === 'plate-drop-target') {
       if (isOnPlate) return;
       setPlate((prev) => [...prev, food]);
-      const reaction = getPerItemReaction(food.id);
+      const reaction = getDragFoodReaction(food);
       setMascotText(reaction.text);
+      setMascotImage(reaction.image);
     } else if (isOnPlate) {
       setPlate((prev) => prev.filter((f) => f.id !== food.id));
     }
@@ -150,7 +164,7 @@ export default function DailyLogScreen() {
           <div className="daily-log-right">
             <div className="daily-log-panda">
               <img
-                src="/images/combobox/excited.png"
+                src={mascotImage}
                 alt="Red Panda"
                 className="panda-img"
               />
@@ -160,7 +174,7 @@ export default function DailyLogScreen() {
                 အင်အား၊ ကြီးထွားမှုနဲ့ ကျန်းမာရေးအတွက် ကောင်းတဲ့အစားအစာတွေကို ရွေးပါ။
               </span>
               <span className="daily-log-help-en">
-                Choose foods that give you <span className="highlight-orange">energy</span>, help you <span className="highlight-green">grow</span>, and keep you <span className="highlight-blue">healthy</span>!
+                {mascotText.en}
               </span>
             </div>
             <div className="food-box">
