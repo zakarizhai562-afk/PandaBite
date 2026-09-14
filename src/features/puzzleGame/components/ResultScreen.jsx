@@ -14,6 +14,8 @@ export default function ResultScreen({
   showStars,
   mistakesThisLevel,
   onButtonClick,
+  secondaryButtonLabel,
+  onSecondaryButtonClick,
 }) {
   const frameSrc = usePandaFrame(pandaMood);
 
@@ -33,9 +35,20 @@ export default function ResultScreen({
             ))}
           </div>
         )}
-        <button className="btn-primary puzzle-result-btn" onClick={onButtonClick}>
-          {buttonLabel}
-        </button>
+        {secondaryButtonLabel ? (
+          <div className="puzzle-result-btn-row">
+            <button className="btn-secondary puzzle-result-btn" onClick={onSecondaryButtonClick}>
+              {secondaryButtonLabel}
+            </button>
+            <button className="btn-primary puzzle-result-btn" onClick={onButtonClick}>
+              {buttonLabel}
+            </button>
+          </div>
+        ) : (
+          <button className="btn-primary puzzle-result-btn" onClick={onButtonClick}>
+            {buttonLabel}
+          </button>
+        )}
       </div>
     </div>
   );

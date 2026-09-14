@@ -2213,8 +2213,8 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 200px;
-  height: 190px;
+  width: 320px;
+  height: 300px;
 }
 
 .tall-panda-ground {
@@ -2222,8 +2222,8 @@ button {
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 22px;
+  width: 190px;
+  height: 32px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(45, 106, 79, 0.22) 0%, rgba(45, 106, 79, 0) 72%);
   z-index: 0;
@@ -2232,8 +2232,8 @@ button {
 .tall-panda-img {
   position: relative;
   z-index: 1;
-  width: 170px;
-  height: 170px;
+  width: 290px;
+  height: 290px;
   object-fit: contain;
   filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
   animation: tall-panda-pop 0.35s ease;
@@ -2244,8 +2244,8 @@ button {
 }
 
 .tall-panda-img--big {
-  width: 200px;
-  height: 200px;
+  width: 330px;
+  height: 330px;
 }
 
 .tall-growth-badge {
@@ -2475,8 +2475,8 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 200px;
-  height: 190px;
+  width: 320px;
+  height: 300px;
 }
 
 .skin-panda-ground {
@@ -2484,8 +2484,8 @@ button {
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 22px;
+  width: 190px;
+  height: 32px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(214, 51, 108, 0.18) 0%, rgba(214, 51, 108, 0) 72%);
   z-index: 0;
@@ -2494,8 +2494,8 @@ button {
 .skin-panda-img {
   position: relative;
   z-index: 1;
-  width: 170px;
-  height: 170px;
+  width: 290px;
+  height: 290px;
   object-fit: contain;
   filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
   animation: skin-panda-pop 0.35s ease;
@@ -2506,8 +2506,8 @@ button {
 }
 
 .skin-panda-img--big {
-  width: 200px;
-  height: 200px;
+  width: 330px;
+  height: 330px;
 }
 
 .skin-glow-badge {
@@ -2719,8 +2719,8 @@ button {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: 200px;
-  height: 190px;
+  width: 320px;
+  height: 300px;
 }
 
 .energy-panda-ground {
@@ -2728,8 +2728,8 @@ button {
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 22px;
+  width: 190px;
+  height: 32px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(255, 140, 66, 0.22) 0%, rgba(255, 140, 66, 0) 72%);
   z-index: 0;
@@ -2738,8 +2738,8 @@ button {
 .energy-panda-img {
   position: relative;
   z-index: 1;
-  width: 170px;
-  height: 170px;
+  width: 290px;
+  height: 290px;
   object-fit: contain;
   filter: drop-shadow(0 8px 10px rgba(27, 43, 34, 0.18));
   animation: skin-panda-pop 0.35s ease;
@@ -2750,8 +2750,8 @@ button {
 }
 
 .energy-panda-img--big {
-  width: 200px;
-  height: 200px;
+  width: 330px;
+  height: 330px;
 }
 
 .energy-boost-badge {
@@ -4065,6 +4065,33 @@ button {
   width: 100%;
   max-width: 280px;
   margin-top: 8px;
+}
+
+.puzzle-result-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.puzzle-result-btn-row .puzzle-result-btn {
+  width: auto;
+  max-width: none;
+  min-width: clamp(130px, 16vw, 200px);
+  min-height: clamp(46px, 6vh, 56px);
+  margin-top: 0;
+  padding: 12px 24px;
+  border: 3px solid #E65100;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #FF8C42 0%, #FF6B1A 100%);
+  color: #fff;
+  font-size: clamp(14px, 1.6vw, 17px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.3),
+    inset 0 2px 4px rgba(255,255,255,0.3);
 }
 
 /* Small/phone screens: the fixed-height no-scroll canvas above doesn't have
