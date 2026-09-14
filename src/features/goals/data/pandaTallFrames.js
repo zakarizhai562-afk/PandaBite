@@ -4,12 +4,13 @@
 // playback that replaces the usual infinite 2-frame loop for that mood.
 // Frames were isolated with connected-component analysis so the flanking
 // arrow/sparkle decorations in that sheet never bleed into the cropped
-// character art. The idle wave reuses the same pandaClearskin.png wave
-// frames as the Clear Skin and Have More Energy goals (rather than
-// pandatall3.png's own wave row) so all three goals share one consistent
-// waving pose/art style for idle.
+// character art. The idle wave and wrong-choice worry frames reuse the same
+// shared pandaClearskin.png / pandathinking.png crops as the Clear Skin and
+// Have More Energy goals (rather than pandatall3.png's own wave row) so all
+// three goals share one consistent art style for those two moods.
 const IMAGE_BASE = '/panda/tall3';
 const SKIN_IMAGE_BASE = '/panda/skin';
+const WORRY_IMAGE_BASE = '/panda/worry';
 
 const GROWTH_1 = `${IMAGE_BASE}/growth_1.png`;
 const GROWTH_2 = `${IMAGE_BASE}/growth_2.png`;
@@ -22,9 +23,7 @@ export const PANDA_TALL_FRAMES = {
   // Reuses the first two (shortest) growth stages as a modest "growing a
   // little" hint after each correct food.
   correct: [GROWTH_1, GROWTH_2],
-  // The sheet has no "sad/worried" pose, so the wrong-choice reaction keeps
-  // the existing worried-panda art instead of a sheet-extracted frame.
-  wrong: ['/panda/panda_nudge.png'],
+  wrong: [`${WORRY_IMAGE_BASE}/worry_1.png`, `${WORRY_IMAGE_BASE}/worry_2.png`],
   // Played once, in order, then held on the last (tallest) frame -- the full
   // small-to-tall growth-chart sequence.
   complete: [GROWTH_1, GROWTH_2, GROWTH_3, GROWTH_4, GROWTH_5],

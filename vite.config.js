@@ -11,6 +11,15 @@ export default defineConfig({
       'readline-sync': path.resolve('./src/core/prolog/readline-sync-stub.js'),
     },
   },
+  server: {
+    watch: {
+      // assets/ holds raw source art (not served -- public/ is what the app
+      // actually loads) and can contain large/locked files like a zip an
+      // external tool has open, which crashes Vite's watcher with EBUSY.
+      // Nothing in the app needs a rebuild when this folder changes.
+      ignored: ['**/assets/**'],
+    },
+  },
   test: {
     environment: 'jsdom',
     globals: true,

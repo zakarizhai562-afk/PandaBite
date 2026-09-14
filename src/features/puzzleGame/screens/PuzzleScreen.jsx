@@ -380,10 +380,12 @@ export default function PuzzleScreen() {
         pandaMood="happy"
         subtitleText="You Win!"
         scoreText={`Final Score: ${gameState.score}`}
-        buttonLabel="PLAY AGAIN"
+        buttonLabel="Continue"
         showStars
         mistakesThisLevel={gameState.mistakesThisLevel}
         onButtonClick={handlePlayAgain}
+        secondaryButtonLabel="Home"
+        onSecondaryButtonClick={() => navigate('/home')}
       />
     );
   }
