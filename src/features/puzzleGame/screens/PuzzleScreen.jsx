@@ -2,9 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen';
-import { useStars } from '../../../core/context/StarsContext';
-import { awardStars } from '../../../core/services/starAwardService';
-import { spendPoints, HINT_COST } from '../../../core/services/spendPointsService';
 import PuzzleHUD from '../components/PuzzleHUD';
 import PandaMessage from '../components/PandaMessage';
 import PuzzleBasket from '../components/PuzzleBasket';
@@ -39,7 +36,6 @@ import {
 
 export default function PuzzleScreen() {
   const navigate = useNavigate();
-  const { setStars } = useStars();
   const audio = useMemo(() => createAudioController(), []);
   // A callback-ref-backed state (not a plain useRef) -- the loading splash
   // renders first, so .puzzle-food-area doesn't exist in the DOM on mount;
@@ -57,7 +53,6 @@ export default function PuzzleScreen() {
   const [floatingScore, setFloatingScore] = useState(null);
   const [hintedBasketId, setHintedBasketId] = useState(null);
   const [tutorialDismissed, setTutorialDismissed] = useState(false);
-  const [showHintPicker, setShowHintPicker] = useState(false);
   const [draggedFoodGroup, setDraggedFoodGroup] = useState(null);
   const [activeFood, setActiveFood] = useState(null);
 
@@ -148,7 +143,6 @@ export default function PuzzleScreen() {
       const next = addScore(gameState);
       const isLevelUp = next.state === LEVEL_COMPLETE || next.state === GAME_COMPLETE;
       setGameState(next);
-      awardStars(1, 'puzzle-game', setStars);
       audio.playCorrect();
       if (isLevelUp) audio.playLevelComplete();
       setPandaMood('happy');
@@ -163,7 +157,7 @@ export default function PuzzleScreen() {
         spawnNextFood(); // instant respawn, same as the Python reference
       }
     },
-    [gameState, setStars, audio, clearFeedbackAfter, spawnNextFood]
+    [gameState, audio, clearFeedbackAfter, spawnNextFood]
   );
 
   const handleWrongDrop = useCallback(
@@ -254,14 +248,6 @@ export default function PuzzleScreen() {
 
   const handleClue = useCallback(() => {
     if (!currentFood) return;
-    const result = spendPoints(HINT_COST.CLUE, 'puzzle-hint');
-    if (!result.success) {
-      setFeedback({ title: 'Not enough points yet', detail: `Need ${HINT_COST.CLUE} ⭐ for a clue`, isCorrect: false });
-      clearFeedbackAfter(FEEDBACK_DURATION_MS);
-      setShowHintPicker(false);
-      return;
-    }
-    setStars(result.remaining);
     const correct = getBasketByGroup(currentFood.group);
     if (correct) {
       setHintedBasketId(correct.id);
@@ -270,24 +256,7 @@ export default function PuzzleScreen() {
       setFeedback({ title: 'Clue!', detail: `Try the ${correct.shortLabel} basket`, isCorrect: true });
       clearFeedbackAfter(FEEDBACK_DURATION_MS);
     }
-    setShowHintPicker(false);
-  }, [currentFood, setStars, clearFeedbackAfter]);
-
-  const handleReveal = useCallback(() => {
-    if (!currentFood) return;
-    const result = spendPoints(HINT_COST.REVEAL, 'puzzle-hint');
-    if (!result.success) {
-      setFeedback({ title: 'Not enough points yet', detail: `Need ${HINT_COST.REVEAL} ⭐ to reveal`, isCorrect: false });
-      clearFeedbackAfter(FEEDBACK_DURATION_MS);
-      setShowHintPicker(false);
-      return;
-    }
-    setStars(result.remaining);
-    setFeedback({ title: 'Revealed!', detail: `${currentFood.name} sorted!`, isCorrect: true });
-    clearFeedbackAfter(FEEDBACK_DURATION_MS);
-    setTimeout(spawnNextFood, 600);
-    setShowHintPicker(false);
-  }, [currentFood, setStars, clearFeedbackAfter, spawnNextFood]);
+  }, [currentFood, clearFeedbackAfter]);
 
   // PLAYING <-> PAUSED. Pausing stops music and (if a feedback card is
   // showing) freezes its remaining display time instead of letting it expire
@@ -352,7 +321,6 @@ export default function PuzzleScreen() {
         subtitleText="Great Try!"
         scoreText={`Your Score: ${gameState.score}`}
         buttonLabel="PLAY AGAIN"
-        showStars={false}
         onButtonClick={handlePlayAgain}
       />
     );
@@ -366,8 +334,6 @@ export default function PuzzleScreen() {
         subtitleText="Level Complete!"
         scoreText={`Level ${gameState.level} Score: ${gameState.score}`}
         buttonLabel="NEXT LEVEL"
-        showStars
-        mistakesThisLevel={gameState.mistakesThisLevel}
         onButtonClick={handleNextLevel}
       />
     );
@@ -381,8 +347,6 @@ export default function PuzzleScreen() {
         subtitleText="You Win!"
         scoreText={`Final Score: ${gameState.score}`}
         buttonLabel="Continue"
-        showStars
-        mistakesThisLevel={gameState.mistakesThisLevel}
         onButtonClick={handlePlayAgain}
         secondaryButtonLabel="Home"
         onSecondaryButtonClick={() => navigate('/home')}
@@ -426,7 +390,7 @@ export default function PuzzleScreen() {
 
           {floatingScore && (
             <div className="puzzle-floating-score-wrap">
-              <div className="puzzle-floating-score">+10 ⭐</div>
+              <div className="puzzle-floating-score">+10</div>
             </div>
           )}
 
@@ -453,22 +417,9 @@ export default function PuzzleScreen() {
             {gameState.state === PAUSED ? 'Resume' : 'Pause'}
           </button>
           <div className="puzzle-hint-wrap">
-            <button className="btn-secondary puzzle-hint-btn" onClick={() => setShowHintPicker((v) => !v)}>
+            <button className="btn-secondary puzzle-hint-btn" onClick={handleClue}>
               Hint
             </button>
-            {showHintPicker && (
-              <div className="puzzle-hint-picker">
-                <button className="puzzle-hint-option puzzle-hint-option--clue" onClick={handleClue}>
-                  Clue (2 ⭐)
-                </button>
-                <button className="puzzle-hint-option puzzle-hint-option--reveal" onClick={handleReveal}>
-                  Reveal (5 ⭐)
-                </button>
-                <button className="puzzle-hint-option puzzle-hint-option--cancel" onClick={() => setShowHintPicker(false)}>
-                  Cancel
-                </button>
-              </div>
-            )}
           </div>
         </div>
 

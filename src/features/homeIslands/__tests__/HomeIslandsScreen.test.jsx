@@ -2,17 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import HomeIslandsScreen from '../screens/HomeIslandsScreen';
-import { StarsProvider } from '../../../core/context/StarsContext';
-import { PetStateProvider } from '../../../core/context/PetStateContext';
 
 function renderHome() {
   return render(
     <HashRouter>
-      <StarsProvider>
-        <PetStateProvider>
-          <HomeIslandsScreen />
-        </PetStateProvider>
-      </StarsProvider>
+      <HomeIslandsScreen />
     </HashRouter>
   );
 }

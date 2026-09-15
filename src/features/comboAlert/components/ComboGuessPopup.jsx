@@ -1,7 +1,5 @@
 import { useState, useCallback } from 'react';
 import { getComboReaction } from '../models/comboPair';
-import { awardStars } from '../../../core/services/starAwardService';
-import { useStars } from '../../../core/context/StarsContext';
 import { markAlertShown, getComboType } from '../services/comboAlertService';
 
 function FoodImage({ foodId, image, name, withLabel }) {
@@ -29,7 +27,6 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
   const [phase, setPhase] = useState('guessing');
   const [reaction, setReaction] = useState(null);
   const [comboType, setComboType] = useState(pair.type);
-  const { setStars } = useStars();
 
   const handleAnswer = useCallback(async (childSaidYes) => {
     if (phase !== 'guessing') return;
@@ -42,12 +39,8 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
     setReaction(result);
     setPhase('revealed');
 
-    if (result.isCorrect) {
-      awardStars(1, 'comboAlert', setStars);
-    }
-
     markAlertShown(triggerId);
-  }, [phase, pair, triggerId, setStars]);
+  }, [phase, pair, triggerId]);
 
   const handleDismiss = useCallback(() => {
     if (onDismiss) onDismiss();
@@ -130,7 +123,7 @@ export default function ComboGuessPopup({ pair, foodAData, foodBData, triggerId,
                 </div>
                 <div className={`combo-guess-badge combo-guess-badge--${isGoodCombo ? 'good' : 'bad'}`}>
                   <span className="combo-guess-badge-icon" aria-hidden="true">
-                    {isGoodCombo ? '★' : '♥'}
+                    {isGoodCombo ? '✓' : '♥'}
                   </span>
                   {isGoodCombo ? 'Great Combo!' : 'Not a good combo'}
                 </div>

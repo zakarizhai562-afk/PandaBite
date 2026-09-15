@@ -1,151 +1,126 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import MascotBubble from '../../../core/components/MascotBubble';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getGoalById } from '../models/goal';
+
+const TIP_SCREEN_COPY = {
+  'grow-taller': {
+    title: 'Tips to Grow Taller',
+    reminder: {
+      my: 'ကိုယ်ခန္ဓာ ပိုကြီးထွားဖို့ ဒီအကြံပြုချက်တွေကို မှတ်ထားနော်။',
+      en: 'Remember these tips for next time!',
+    },
+    tips: [
+      {
+        my: 'နို့နဲ့ ကယ်လ်စီယမ်ပါတဲ့ အစားအစာတွေကို စားပေးပါ။',
+        en: 'Drink milk and eat calcium-rich foods.',
+      },
+      {
+        my: 'အသီးအနှံနဲ့ ဟင်းသီးဟင်းရွက်တွေကို ပုံမှန်စားပေးပါ။',
+        en: 'Eat fruits and vegetables regularly.',
+      },
+    ],
+  },
+  'more-energy': {
+    title: 'Tips for More Energy',
+    reminder: {
+      my: 'အားအင်ပြည့်နေဖို့ ဒီအကြံပြုချက်တွေကို မှတ်ထားနော်။',
+      en: 'Remember these tips for next time!',
+    },
+    tips: [
+      {
+        my: 'ထမင်းနဲ့ ငှက်ပျောသီးက အားအင်ပေးပါတယ်။',
+        en: 'Rice and banana give you energy.',
+      },
+      {
+        my: 'ကြက်ဥက ပရိုတင်းပေးပြီး ခန္ဓာကိုယ်ကို သန်မာစေပါတယ်။',
+        en: 'Egg gives protein and builds strength.',
+      },
+    ],
+  },
+  'clear-skin': {
+    title: 'Tips for Clear Skin',
+    reminder: {
+      my: 'အသားအရေ ကျန်းမာဖို့ ဒီအကြံပြုချက်တွေကို မှတ်ထားနော်။',
+      en: 'Remember these tips for next time!',
+    },
+    tips: [
+      {
+        my: 'ရေလုံလောက်အောင် သောက်ပေးပါ။',
+        en: 'Drink enough water.',
+      },
+      {
+        my: 'အသီးအနှံနဲ့ ဟင်းသီးဟင်းရွက်တွေကို စားပေးပါ။',
+        en: 'Eat fruits and vegetables.',
+      },
+    ],
+  },
+};
 
 export default function GoalTipsScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const goalId = location.state?.goalId;
   const goal = goalId ? getGoalById(goalId) : null;
+  const tipScreen = goal ? TIP_SCREEN_COPY[goal.id] : null;
 
-  if (!goal) {
+  if (!goal || !tipScreen) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <p>Goal not found.</p>
-        <button
-          className="daily-log-back-btn goal-tips-back-btn"
-          onClick={() => navigate('/goals')}
-          aria-label="Back to Goals"
-        />
+      <div className="goal-tips-screen goal-tips-screen--fallback">
+        <p className="goal-tips-fallback-text">Goal not found.</p>
       </div>
     );
   }
 
   return (
-    <div
-      className="goal-tips-screen"
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#EAF4EE',
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '400px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-        }}
-      >
-        <button
-          onClick={() => navigate('/goals')}
-          className="daily-log-back-btn goal-tips-back-btn"
-          aria-label="Back to Goals"
-        />
-        <h2
-          style={{
-            fontFamily: 'Cambria, Georgia, serif',
-            fontSize: '18px',
-            color: '#1B2B22',
-            margin: 0,
-          }}
-        >
-          Tips for {goal.name.en}
-        </h2>
-        <div style={{ width: '80px' }} />
-      </div>
+    <div className={`goal-tips-screen goal-tips-screen--${goal.id}`}>
+      <main className="goal-tips-stage" aria-label={tipScreen.title}>
+        <h1 className="goal-tips-title">{tipScreen.title}</h1>
 
-      {/* Mascot */}
-      <div style={{ width: '100%', maxWidth: '400px', marginBottom: '20px' }}>
-        <MascotBubble
-          text={{
-            my: 'ဒီအကြံဉာဏ်တွေက မှတ်ဉာဏ်ထားပါ!',
-            en: 'Remember these tips for next time!',
-          }}
+        <img
+          className="goal-tips-panda"
+          src="/images/combobox/excited.png"
+          alt="Excited panda"
         />
-      </div>
 
-      {/* Tips list */}
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
-      >
-        {goal.tips.map((tip, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: '#FFF3E0',
-              borderRadius: '16px',
-              padding: '16px',
-              display: 'flex',
-              gap: '12px',
-              alignItems: 'flex-start',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: '#2D6A4F',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#FFF3E0',
-                fontSize: '14px',
-                fontWeight: 'bold',
-                flexShrink: 0,
-              }}
-            >
-              {index + 1}
-            </div>
+        <section className="goal-tips-content">
+          <div className="goal-tips-reminder">
             <div>
-              <p
-                style={{
-                  margin: 0,
-                  fontFamily: 'Cambria, Georgia, serif',
-                  fontSize: '14px',
-                  color: '#1B2B22',
-                  lineHeight: '1.4',
-                }}
-              >
-                {tip.my}
-              </p>
-              <p
-                style={{
-                  margin: '4px 0 0',
-                  fontFamily: 'system-ui, -apple-system, sans-serif',
-                  fontSize: '13px',
-                  color: '#5B6B61',
-                  lineHeight: '1.4',
-                }}
-              >
-                {tip.en}
-              </p>
+              <p className="goal-tips-my">{tipScreen.reminder.my}</p>
+              <p className="goal-tips-en">{tipScreen.reminder.en}</p>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Back button */}
-      <button
-        onClick={() => navigate('/goals')}
-        className="daily-log-back-btn goal-tips-back-btn goal-tips-back-btn--bottom"
-        aria-label="Back to Goals"
-      />
+          <div className="goal-tips-list">
+            {tipScreen.tips.map((tip, index) => (
+              <article className="goal-tip-card" key={tip.en}>
+                <span className="goal-tip-number" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <div className="goal-tip-text">
+                  <p className="goal-tip-my">{tip.my}</p>
+                  <p className="goal-tip-en">{tip.en}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="goal-tips-actions">
+            <button
+              className="btn-primary goal-tips-action-btn"
+              onClick={() => navigate('/home')}
+              type="button"
+            >
+              Home
+            </button>
+            <button
+              className="btn-primary goal-tips-action-btn"
+              onClick={() => navigate('/goals')}
+              type="button"
+            >
+              Continue
+            </button>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

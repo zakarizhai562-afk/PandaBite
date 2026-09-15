@@ -27,7 +27,6 @@ export default function PuzzleHUD({ gameState }) {
 
         <div className="puzzle-hud__score-area">
           <div className="puzzle-hud__score-row">
-            <span className="puzzle-hud__star">⭐</span>
             <span className="puzzle-hud__score-text">
               {gameState.score} / {SCORE_TO_LEVEL_COMPLETE}
             </span>

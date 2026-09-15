@@ -67,7 +67,6 @@ function buildResult(selectedFoodIds, coveredGroups, whoaCount, invalidFoodIds =
     whoaCount,
     tierCounts,
     score,
-    starsEarned: score,
     isBalanced,
   };
 }

@@ -25,7 +25,6 @@ describe('dailyBalanceService', () => {
     expect(result.coveredGroups).toEqual(['carbs', 'protein', 'vitamins']);
     expect(result.whoaCount).toBe(0);
     expect(result.score).toBe(3);
-    expect(result.starsEarned).toBe(3);
     expect(result.tierCounts).toEqual({ go: 3, slow: 0, whoa: 0 });
   });
 
@@ -41,7 +40,6 @@ describe('dailyBalanceService', () => {
     expect(result.missingGroups).toEqual(['vitamins']);
     expect(result.coveredGroups).toEqual(['carbs', 'protein']);
     expect(result.score).toBe(2);
-    expect(result.starsEarned).toBe(2);
   });
 
   it('returns isBalanced: false when 2+ Whoa items on plate', async () => {
@@ -55,7 +53,6 @@ describe('dailyBalanceService', () => {
     expect(result.isBalanced).toBe(false);
     expect(result.whoaCount).toBe(2);
     expect(result.score).toBe(1);
-    expect(result.starsEarned).toBe(1);
   });
 
   it('skips unknown/invalid food IDs without throwing', async () => {
@@ -97,7 +94,6 @@ describe('dailyBalanceService', () => {
     expect(result.isBalanced).toBe(false);
     expect(result.whoaCount).toBe(0);
     expect(result.score).toBe(0);
-    expect(result.starsEarned).toBe(0);
   });
 
   it('falls back to plain-JS when Prolog engine throws', async () => {

@@ -18,7 +18,7 @@ export default function PandaMessage({ mood, message, feedback }) {
       <div className="puzzle-message-box">
         {feedback ? (
           <div className={`puzzle-feedback ${feedback.isCorrect ? 'puzzle-feedback--correct' : 'puzzle-feedback--wrong'}`}>
-            <span className="puzzle-feedback__icon">{feedback.isCorrect ? '★' : '✕'}</span>
+            <span className="puzzle-feedback__icon">{feedback.isCorrect ? '✓' : '✕'}</span>
             <div className="puzzle-feedback__text">
               <div className="puzzle-feedback__title-group">
                 <span className="puzzle-feedback__title">{feedback.title}</span>

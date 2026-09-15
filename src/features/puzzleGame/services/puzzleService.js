@@ -65,12 +65,6 @@ export function loseLife(state) {
   return next;
 }
 
-export function starRating(mistakesThisLevel) {
-  if (mistakesThisLevel === 0) return 3;
-  if (mistakesThisLevel <= 2) return 2;
-  return 1;
-}
-
 export function togglePause(state) {
   if (state.state === PLAYING) return { ...state, state: PAUSED };
   if (state.state === PAUSED) return { ...state, state: PLAYING };

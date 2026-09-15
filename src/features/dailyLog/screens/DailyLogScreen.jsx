@@ -12,7 +12,6 @@ import FeatureLoadingScreen from '../../../core/components/FeatureLoadingScreen'
 import FoodEntryCard from '../components/FoodEntryCard';
 import PlateDropTarget from '../components/PlateDropTarget';
 import DailyLogDoneBar from '../components/DailyLogDoneBar';
-import DailyLogGoalPoints from '../components/DailyLogGoalPoints';
 import { useDailyLog } from '../hooks/useDailyLog';
 import { getDragFoodReaction } from '../services/feedbackLibrary';
 import foodDatabase from '../../../data/foodDatabase.json';
@@ -142,8 +141,6 @@ export default function DailyLogScreen() {
           </span>
         </div>
 
-        <DailyLogGoalPoints />
-
         <div className="daily-log-layout">
           <div className="daily-log-left">
             <div className="plate-platform">
@@ -170,6 +167,7 @@ export default function DailyLogScreen() {
               />
             </div>
             <div className="daily-log-help-text">
+              <span className="daily-log-help-my daily-log-help-my-live">{mascotText.my}</span>
               <span className="daily-log-help-my">
                 အင်အား၊ ကြီးထွားမှုနဲ့ ကျန်းမာရေးအတွက် ကောင်းတဲ့အစားအစာတွေကို ရွေးပါ။
               </span>

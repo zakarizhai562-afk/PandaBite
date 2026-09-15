@@ -16,7 +16,7 @@ export default function WorldMapScreen() {
     <div className="wm-screen">
       <div className="wm-stage">
         <MapBackground
-          src="/world_art/world_map.png"
+          src="/world_art/newlanding.png"
           alt="PandaBite World Map — four islands with red panda characters, connected by bridges over a sunny sea"
         />
 
@@ -52,11 +52,11 @@ export default function WorldMapScreen() {
 
           <button
             type="button"
-            className="wm-icon-btn wm-icon-btn--right"
-            onClick={() => navigate('/onboarding')}
-            aria-label="Replay tutorial"
+            className="wm-icon-btn wm-icon-btn--right wm-rules-btn"
+            onClick={() => navigate('/rules')}
+            aria-label="View rules"
           >
-            ?
+            <span className="visually-hidden">Rules</span>
           </button>
         </header>
       </div>

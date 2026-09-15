@@ -2,17 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import WorldMapScreen from '../screens/WorldMapScreen';
-import { StarsProvider } from '../../../core/context/StarsContext';
-import { PetStateProvider } from '../../../core/context/PetStateContext';
 
 function renderWorldMap() {
   return render(
     <HashRouter>
-      <StarsProvider>
-        <PetStateProvider>
-          <WorldMapScreen />
-        </PetStateProvider>
-      </StarsProvider>
+      <WorldMapScreen />
     </HashRouter>
   );
 }
@@ -36,9 +30,9 @@ describe('WorldMapScreen', () => {
     }
   });
 
-  it('has a help button to replay onboarding', () => {
+  it('has a rules button', () => {
     renderWorldMap();
-    expect(screen.getByRole('button', { name: 'Replay tutorial' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'View rules' })).toBeInTheDocument();
   });
 
   it('has a menu button to go back', () => {

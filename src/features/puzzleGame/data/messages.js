@@ -26,7 +26,7 @@ export const MESSAGE_TEXTS_HAPPY = [
   { en: 'Yay! You got it right!', my: 'ဟူးရေ! မှန်ကန်စွာ လုပ်နိုင်ပါတယ်!' },
   { en: "Great job! That's exactly right!", my: 'တော်လိုက်တာ! အတိအကျ မှန်ကန်ပါတယ်!' },
   { en: 'Awesome sorting! Keep it up!', my: 'အံ့သြစရာ ခွဲခြားနိုင်စွမ်း! ဆက်လုပ်ပါ!' },
-  { en: "You're a food-sorting star!", my: 'မင်းက အစားအစာခွဲခြားရေး ကြယ်ပွင့်ပဲ!' },
+  { en: 'Great food sorting!', my: 'အစားအစာခွဲခြားတာ တော်လိုက်တာ!' },
 ];
 
 export const MESSAGE_TEXTS_SAD = [

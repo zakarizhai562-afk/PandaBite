@@ -6,7 +6,6 @@ import {
   nextLevel,
   resetGame,
   togglePause,
-  starRating,
   checkAnswer,
   getFeedbackForCorrect,
   getFeedbackForWrong,
@@ -110,13 +109,6 @@ describe('puzzleService gameState (migrated from Python GameState)', () => {
     expect(s.mistakesThisLevel).toBe(1);
   });
 
-  it('starRating reflects mistakes (0=3 stars, 1-2=2 stars, 3+=1 star)', () => {
-    expect(starRating(0)).toBe(3);
-    expect(starRating(1)).toBe(2);
-    expect(starRating(2)).toBe(2);
-    expect(starRating(3)).toBe(1);
-  });
-
   it('togglePause switches PLAYING<->PAUSED and no-ops elsewhere', () => {
     let s = createInitialState();
     s = togglePause(s);
@@ -148,7 +140,12 @@ describe('puzzleService gameState (migrated from Python GameState)', () => {
   });
 
   it('feedback text matches the Python reference exactly', () => {
-    expect(getFeedbackForCorrect()).toEqual({ title: 'Great Job!', detail: '+10 Points', isCorrect: true });
+    expect(getFeedbackForCorrect()).toEqual({
+      title: 'Great Job!',
+      titleMy: 'အရမ်းကောင်းတယ်!',
+      detail: '+10 Points',
+      isCorrect: true,
+    });
 
     const rice = FOOD_DATA.find((f) => f.name === 'Rice');
     const energyBasket = getBasketByGroup('energy');

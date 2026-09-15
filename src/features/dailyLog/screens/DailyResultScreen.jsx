@@ -1,13 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BalanceSummaryCard from '../components/BalanceSummaryCard';
 import { selectBalanceFeedback } from '../services/feedbackLibrary';
-import { awardStars } from '../../../core/services/starAwardService';
-import { useStars } from '../../../core/context/StarsContext';
-import { getItem, setItem } from '../../../core/utils/storage';
-import { getTodayKey } from '../../../core/utils/dateUtils';
 
-const DAILY_LOG_AWARD_KEY = 'nutripal_daily_log_star_awards';
 const FALLBACK_RESULT = {
   selectedFoodIds: [],
   coveredGroups: [],
@@ -15,7 +10,6 @@ const FALLBACK_RESULT = {
   whoaCount: 0,
   tierCounts: { go: 0, slow: 0, whoa: 0 },
   score: 0,
-  starsEarned: 0,
   isBalanced: false,
 };
 
@@ -36,35 +30,56 @@ function normalizeResult(rawResult) {
   return {
     ...result,
     score,
-    starsEarned: rawResult?.starsEarned ?? score,
   };
 }
 
-function awardDailyLogStarsOnce(result, setStars) {
-  const amount = result.starsEarned ?? result.score ?? 0;
-  if (amount <= 0) return false;
+function getDailyResultNoteMy(result) {
+  if (result.whoaCount > 0 && result.coveredGroups.length === 0) {
+    return 'Whoa food ပဲ ရွေးထားတာမို့ သကြားနဲ့ အဆီ များနိုင်ပါတယ်။ နောက်တစ်ခါ Go food လေးတွေ ထပ်ရွေးကြည့်ရအောင်။';
+  }
 
-  const awardKey = result.entryId || `${result.date || getTodayKey()}-${result.selectedFoodIds?.join('-') || 'fallback'}`;
-  const awards = getItem(DAILY_LOG_AWARD_KEY) || {};
-  if (awards[awardKey]) return false;
+  if (result.isBalanced) {
+    if (result.whoaCount > 0) {
+      return 'အာဟာရစုံအောင် ရွေးထားတာ ကောင်းပါတယ်။ Whoa food ပါလို့ ရေများများသောက်ပြီး နောက်တစ်ခါ နည်းနည်းပဲ စားရအောင်။';
+    }
+    return 'အာဟာရအုပ်စု သုံးမျိုးလုံး ပါတဲ့ အစားအစာပါ။ အရမ်းကောင်းပါတယ်!';
+  }
 
-  awardStars(amount, 'daily-log', setStars);
-  setItem(DAILY_LOG_AWARD_KEY, {
-    ...awards,
-    [awardKey]: {
-      amount,
-      awardedAt: new Date().toISOString(),
-    },
-  });
-  return true;
+  if (result.whoaCount >= 2) {
+    return 'ဒီနေ့ Whoa food နည်းနည်းများနေပါတယ်။ နောက်တစ်ခါ အသီးအရွက်နဲ့ Go food တွေ ပိုရွေးရအောင်။';
+  }
+
+  if (result.missingGroups.length === 1) {
+    if (result.missingGroups.includes('carbs')) {
+      return 'အသားဓာတ်နဲ့ ဗီတာမင်တွေ ပါတာ ကောင်းပါတယ်။ အားအင်ရဖို့ ထမင်း၊ ပေါင်မုန့်လို ကာဗိုဟိုက်ဒရိတ်လေး ထပ်ဖြည့်ရအောင်။';
+    }
+    if (result.missingGroups.includes('protein')) {
+      return 'ကာဗိုဟိုက်ဒရိတ်နဲ့ ဗီတာမင်တွေ ပါတာ ကောင်းပါတယ်။ ကြီးထွားဖို့ ကြက်ဥ၊ အသား၊ ပဲလို အသားဓာတ်လေး ထပ်ဖြည့်ရအောင်။';
+    }
+    if (result.missingGroups.includes('vitamins')) {
+      return 'ဗိုက်ပြည့်စေတဲ့ အစားအစာတွေ ရွေးထားတာ ကောင်းပါတယ်။ ကျန်းမာနေဖို့ အသီးအရွက်လေးတွေ ထပ်ရွေးရအောင်။';
+    }
+  }
+
+  if (result.coveredGroups.length === 1) {
+    if (result.coveredGroups.includes('carbs')) {
+      return 'အားအင်ရတဲ့ အစားအစာပါ။ နောက်တစ်ခါ အသားဓာတ်နဲ့ အသီးအရွက်လေးတွေပါ ထပ်ရွေးရအောင်။';
+    }
+    if (result.coveredGroups.includes('protein')) {
+      return 'ကြီးထွားဖို့ ကူညီတဲ့ အစားအစာပါ။ နောက်တစ်ခါ အားအင်ရစေတဲ့ အစားအစာနဲ့ အသီးအရွက်လေးတွေပါ ထပ်ရွေးရအောင်။';
+    }
+    if (result.coveredGroups.includes('vitamins')) {
+      return 'ဗီတာမင်ပါတဲ့ အစားအစာပါ။ နောက်တစ်ခါ အားအင်ရစေတဲ့ အစားအစာနဲ့ အသားဓာတ်လေးပါ ထပ်ရွေးရအောင်။';
+    }
+  }
+
+  return 'ဒီနေ့ စစ်ကြည့်တာ ကောင်းပါတယ်။ နောက်တစ်ခါ အာဟာရစုံအောင် ထပ်ရွေးရအောင်။';
 }
 
 export default function DailyResultScreen() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setStars } = useStars();
   const [feedback, setFeedback] = useState(null);
-  const [starsEarned, setStarsEarned] = useState(0);
 
   const result = useMemo(
     () => normalizeResult(location.state?.result),
@@ -74,10 +89,7 @@ export default function DailyResultScreen() {
   useEffect(() => {
     const fb = selectBalanceFeedback(result);
     setFeedback(fb);
-
-    setStarsEarned(result.starsEarned ?? result.score ?? 0);
-    awardDailyLogStarsOnce(result, setStars);
-  }, [result, setStars]);
+  }, [result]);
 
   const handleContinue = () => {
     navigate('/daily-log', { state: { skipLoading: true } });
@@ -87,6 +99,7 @@ export default function DailyResultScreen() {
   const resultTitleMy = result.isBalanced ? 'မျှတတဲ့အစားအစာပါ။' : 'စစ်ကြည့်တာ ကောင်းပါတယ်။';
   const resultPandaImage = getResultPandaImage(result.score ?? result.coveredGroups.length);
   const isOnlyWhoaMeal = result.whoaCount > 0 && result.coveredGroups.length === 0;
+  const noteTextMy = getDailyResultNoteMy(result);
   const noteText = isOnlyWhoaMeal
     ? {
         my: 'Whoa food ပဲ ရွေးထားတာမို့ သကြားနဲ့ အဆီများနိုင်ပါတယ်။ နောက်တစ်ခါ Go food လေးတွေ ထပ်ရွေးကြည့်ရအောင်။',
@@ -119,7 +132,7 @@ export default function DailyResultScreen() {
               className="daily-result-panda"
             />
             <div className="daily-result-note">
-              <span>{noteText?.my || 'ဒီနေ့ စစ်ကြည့်တာ ကောင်းပါတယ်။'}</span>
+              <span>{noteTextMy}</span>
               <span>{noteText?.en || 'Great job checking in today!'}</span>
               {result.whoaCount > 0 && !isOnlyWhoaMeal && (
                 <span className="daily-result-note-warning">
@@ -128,12 +141,6 @@ export default function DailyResultScreen() {
               )}
             </div>
           </div>
-          {starsEarned > 0 && (
-            <div className="stars-earned">
-              <span className="daily-log-goal-star">★</span>
-              <span>+{starsEarned} Stars earned!</span>
-            </div>
-          )}
         </aside>
       </div>
 

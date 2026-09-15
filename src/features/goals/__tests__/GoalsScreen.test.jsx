@@ -1,18 +1,12 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HashRouter } from 'react-router-dom';
 import GoalsScreen from '../screens/GoalsScreen';
-import { StarsProvider } from '../../../core/context/StarsContext';
-import { PetStateProvider } from '../../../core/context/PetStateContext';
 
 function renderGoals() {
   return render(
     <HashRouter>
-      <StarsProvider>
-        <PetStateProvider>
-          <GoalsScreen />
-        </PetStateProvider>
-      </StarsProvider>
+      <GoalsScreen />
     </HashRouter>
   );
 }
@@ -39,31 +33,17 @@ describe('GoalsScreen', () => {
     expect(screen.getByText('Back')).toBeInTheDocument();
   });
 
-  it('Hint button shows Clue/Reveal tiers and handles Clue without moving food', async () => {
-    localStorage.setItem('nutripal_stars', JSON.stringify(10));
+  it('Hint button shows the clue on one click', async () => {
     renderGoals();
     await screen.findByText('Goals', {}, { timeout: 2000 });
     fireEvent.click(screen.getByText('Grow Taller').closest('.goal-card'));
     await screen.findByText('Drag the food to me!');
     const hintBtn = screen.getByText('Hint');
     fireEvent.click(hintBtn);
-    expect(screen.getByText(/Clue/)).toBeInTheDocument();
-    expect(screen.getByText(/Reveal/)).toBeInTheDocument();
-    const clueBtn = screen.getByText(/Clue/);
-    fireEvent.click(clueBtn);
     expect(await screen.findByText(/Does this have protein/)).toBeInTheDocument();
-  });
-
-  it('Reveal tier feeds food automatically', async () => {
-    localStorage.setItem('nutripal_stars', JSON.stringify(10));
-    renderGoals();
-    await screen.findByText('Goals', {}, { timeout: 2000 });
-    fireEvent.click(screen.getByText('Clear Skin').closest('.goal-card'));
-    await screen.findByText('Drag the food to me!');
-    fireEvent.click(screen.getByText('Hint'));
-    const revealBtn = screen.getByText(/Reveal/);
-    fireEvent.click(revealBtn);
-    expect(await screen.findByText('Revealed!')).toBeInTheDocument();
+    expect(screen.queryByText('Clue')).not.toBeInTheDocument();
+    expect(screen.queryByText('Reveal')).not.toBeInTheDocument();
+    expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
   });
 
   it('See Tips only appears once every food choice is resolved', async () => {
@@ -72,16 +52,15 @@ describe('GoalsScreen', () => {
     expect(screen.queryByText('See Tips')).not.toBeInTheDocument();
   });
 
-  it('insufficient points shows not-enough state on hint', async () => {
-    localStorage.setItem('nutripal_stars', JSON.stringify(0));
+  it('keeps Hint as the only clue control', async () => {
     renderGoals();
     await screen.findByText('Goals', {}, { timeout: 2000 });
     fireEvent.click(screen.getByText('Grow Taller').closest('.goal-card'));
     await screen.findByText('Drag the food to me!');
     fireEvent.click(screen.getByText('Hint'));
-    const clueBtn = screen.getByText(/Clue/);
-    expect(clueBtn.disabled).toBe(true);
-    const revealBtn = screen.getByText(/Reveal/);
-    expect(revealBtn.disabled).toBe(true);
+    expect(await screen.findByText(/Does this have protein/)).toBeInTheDocument();
+    expect(screen.queryByText('Clue')).not.toBeInTheDocument();
+    expect(screen.queryByText('Reveal')).not.toBeInTheDocument();
+    expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
   });
 });

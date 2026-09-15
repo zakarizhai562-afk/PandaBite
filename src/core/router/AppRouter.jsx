@@ -10,6 +10,7 @@ import DailyLogScreen from '../../features/dailyLog/screens/DailyLogScreen';
 import DailyResultScreen from '../../features/dailyLog/screens/DailyResultScreen';
 import GoalsScreen from '../../features/goals/screens/GoalsScreen';
 import GoalTipsScreen from '../../features/goals/screens/GoalTipsScreen';
+import RulesScreen from '../../features/rules/screens/RulesScreen';
 import PuzzleScreen from '../../features/puzzleGame/screens/PuzzleScreen';
 import ComboAlertScreen from '../../features/comboAlert/screens/ComboAlertScreen';
 
@@ -23,6 +24,7 @@ export default function AppRouter() {
 
         {/* Home / World Map — route: /home */}
         <Route path="/home" element={<WorldMapScreen />} />
+        <Route path="/rules" element={<RulesScreen />} />
 
         {/* Daily Log — route: /daily-log */}
         <Route path="/daily-log" element={<DailyLogScreen />} />
@@ -34,6 +36,7 @@ export default function AppRouter() {
         <Route path="/goals" element={<GoalsScreen />} />
         <Route path="/goals/:goalId" element={<GoalsScreen />} />
         <Route path="/goals/tips" element={<GoalTipsScreen />} />
+        <Route path="/goal/tips" element={<GoalTipsScreen />} />
         <Route path="/puzzle" element={<PuzzleScreen />} />
 
         {/* Combo Alert — route: /combo */}
